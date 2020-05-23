@@ -2,7 +2,7 @@ import { isEchoRequest, procEcho,  } from './procEcho';
 import { createId } from './uniqueId';
 
 
-describe('Commands', () => {
+describe('Echo', () => {
     test('isA', () => {
         expect(isEchoRequest({})).toBe(false);
         expect(isEchoRequest({ id: createId(), requestType: 'Echo' })).toBe(true);
