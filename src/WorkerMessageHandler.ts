@@ -65,7 +65,9 @@ export class WorkerMessageHandler {
         for (const proc of procedures) {
             const response = proc(request);
             if (response) {
-                this.post(response);
+                Promise.resolve(response)
+                .catch(reason => createErrorResponse(request, reason.toString()))
+                .then(r => this.post(r));
                 return;
             }
         }
