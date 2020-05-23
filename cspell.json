@@ -1,0 +1,11 @@
+{
+    "version": "0.1",
+    "dictionaryDefinitions": [
+        {
+            "name": "cspell-words",
+            "path": "./cspell-words.txt"
+        }
+    ],
+    "dictionaries": ["cspell-words"],
+    "customWorkspaceDictionaries": ["cspell-words"]
+}
