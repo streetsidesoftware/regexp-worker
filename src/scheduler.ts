@@ -1,17 +1,13 @@
 import { createWorker, Worker } from './worker';
 import { Request, Response, isResponse, createRequest  } from './procedure';
-import * as Path from 'path';
-
 
 export class Scheduler {
-    private id: number;
-    private pending: Map<number, (v: Response) => any>;
+    private pending: Map<string, (v: Response) => any>;
     private worker: Worker;
     public dispose: () => Promise<number>;
-    constructor(dirname?: string) {
-        this.id = 0;
+    constructor() {
         this.dispose = () => this._dispose();
-        this.worker = createWorker(dirname ? Path.join(dirname, 'worker.js') : undefined);
+        this.worker = createWorker();
         this.pending = new Map();
         this.worker.on('message', v => this.listener(v))
     }
@@ -36,6 +32,6 @@ export class Scheduler {
     }
 
     public createRequest<T extends Request>(requestType: T['requestType'], data: T['data']): T {
-        return createRequest<T>(++this.id, requestType, data);
+        return createRequest<T>(requestType, data);
     }
 }

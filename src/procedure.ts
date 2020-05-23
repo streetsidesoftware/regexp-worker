@@ -1,16 +1,17 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+import { ID, createId, isId } from './uniqueId';
 
 export type RequestType = string;
 export type ResponseType = RequestType;
 
 export interface Request {
-    id: number;
+    id: ID;
     requestType: RequestType;
     data: any;
 }
 
 export interface Response {
-    id: number;
+    id: ID;
     responseType: ResponseType;
     data: any;
 }
@@ -22,7 +23,7 @@ export function genIsRequest<T extends Request>(key: T['requestType']): (v: any)
 }
 
 export function isRequest(v: any): v is Request {
-    return !!(typeof v === 'object' && typeof (v as Request).requestType === 'string' && (typeof v.id === 'number'));
+    return !!(typeof v === 'object' && typeof (v as Request).requestType === 'string' && isId(v.id));
 }
 
 export function genIsResponse<T extends Response>(key: T['responseType']): (v: any) => v is T {
@@ -32,14 +33,14 @@ export function genIsResponse<T extends Response>(key: T['responseType']): (v: a
 }
 
 export function isResponse(v: any): v is Response {
-    return !!(typeof v === 'object' && typeof (v as Response).responseType === 'string' && (typeof v.id === 'number'));
+    return !!(typeof v === 'object' && typeof (v as Response).responseType === 'string' && isId(v.id));
 }
 
-export function createRequest<T extends Request>(id: number, requestType: T['requestType'], data: T['data']): T {
-    return { id, requestType, data } as T;
+export function createRequest<T extends Request>(requestType: T['requestType'], data: T['data']): T {
+    return { id: createId(), requestType, data } as T;
 }
 
-export function createResponse<T extends Response>(id: number, responseType: T['responseType'], data: T['data']): T {
+export function createResponse<T extends Response>(id: ID, responseType: T['responseType'], data: T['data']): T {
     return { id, responseType, data } as T;
 }
 

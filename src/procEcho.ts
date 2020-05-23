@@ -27,8 +27,8 @@ export function procEcho(r: RequestEcho | Request): ResponseEcho | ErrorResponse
     return createResponseEcho(r, r.data);
 }
 
-export function createRequestEcho(id: number, data: RequestEcho['data']): RequestEcho {
-    return createRequest(id, typeEcho, data);
+export function createRequestEcho(data: RequestEcho['data']): RequestEcho {
+    return createRequest(typeEcho, data);
 }
 
 export function createResponseEcho(request: RequestEcho, data: ResponseEcho['data']): ResponseEcho {

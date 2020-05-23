@@ -46,8 +46,8 @@ export function procExecRegExp(r: RequestExecRegExp | Request): ResponseExecRegE
     }
 }
 
-export function createRequestExecRegExp(id: number, data: RequestExecRegExp['data']): RequestExecRegExp {
-    return createRequest(id, requestTypeExecRegExp, data);
+export function createRequestExecRegExp(data: RequestExecRegExp['data']): RequestExecRegExp {
+    return createRequest(requestTypeExecRegExp, data);
 }
 
 export function createResponseExecRegExp(request: RequestExecRegExp, data: ResponseExecRegExp['data']): ResponseExecRegExp {
