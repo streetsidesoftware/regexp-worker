@@ -1,2 +1,2 @@
 
-export { Scheduler } from './scheduler';
+export { RegExpWorker } from './RegExpWorker';
