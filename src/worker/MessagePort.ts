@@ -7,8 +7,8 @@ export interface MessagePort {
 }
 
 
-export const nullPort: MessagePort = {
+export const nullPort: MessagePort = Object.freeze({
     postMessage() {},
     on() { return nullPort },
     off() { return nullPort },
-}
+})
