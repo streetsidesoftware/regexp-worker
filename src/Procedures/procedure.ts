@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { ID, createId, isId, NullID } from './uniqueId';
+import { UniqueID, createId, isId, NullID } from './uniqueId';
 
 export type RequestType = string;
 export type ResponseType = RequestType;
 
 export interface Request {
-    id: ID;
+    id: UniqueID;
     requestType: RequestType;
     data: any;
 }
 
 export interface Response {
-    id: ID;
+    id: UniqueID;
     responseType: ResponseType;
     data: any;
 }
@@ -40,7 +40,7 @@ export function createRequest<T extends Request>(requestType: T['requestType'], 
     return { id: createId(), requestType, data } as T;
 }
 
-export function createResponse<T extends Response>(id: ID, responseType: T['responseType'], data: T['data']): T {
+export function createResponse<T extends Response>(id: UniqueID, responseType: T['responseType'], data: T['data']): T {
     return { id, responseType, data } as T;
 }
 
