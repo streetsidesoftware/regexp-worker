@@ -36,11 +36,7 @@ export function procExecRegExp(r: RequestExecRegExp | Request): ResponseExecRegE
     if (!isExecRegExpRequest(r)) return undefined;
     try {
         const regex = toRegExp(r.data.regexp);
-        return {
-            id: r.id,
-            responseType: r.requestType,
-            data: execRegExp(regex, r.data.text),
-        };
+        return createResponseExecRegExp(r, execRegExp(regex, r.data.text));
     } catch (e) {
         return createErrorResponse(r, e.toString());
     }
