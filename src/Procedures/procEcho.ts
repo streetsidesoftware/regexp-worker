@@ -21,7 +21,7 @@ export function procEcho(r: RequestEcho): ResponseEcho | ErrorResponse;
 export function procEcho(r: Request): undefined;
 export function procEcho(r: RequestEcho | Request): ResponseEcho | ErrorResponse | undefined {
     if (!isEchoRequest(r)) return undefined;
-    if (!r.data) {
+    if (typeof r.data !== 'string') {
         return createErrorResponse(r, 'Empty Echo');
     }
     return createResponseEcho(r, r.data);
