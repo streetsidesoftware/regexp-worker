@@ -1,0 +1,19 @@
+name: "build-test"
+on: # rebuild any PRs and main branch changes
+  pull_request:
+  push:
+
+jobs:
+  test: # make sure build/ci work properly
+    # runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+    - uses: actions/checkout@v2
+    - run: node -v
+    - run: npm install
+    - run: npm test
+    - run: npm run test-js
+    - run: npm run test-ts

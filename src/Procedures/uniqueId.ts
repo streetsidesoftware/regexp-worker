@@ -1,14 +1,14 @@
 
 let id = process.hrtime()[0];
 
-export type ID = string;
+export type UniqueID = string;
 
 /**
  * Gets a unique ID for each call.
  * Note: a UUID would be the "correct" solution, but this will work for our purposes.
  * Give that, this is more complex than it needs to be.
  */
-export function createId(): ID {
+export function createId(): UniqueID {
     ++id;
     const t = process.hrtime();
     const v = id ^ t[0] ^ t[1];
@@ -20,10 +20,12 @@ export function createId(): ID {
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export function isId(value: any): value is ID {
+export function isId(value: any): value is UniqueID {
     if (typeof value === 'string' && /^ID-\d+-\d+-\d+-\d+$/.test(value)) {
         const [a, b, c, d] = value.split('-').slice(1).map(v => Number.parseInt(v, 10));
         return a === b % 13 && d === (b + c) % 7;
     }
     return false;
 }
+
+export const NullID = 'ID-0-0-0-0'
