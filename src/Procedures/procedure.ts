@@ -12,6 +12,7 @@ export interface Request {
 
 export interface Response {
     id: UniqueID;
+    timestamp: number;
     responseType: ResponseType;
     data: any;
 }
@@ -41,7 +42,7 @@ export function createRequest<T extends Request>(requestType: T['requestType'], 
 }
 
 export function createResponse<T extends Response>(id: UniqueID, responseType: T['responseType'], data: T['data']): T {
-    return { id, responseType, data } as T;
+    return { id, timestamp: Date.now(), responseType, data } as T;
 }
 
 export interface ErrorData {
@@ -59,25 +60,19 @@ export const responseTypeError: ErrorResponse['responseType'] = 'Error';
 
 export function createErrorResponse(request: Request | any, message: string): ErrorResponse {
     if (!isRequest(request)) {
-        return {
-            id: request?.id || NullID,
-            responseType: responseTypeError,
-            data: {
+        if (!isRequest(request)) {
+            return createResponse(request?.id || NullID, responseTypeError, {
                 requestType: request?.requestType,
                 message
-            }
+            });
         }
     }
 
     const { id, requestType } = request;
-    return {
-        id,
-        responseType: responseTypeError,
-        data: {
-            requestType,
-            message
-        }
-    }
+    return createResponse(id, responseTypeError, {
+        requestType,
+        message
+    });
 }
 
 export const isErrorResponse = genIsResponse<ErrorResponse>(responseTypeError);
