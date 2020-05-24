@@ -34,7 +34,8 @@ export function procSleep(r: RequestSleep | Request): Promise<ResponseSleep | Er
     });
 }
 
-export function createRequestSleep(data: RequestSleep['data']): RequestSleep {
+export function createRequestSleep(data: RequestSleep['data'] | number): RequestSleep {
+    data = typeof data === 'number' ? { durationMs: data } : data;
     return createRequest(typeSleep, data);
 }
 
