@@ -57,7 +57,7 @@ describe('Scheduler', () => {
     test('Termination', () => {
         const scheduler = new Scheduler();
         return Promise.all([
-            expect(scheduler.scheduleRequest(createRequestSpin(1000))).rejects.toEqual(expect.objectContaining({ message: expect.stringContaining('stopped')})),
+            expect(scheduler.scheduleRequest(createRequestSpin(5000))).rejects.toEqual(expect.objectContaining({ message: expect.stringContaining('stopped')})),
             expect(scheduler.scheduleRequest(createRequestSpin(4000))).rejects.toEqual(expect.objectContaining({ message: expect.stringContaining('stopped')})),
             expect(scheduler.scheduleRequest(createRequestSpin(2000))).rejects.toEqual(expect.objectContaining({ message: expect.stringContaining('stopped')})),
             expect(delay(1).then(() => scheduler.dispose())).resolves.toEqual(expect.any(Number)),
