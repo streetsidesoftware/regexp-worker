@@ -2,7 +2,6 @@ import { createWorker, Worker } from '../worker/worker';
 import { Request, Response, isResponse, createRequest, ErrorResponse, isErrorResponse  } from '../Procedures/procedure';
 import { UniqueID } from '../Procedures/uniqueId';
 
-
 export class Scheduler {
     private pending: Map<UniqueID, (v: Response) => any>;
     private requestQueue: Map<UniqueID, PendingRequest>;
@@ -25,6 +24,9 @@ export class Scheduler {
     }
 
     public sendRequest<T extends Request, U extends Response>(request: T): Promise<U> {
+        if (this.requestQueue.has(request.id)) {
+            return this.requestQueue.get(request.id)!.promise as Promise<U>;
+        }
         const promise = new Promise<U>((resolve) => {
             this.pending.set(request.id, v => resolve(v as U));
             this.trigger();
