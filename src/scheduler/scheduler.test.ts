@@ -1,5 +1,6 @@
 import { Scheduler, ErrorFailedRequest } from './scheduler';
-import { RequestEcho } from '../Procedures/procEcho';
+import { RequestEcho, createRequestEcho } from '../Procedures/procEcho';
+import { createRequestSleep } from '../Procedures/procSleep';
 
 describe('Scheduler', () => {
 
@@ -12,6 +13,33 @@ describe('Scheduler', () => {
         const request = scheduler.createRequest<RequestEcho>('Echo', sampleText());
         const r = await scheduler.sendRequest(request);
         expect(r.data).toBe(sampleText());
+    }));
+
+    test('Multiple Identical Requests', run(async scheduler => {
+        const request = scheduler.createRequest<RequestEcho>('Echo', sampleText());
+        const r1 = scheduler.sendRequest(request);
+        const r2 = scheduler.sendRequest(request);
+        const r3 = scheduler.sendRequest(request);
+        expect(r2).toBe(r1);
+        expect(r3).toBe(r1);
+        expect((await r1).data).toBe(sampleText());
+    }));
+
+    test('Multiple Requests', run(async scheduler => {
+        const lines = sampleText().split('\n');
+        const pResponses = lines.map((line, index) => [
+            scheduler.sendRequest(createRequestEcho(line)),
+            index % 3 === 1 ? scheduler.sendRequest(createRequestSleep(5)) : undefined,
+        ]).reduce((a, b) => a.concat(b), []).filter(<T>(v: T | undefined): v is T => !!v);
+        const responses = await Promise.all(pResponses);
+        const responseData = responses.filter(r => r.responseType === 'Echo').map(r => r.data);
+        expect(responseData).toEqual(lines);
+        // Make sure timestamps are ascending
+        const timestamps = responses.map(r => r.timestamp);
+        timestamps.reduce((last, next) => {
+            expect(next).toBeGreaterThanOrEqual(last)
+            return next
+        })
     }));
 
     test('Unknown Request', run(async scheduler => {
