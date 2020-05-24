@@ -10,12 +10,13 @@ describe('Sleep', () => {
     });
 
     test('echo', async () => {
-        const req = createRequestSleep({ durationMs: 2 });
+        const req = createRequestSleep({ durationMs: 5 });
         const m = await measurePromise(() => procSleep(req));
         const r = m.r;
         expect(r.id).toBe(req.id);
         expect(r.responseType).toBe('Sleep');
         expect(r.data).toEqual(req.data);
-        expect(m.elapsedTimeMs).toBeGreaterThan(req.data.durationMs);
+        // Note Node.js timers are not accurate, so it is possible it can finish faster than expected.
+        expect(m.elapsedTimeMs).toBeGreaterThan(req.data.durationMs - 2);
     });
 });
