@@ -5,7 +5,11 @@ on: # rebuild any PRs and main branch changes
 
 jobs:
   test: # make sure build/ci work properly
-    runs-on: ubuntu-latest
+    # runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
     steps:
     - uses: actions/checkout@v2
     - run: node -v
