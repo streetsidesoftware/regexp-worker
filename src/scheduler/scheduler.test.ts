@@ -1,6 +1,7 @@
 import { Scheduler, ErrorFailedRequest } from './scheduler';
 import { RequestEcho, createRequestEcho } from '../Procedures/procEcho';
 import { createRequestSleep } from '../Procedures/procSleep';
+import { createRequestSpin } from '../Procedures/procSpin';
 
 describe('Scheduler', () => {
 
@@ -11,15 +12,15 @@ describe('Scheduler', () => {
 
     test('Echo', run(async scheduler => {
         const request = scheduler.createRequest<RequestEcho>('Echo', sampleText());
-        const r = await scheduler.sendRequest(request);
+        const r = await scheduler.scheduleRequest(request);
         expect(r.data).toBe(sampleText());
     }));
 
     test('Multiple Identical Requests', run(async scheduler => {
         const request = scheduler.createRequest<RequestEcho>('Echo', sampleText());
-        const r1 = scheduler.sendRequest(request);
-        const r2 = scheduler.sendRequest(request);
-        const r3 = scheduler.sendRequest(request);
+        const r1 = scheduler.scheduleRequest(request);
+        const r2 = scheduler.scheduleRequest(request);
+        const r3 = scheduler.scheduleRequest(request);
         expect(r2).toBe(r1);
         expect(r3).toBe(r1);
         expect((await r1).data).toBe(sampleText());
@@ -28,8 +29,8 @@ describe('Scheduler', () => {
     test('Multiple Requests', run(async scheduler => {
         const lines = sampleText().split('\n');
         const pResponses = lines.map((line, index) => [
-            scheduler.sendRequest(createRequestEcho(line)),
-            index % 3 === 1 ? scheduler.sendRequest(createRequestSleep(5)) : undefined,
+            scheduler.scheduleRequest(createRequestEcho(line)),
+            index % 3 === 1 ? scheduler.scheduleRequest(createRequestSleep(5)) : undefined,
         ]).reduce((a, b) => a.concat(b), []).filter(<T>(v: T | undefined): v is T => !!v);
         const responses = await Promise.all(pResponses);
         const responseData = responses.filter(r => r.responseType === 'Echo').map(r => r.data);
@@ -44,7 +45,7 @@ describe('Scheduler', () => {
 
     test('Unknown Request', run(async scheduler => {
         const request = scheduler.createRequest('My Unknown Request', 'data');
-        const res = scheduler.sendRequest(request);
+        const res = scheduler.scheduleRequest(request);
         await expect(res).rejects.toBeInstanceOf(ErrorFailedRequest);
         await expect(res).rejects.toEqual(expect.objectContaining({
             message: 'Unhandled Request',
@@ -52,6 +53,16 @@ describe('Scheduler', () => {
             data: 'data',
         }));
     }));
+
+    test('Termination', () => {
+        const scheduler = new Scheduler();
+        return Promise.all([
+            expect(scheduler.scheduleRequest(createRequestSpin(1000))).rejects.toEqual(expect.objectContaining({ message: expect.stringContaining('stopped')})),
+            expect(scheduler.scheduleRequest(createRequestSpin(4000))).rejects.toEqual(expect.objectContaining({ message: expect.stringContaining('stopped')})),
+            expect(scheduler.scheduleRequest(createRequestSpin(2000))).rejects.toEqual(expect.objectContaining({ message: expect.stringContaining('stopped')})),
+            expect(delay(1).then(() => scheduler.dispose())).resolves.toBe(0),
+        ]);
+    });
 });
 
 function sampleText() {
@@ -77,4 +88,10 @@ function run<T>(fn: (scheduler: Scheduler) => Promise<T> | T): () => Promise<T> 
         const s = new Scheduler();
         return new Promise<T>(resolve => resolve(fn(s))).finally(s.dispose);
     }
+}
+
+function delay(delayMs: number): Promise<void> {
+    return new Promise(resolve => {
+        setTimeout(resolve, delayMs);
+    });
 }

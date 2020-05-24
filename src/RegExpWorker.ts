@@ -10,7 +10,7 @@ export class RegExpWorker {
 
     public execRegExp(regExp: RegExp, text: string): Promise<ExecRegExpResult> {
         const req = createRequestExecRegExp({ regexp: regExp, text });
-        return this.scheduler.sendRequest(req).then(r => r.data);
+        return this.scheduler.scheduleRequest(req).then(r => r.data);
     }
 
     private _dispose(): Promise<void> {
