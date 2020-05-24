@@ -11,5 +11,5 @@ jobs:
     - run: node -v
     - run: npm install
     - run: npm test
-    - run: npm test-js
-    - run: npm test-ts
+    - run: npm run test-js
+    - run: npm run test-ts
