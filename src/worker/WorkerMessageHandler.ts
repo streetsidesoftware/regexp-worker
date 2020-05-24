@@ -10,21 +10,16 @@ export function createHandler(port: MessagePort): WorkerMessageHandler {
     return new WorkerMessageHandler(port);
 }
 
-const LogLevelNone = 0;
-const LogLevelError = 1;
-const LogLevelWarn = 2;
-const LogLevelInfo = 3;
-const LogLevelDebug = 4;
-
-type LogLevel = typeof LogLevelNone
-    | typeof LogLevelError
-    | typeof LogLevelWarn
-    | typeof LogLevelInfo
-    | typeof LogLevelDebug;
-
+export enum LogLevel {
+    LogLevelNone = 0,
+    LogLevelError = 1,
+    LogLevelWarn = 2,
+    LogLevelInfo = 3,
+    LogLevelDebug = 4,
+}
 
 export class WorkerMessageHandler {
-    public logLevel: LogLevel = LogLevelError;
+    public logLevel: LogLevel = LogLevel.LogLevelError;
     private listener: (value: any) => void;
 
     constructor(private port: MessagePort) {
@@ -38,25 +33,25 @@ export class WorkerMessageHandler {
     }
 
     private post(msg: any) {
-        this.log(LogLevelDebug, 'Post: ' + JSON.stringify(msg));
+        this.log(LogLevel.LogLevelDebug, 'Post: ' + JSON.stringify(msg));
         this.port.postMessage(msg);
     }
 
     private log(level: LogLevel, message?: any, ...rest: any[]) {
         if (level > this.logLevel) return;
         switch(level) {
-            case LogLevelError: console.error(message, ...rest); break;
-            case LogLevelWarn: console.warn(message, ...rest); break;
+            case LogLevel.LogLevelError: console.error(message, ...rest); break;
+            case LogLevel.LogLevelWarn: console.warn(message, ...rest); break;
             default:
                 console.log(message, ...rest);
         }
     }
 
     private listenerMessage(value: any) {
-        this.log(LogLevelDebug, `message: ${JSON.stringify(value)}`);
+        this.log(LogLevel.LogLevelDebug, `message: ${JSON.stringify(value)}`);
         if (!isRequest(value)) {
             const msg = `Badly formed Request: ${JSON.stringify(value)}`;
-            this.log(LogLevelError, msg);
+            this.log(LogLevel.LogLevelError, msg);
             this.post(createErrorResponse(value, msg));
             return;
         }
@@ -72,6 +67,7 @@ export class WorkerMessageHandler {
             }
         }
 
+        this.log(LogLevel.LogLevelWarn, `Unhandled Request "${value.requestType}"`)
         this.post(createErrorResponse(request, 'Unhandled Request'));
     }
 }
