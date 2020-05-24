@@ -27,3 +27,5 @@ export function isId(value: any): value is ID {
     }
     return false;
 }
+
+export const NullID = 'ID-0-0-0-0'

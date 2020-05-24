@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { ID, createId, isId } from './uniqueId';
+import { ID, createId, isId, NullID } from './uniqueId';
 
 export type RequestType = string;
 export type ResponseType = RequestType;
@@ -60,7 +60,7 @@ export const responseTypeError: ErrorResponse['responseType'] = 'Error';
 export function createErrorResponse(request: Request | any, message: string): ErrorResponse {
     if (!isRequest(request)) {
         return {
-            id: request?.id || 0,
+            id: request?.id || NullID,
             responseType: responseTypeError,
             data: {
                 requestType: request?.requestType,
