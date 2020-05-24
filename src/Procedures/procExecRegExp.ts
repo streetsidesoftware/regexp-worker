@@ -8,7 +8,7 @@ import {
     Request,
     Response,
 } from './procedure';
-import { ExecRegExpResult, execRegExp, toRegExp } from './evaluateRegExp';
+import { ExecRegExpResult, execRegExp, toRegExp } from '../helpers/evaluateRegExp';
 
 export type ExecRegExpRequestType = 'ExecRegExp';
 export type ExecRegExpResponseType = ExecRegExpRequestType;

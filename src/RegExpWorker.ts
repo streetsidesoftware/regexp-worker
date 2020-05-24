@@ -1,8 +1,9 @@
-import { ExecRegExpResult } from './evaluateRegExp';
+import { ExecRegExpResult } from './helpers/evaluateRegExp';
 import { Scheduler } from './scheduler';
-import { createRequestExecRegExp, isExecRegExpResponse, ResponseExecRegExp } from './procExecRegExp';
-import { Response, isErrorResponse, ErrorResponse } from './procedure';
+import { createRequestExecRegExp, isExecRegExpResponse, ResponseExecRegExp } from './Procedures/procExecRegExp';
+import { Response, isErrorResponse, ErrorResponse } from './Procedures/procedure';
 
+export { ExecRegExpResult, toRegExp } from './helpers/evaluateRegExp';
 
 export class RegExpWorker {
     private scheduler = new Scheduler();

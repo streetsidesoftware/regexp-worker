@@ -1,9 +1,9 @@
 import { MessagePort, nullPort } from './MessagePort';
 import {
-    isRequest, createErrorResponse,
-} from './procedure';
+    isRequest, createErrorResponse
+} from '../Procedures/procedure';
 
-import { procedures } from './procedures';
+import { procedures } from '../Procedures/procedures';
 
 
 export function createHandler(port: MessagePort): WorkerMessageHandler {

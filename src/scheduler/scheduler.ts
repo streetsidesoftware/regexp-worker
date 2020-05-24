@@ -1,10 +1,12 @@
-import { createWorker, Worker } from './worker';
-import { Request, Response, isResponse, createRequest  } from './procedure';
+import { createWorker, Worker } from '../worker/worker';
+import { Request, Response, isResponse, createRequest  } from '../Procedures/procedure';
+
 
 export class Scheduler {
     private pending: Map<string, (v: Response) => any>;
     private worker: Worker;
     public dispose: () => Promise<number>;
+
     constructor() {
         this.dispose = () => this._dispose();
         this.worker = createWorker();

@@ -1,6 +1,6 @@
 import { isSleepRequest, procSleep, createRequestSleep,  } from './procSleep';
 import { createId } from './uniqueId';
-import { measurePromise } from './timer';
+import { measurePromise } from '../timer';
 
 
 describe('Sleep', () => {

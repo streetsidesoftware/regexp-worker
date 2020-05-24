@@ -1,5 +1,5 @@
 import { Scheduler } from './scheduler';
-import { RequestEcho } from './procEcho';
+import { RequestEcho } from '../Procedures/procEcho';
 
 describe('Scheduler', () => {
 

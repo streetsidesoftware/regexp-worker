@@ -1,6 +1,6 @@
 import { parentPort, isMainThread, Worker } from 'worker_threads';
 import { createHandler } from './WorkerMessageHandler';
-import * as Path from 'path';
+import { toOutDir } from '../util/toOutDir';
 export { Worker } from 'worker_threads';
 
 let defaultFilename = __filename;
@@ -8,7 +8,7 @@ let defaultFilename = __filename;
 // If this isn't the .js file, then we need to point to the .js file.
 // This can happen when running jest with ts-loader.
 if (!defaultFilename.match(/\.js$/)) {
-    defaultFilename = Path.join(__dirname, '..', 'lib', 'worker.js');
+    defaultFilename = toOutDir(__filename).replace(/ts$/, 'js');
 }
 
 export function createWorker(filename: string = defaultFilename): Worker {

@@ -1,4 +1,4 @@
-import { measureExecution } from './timer';
+import { measureExecution } from '../timer';
 
 export interface ExecRegExpResult {
     elapsedTimeMs: number;

@@ -7,6 +7,7 @@ describe('RegExpWorker', () => {
         return run(async w => {
             const r = await w.execRegExp(/\w/g, 'hello\nthere');
             expect(r.matches.map(m => m[0])).toEqual('hellothere'.split(''));
+            expect(r.elapsedTimeMs).toBeLessThan(2);
         });
     });
 });
