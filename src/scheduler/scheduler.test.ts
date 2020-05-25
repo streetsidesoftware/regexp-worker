@@ -11,13 +11,13 @@ describe('Scheduler', () => {
     });
 
     test('Echo', run(async scheduler => {
-        const request = scheduler.createRequest<RequestEcho>('Echo', sampleText());
+        const request = Scheduler.createRequest<RequestEcho>('Echo', sampleText());
         const r = await scheduler.scheduleRequest(request);
         expect(r.data).toBe(sampleText());
     }));
 
     test('Multiple Identical Requests', run(async scheduler => {
-        const request = scheduler.createRequest<RequestEcho>('Echo', sampleText());
+        const request = Scheduler.createRequest<RequestEcho>('Echo', sampleText());
         const r1 = scheduler.scheduleRequest(request);
         const r2 = scheduler.scheduleRequest(request);
         const r3 = scheduler.scheduleRequest(request);
@@ -44,7 +44,7 @@ describe('Scheduler', () => {
     }));
 
     test('Unknown Request', run(async scheduler => {
-        const request = scheduler.createRequest('My Unknown Request', 'data');
+        const request = Scheduler.createRequest('My Unknown Request', 'data');
         const res = scheduler.scheduleRequest(request);
         await expect(res).rejects.toBeInstanceOf(ErrorFailedRequest);
         await expect(res).rejects.toEqual(expect.objectContaining({
@@ -54,7 +54,7 @@ describe('Scheduler', () => {
         }));
     }));
 
-    test('Termination', () => {
+    test('Termination on shutdown', () => {
         const scheduler = new Scheduler();
         return Promise.all([
             expect(scheduler.scheduleRequest(createRequestSpin(5000))).rejects.toEqual(expect.objectContaining({ message: expect.stringContaining('stopped')})),
@@ -63,6 +63,17 @@ describe('Scheduler', () => {
             expect(delay(1).then(() => scheduler.dispose())).resolves.toEqual(expect.any(Number)),
         ]);
     });
+
+
+    test('Termination of single request', run(scheduler => {
+        const spinRequest = createRequestSpin(5000);
+        return Promise.all([
+            expect(scheduler.scheduleRequest(spinRequest)).rejects.toEqual(expect.objectContaining({ message: expect.stringContaining('Request Terminated')})),
+            expect(scheduler.scheduleRequest(createRequestEcho('One'))).resolves.toEqual(expect.objectContaining({ data: 'One' })),
+            expect(scheduler.scheduleRequest(createRequestEcho('Two'))).resolves.toEqual(expect.objectContaining({ data: 'Two' })),
+            expect(delay(1).then(() => scheduler.terminateRequest(spinRequest.id)))
+        ]);
+    }));
 });
 
 function sampleText() {
@@ -83,10 +94,10 @@ function sampleText() {
  * This function is needed to make sure we always dispose of the scheduler
  * @param fn function to wrap
  */
-function run<T>(fn: (scheduler: Scheduler) => Promise<T> | T): () => Promise<T> {
+function run<T>(fn: (scheduler: Scheduler) => Promise<T>): () => Promise<T> {
     return () => {
         const s = new Scheduler();
-        return new Promise<T>(resolve => resolve(fn(s))).finally(s.dispose);
+        return fn(s).finally(s.dispose);
     }
 }
 

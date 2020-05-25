@@ -13,25 +13,10 @@ export class Scheduler {
     constructor() {
         this.dispose = () => this._dispose();
         this.worker = createWorker();
+        this.worker.on('message', v => this.listener(v))
         this.pending = new Map();
         this.requestQueue = new Map();
-        this.worker.on('message', v => this.listener(v))
         this.currentRequest = undefined;
-    }
-
-    private _dispose() {
-        if (this.stopped) return Promise.resolve(0);
-        this.stopped = true;
-        this.worker.removeAllListeners();
-        const ret = this.worker.terminate();
-        for (const [uniqueId, resolve] of this.pending) {
-            const request = this.requestQueue.get(uniqueId);
-            resolve(Promise.reject(new ErrorCanceledRequest('Scheduler has been stopped', request?.request.requestType || 'Unknown')))
-        }
-        this.pending.clear()
-        this.requestQueue.clear();
-        this.currentRequest = undefined;
-        return ret;
     }
 
     public scheduleRequest<T extends Request, U extends Response>(request: T): Promise<U> {
@@ -50,6 +35,51 @@ export class Scheduler {
         return promise;
     }
 
+    public terminateRequest(requestId: UniqueID): Promise<void> {
+        const pRestartWorker = (requestId === this.currentRequest) ? this.restartWorker() : Promise.resolve();
+        return pRestartWorker.then(() => this._terminateRequest(requestId, 'Request Terminated'));
+    }
+
+    private _dispose() {
+        if (this.stopped) return Promise.resolve(0);
+        this.stopped = true;
+        this.worker.removeAllListeners();
+        const ret = this.worker.terminate();
+        for (const requestId of this.requestQueue.keys()) {
+            this._terminateRequest(requestId, 'Scheduler has been stopped');
+        }
+        this.pending.clear()
+        this.requestQueue.clear();
+        this.currentRequest = undefined;
+        return ret;
+    }
+
+    private _terminateRequest(requestId: UniqueID, message: string): Promise<void> {
+        const resolve = this.pending.get(requestId);
+        if (!resolve) {
+            this.cleanupRequest(requestId);
+            return Promise.reject(new ErrorBadRequest('Unknown Request'))
+        }
+        const request = this.requestQueue.get(requestId);
+        resolve(Promise.reject(new ErrorCanceledRequest(message, request?.request.requestType || 'Unknown')));
+        this.cleanupRequest(requestId);
+        return Promise.resolve();
+    }
+
+    private restartWorker(): Promise<void> {
+        return this.stopWorker()
+        .then(() => {
+            this.worker = createWorker();
+            this.worker.on('message', v => this.listener(v))
+        });
+    }
+
+    private stopWorker(): Promise<void> {
+        if (!this.worker) return Promise.resolve();
+        this.worker.removeAllListeners();
+        return this.worker.terminate().then();
+    }
+
     private listener(m: any) {
         if (isResponse(m)) {
             const resolveFn = this.pending.get(m.id);
@@ -63,15 +93,15 @@ export class Scheduler {
     }
 
     private trigger() {
-        if (!this.currentRequest) {
-            setImmediate(() => {
-                if (this.currentRequest) return;
-                const req = this.getNextRequest();
-                if (!req) return;
-                this.currentRequest = req.request.id;
-                this.worker.postMessage(req.request);
-            })
-        }
+        if (this.stopped || this.currentRequest) return;
+
+        setImmediate(() => {
+            if (this.currentRequest) return;
+            const req = this.getNextRequest();
+            if (!req) return;
+            this.currentRequest = req.request.id;
+            this.worker.postMessage(req.request);
+        })
     }
 
     private cleanupRequest(id: UniqueID) {
@@ -89,7 +119,7 @@ export class Scheduler {
         return next.value[1];
     }
 
-    public createRequest<T extends Request>(requestType: T['requestType'], data: T['data']): T {
+    public static createRequest<T extends Request>(requestType: T['requestType'], data: T['data']): T {
         return createRequest<T>(requestType, data);
     }
 }
@@ -100,6 +130,10 @@ export class ErrorCanceledRequest<T> {
 
 export class ErrorFailedRequest<T> {
     constructor(readonly message: string, readonly requestType: string | undefined, readonly data?: T) {}
+}
+
+export class ErrorBadRequest<T> {
+    constructor(readonly message: string, readonly data?: T) {}
 }
 
 /**
