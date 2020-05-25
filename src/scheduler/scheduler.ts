@@ -1,5 +1,5 @@
 import { createWorker, Worker } from '../worker/worker';
-import { Request, Response, isResponse, createRequest, ErrorResponse, isErrorResponse  } from '../Procedures/procedure';
+import { Request, Response, isResponse, createRequest, ErrorResponse, isErrorResponse, isRequest  } from '../Procedures/procedure';
 import { UniqueID } from '../Procedures/uniqueId';
 
 export class Scheduler {
@@ -25,6 +25,9 @@ export class Scheduler {
         }
         if (this.requestQueue.has(request.id)) {
             return this.requestQueue.get(request.id)!.promise as Promise<U>;
+        }
+        if (!isRequest(request)) {
+            return Promise.reject(new ErrorBadRequest('Bad Request', request))
         }
         const promise = new Promise<U>((resolve) => {
             this.pending.set(request.id, v => resolve(v as U));

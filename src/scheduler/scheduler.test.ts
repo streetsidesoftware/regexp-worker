@@ -61,17 +61,23 @@ describe('Scheduler', () => {
             expect(scheduler.scheduleRequest(createRequestSpin(4000))).rejects.toEqual(expect.objectContaining({ message: expect.stringContaining('stopped')})),
             expect(scheduler.scheduleRequest(createRequestSpin(2000))).rejects.toEqual(expect.objectContaining({ message: expect.stringContaining('stopped')})),
             expect(delay(1).then(() => scheduler.dispose())).resolves.toEqual(expect.any(Number)),
+            expect(delay(5).then(() => scheduler.scheduleRequest(createRequestEcho('Too Late')))).rejects.toEqual(expect.objectContaining({ message: expect.stringContaining('stopped')})),
+            expect(delay(2).then(() => scheduler.dispose())).resolves.toEqual(expect.any(Number)),
+            expect(delay(3).then(() => scheduler.dispose())).resolves.toEqual(expect.any(Number)),
         ]);
     });
 
 
     test('Termination of single request', run(scheduler => {
+        const junkRequest: any = {};
         const spinRequest = createRequestSpin(5000);
         return Promise.all([
             expect(scheduler.scheduleRequest(spinRequest)).rejects.toEqual(expect.objectContaining({ message: expect.stringContaining('Request Terminated')})),
             expect(scheduler.scheduleRequest(createRequestEcho('One'))).resolves.toEqual(expect.objectContaining({ data: 'One' })),
             expect(scheduler.scheduleRequest(createRequestEcho('Two'))).resolves.toEqual(expect.objectContaining({ data: 'Two' })),
-            expect(delay(1).then(() => scheduler.terminateRequest(spinRequest.id)))
+            expect(scheduler.scheduleRequest(junkRequest)).rejects.toEqual(expect.objectContaining({ message: 'Bad Request' })),
+            expect(scheduler.terminateRequest('Bad ID')).rejects.toEqual(expect.objectContaining({ message: 'Unknown Request' })),
+            expect(delay(1).then(() => scheduler.terminateRequest(spinRequest.id))),
         ]);
     }));
 });
