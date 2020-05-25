@@ -37,6 +37,11 @@
   "bugs": {
     "url": "https://github.com/streetsidesoftware/regexp-worker/issues"
   },
+  "files": [
+    "index.js",
+    "lib/**/*.js",
+    "!*.test.js"
+  ],
   "devDependencies": {
     "@types/jest": "^25.2.3",
     "@types/node": "^12.12.41",
