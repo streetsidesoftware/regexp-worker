@@ -9,7 +9,7 @@ describe('Sleep', () => {
         expect(isSleepRequest({ id: createId(), requestType: 'Sleep' })).toBe(true);
     });
 
-    test('echo', async () => {
+    test('Sleep for 5ms', async () => {
         const req = createRequestSleep({ durationMs: 5 });
         const m = await measurePromise(() => procSleep(req));
         const r = m.r;

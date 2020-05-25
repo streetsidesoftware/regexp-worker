@@ -3,10 +3,11 @@ import { Request, Response, isResponse, createRequest, ErrorResponse, isErrorRes
 import { UniqueID } from '../Procedures/uniqueId';
 
 export class Scheduler {
-    private pending: Map<UniqueID, (v: Response) => any>;
+    private pending: Map<UniqueID, (v: Response | Promise<Response>) => any>;
     private requestQueue: Map<UniqueID, PendingRequest>;
     private worker: Worker;
     private currentRequest: UniqueID | undefined;
+    private stopped = false;
     public dispose: () => Promise<number>;
 
     constructor() {
@@ -19,11 +20,24 @@ export class Scheduler {
     }
 
     private _dispose() {
+        if (this.stopped) return Promise.resolve(0);
+        this.stopped = true;
         this.worker.removeAllListeners();
-        return this.worker.terminate();
+        const ret = this.worker.terminate();
+        for (const [uniqueId, resolve] of this.pending) {
+            const request = this.requestQueue.get(uniqueId);
+            resolve(Promise.reject(new ErrorCanceledRequest('Scheduler has been stopped', request?.request.requestType || 'Unknown')))
+        }
+        this.pending.clear()
+        this.requestQueue.clear();
+        this.currentRequest = undefined;
+        return ret;
     }
 
-    public sendRequest<T extends Request, U extends Response>(request: T): Promise<U> {
+    public scheduleRequest<T extends Request, U extends Response>(request: T): Promise<U> {
+        if (this.stopped) {
+            return Promise.reject(new ErrorCanceledRequest('Scheduler has been stopped', request.requestType, request.data))
+        }
         if (this.requestQueue.has(request.id)) {
             return this.requestQueue.get(request.id)!.promise as Promise<U>;
         }
