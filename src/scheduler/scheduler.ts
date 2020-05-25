@@ -2,15 +2,18 @@ import { createWorker, Worker } from '../worker/worker';
 import { Request, Response, isResponse, createRequest, ErrorResponse, isErrorResponse, isRequest  } from '../Procedures/procedure';
 import { UniqueID } from '../Procedures/uniqueId';
 
+const defaultTimeLimitMs = 100;
+
 export class Scheduler {
     private pending: Map<UniqueID, (v: Response | Promise<Response>) => any>;
     private requestQueue: Map<UniqueID, PendingRequest>;
     private worker: Worker;
     private currentRequest: UniqueID | undefined;
+    private timeoutID: NodeJS.Timeout | undefined;
     private stopped = false;
     public dispose: () => Promise<number>;
 
-    constructor() {
+    constructor(public executionTimeLimitMs = defaultTimeLimitMs) {
         this.dispose = () => this._dispose();
         this.worker = createWorker();
         this.worker.on('message', v => this.listener(v))
@@ -19,7 +22,7 @@ export class Scheduler {
         this.currentRequest = undefined;
     }
 
-    public scheduleRequest<T extends Request, U extends Response>(request: T): Promise<U> {
+    public scheduleRequest<T extends Request, U extends Response>(request: T, timeLimitMs = this.executionTimeLimitMs): Promise<U> {
         if (this.stopped) {
             return Promise.reject(new ErrorCanceledRequest('Scheduler has been stopped', request.requestType, request.data))
         }
@@ -33,14 +36,14 @@ export class Scheduler {
             this.pending.set(request.id, v => resolve(v as U));
             this.trigger();
         }).then(r => checkResponse(r, request.data));
-        this.requestQueue.set(request.id, { request, promise })
+        this.requestQueue.set(request.id, { request, promise, timeLimitMs })
         this.trigger()
         return promise;
     }
 
-    public terminateRequest(requestId: UniqueID): Promise<void> {
+    public terminateRequest(requestId: UniqueID, message = 'Request Terminated'): Promise<void> {
         const pRestartWorker = (requestId === this.currentRequest) ? this.restartWorker() : Promise.resolve();
-        return pRestartWorker.then(() => this._terminateRequest(requestId, 'Request Terminated'));
+        return pRestartWorker.then(() => this._terminateRequest(requestId, message));
     }
 
     private _dispose() {
@@ -102,8 +105,13 @@ export class Scheduler {
             if (this.currentRequest) return;
             const req = this.getNextRequest();
             if (!req) return;
-            this.currentRequest = req.request.id;
+            const requestId = req.request.id;
+            this.currentRequest = requestId;
+            this.timeoutID = setTimeout(() => {
+                this.terminateRequest(requestId, 'Request Timeout');
+            }, req.timeLimitMs)
             this.worker.postMessage(req.request);
+
         })
     }
 
@@ -112,6 +120,8 @@ export class Scheduler {
         this.requestQueue.delete(id);
         if (this.currentRequest === id) {
             this.currentRequest = undefined;
+            if (this.timeoutID) clearTimeout(this.timeoutID);
+            this.timeoutID = undefined;
         }
         this.trigger();
     }
@@ -128,14 +138,17 @@ export class Scheduler {
 }
 
 export class ErrorCanceledRequest<T> {
+    readonly timestamp = Date.now();
     constructor(readonly message: string, readonly requestType: string | undefined, readonly data?: T) {}
 }
 
 export class ErrorFailedRequest<T> {
+    readonly timestamp = Date.now();
     constructor(readonly message: string, readonly requestType: string | undefined, readonly data?: T) {}
 }
 
 export class ErrorBadRequest<T> {
+    readonly timestamp = Date.now();
     constructor(readonly message: string, readonly data?: T) {}
 }
 
@@ -155,4 +168,5 @@ function checkResponse<T extends Response, D>(
 interface PendingRequest {
     request: Request;
     promise: Promise<Response>;
+    timeLimitMs: number;
 }
