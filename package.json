@@ -8,6 +8,7 @@
     "lint": "eslint \"src/**/*.ts\"",
     "build": "npm run compile",
     "clean-build": "npm run clean && npm run build",
+    "coverage": "jest --coverage",
     "prepublish": "npm run clean-build",
     "prepublishOnly": "npm run test-all",
     "compile": "tsc -p .",
