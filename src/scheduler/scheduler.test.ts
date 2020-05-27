@@ -5,11 +5,6 @@ import { createRequestSpin } from '../Procedures/procSpin';
 
 describe('Scheduler', () => {
 
-    test('Create', () => {
-        const m = new Scheduler();
-        return expect(m.dispose()).resolves.toBe(0);
-    });
-
     test('Echo', run(async scheduler => {
         const request = Scheduler.createRequest<RequestEcho>('Echo', sampleText());
         const r = await scheduler.scheduleRequest(request);
@@ -75,10 +70,10 @@ describe('Scheduler', () => {
             expect(scheduler.scheduleRequest(createRequestSpin(5000))).rejects.toEqual(expect.objectContaining({ message: expect.stringContaining('stopped')})),
             expect(scheduler.scheduleRequest(createRequestSpin(4000))).rejects.toEqual(expect.objectContaining({ message: expect.stringContaining('stopped')})),
             expect(scheduler.scheduleRequest(createRequestSpin(2000))).rejects.toEqual(expect.objectContaining({ message: expect.stringContaining('stopped')})),
-            expect(delay(1).then(() => scheduler.dispose())).resolves.toEqual(expect.any(Number)),
+            delay(1).then(() => scheduler.dispose()),
             expect(delay(5).then(() => scheduler.scheduleRequest(createRequestEcho('Too Late')))).rejects.toEqual(expect.objectContaining({ message: expect.stringContaining('stopped')})),
-            expect(delay(2).then(() => scheduler.dispose())).resolves.toEqual(expect.any(Number)),
-            expect(delay(3).then(() => scheduler.dispose())).resolves.toEqual(expect.any(Number)),
+            delay(2).then(() => scheduler.dispose()),
+            delay(3).then(() => scheduler.dispose()),
         ]);
     });
 

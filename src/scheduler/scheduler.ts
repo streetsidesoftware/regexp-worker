@@ -12,7 +12,7 @@ export class Scheduler {
     private currentRequest: UniqueID | undefined;
     private timeoutID: NodeJS.Timeout | undefined;
     private stopped = false;
-    public dispose: () => Promise<number>;
+    public dispose: () => void;
 
     constructor(public executionTimeLimitMs = defaultTimeLimitMs) {
         this.dispose = () => this._dispose();
@@ -47,18 +47,17 @@ export class Scheduler {
         return pRestartWorker.then(() => this._terminateRequest(requestId, message));
     }
 
-    private _dispose() {
-        if (this.stopped) return Promise.resolve(0);
+    private _dispose(): void {
+        if (this.stopped) return;
         this.stopped = true;
         this.worker.removeAllListeners();
-        const ret = this.worker.terminate();
+        this.worker.terminate(); // Terminate, but do not wait, can cause hang.
         for (const requestId of this.requestQueue.keys()) {
             this._terminateRequest(requestId, 'Scheduler has been stopped');
         }
         this.pending.clear()
         this.requestQueue.clear();
         this.currentRequest = undefined;
-        return ret;
     }
 
     private _terminateRequest(requestId: UniqueID, message: string): Promise<void> {
