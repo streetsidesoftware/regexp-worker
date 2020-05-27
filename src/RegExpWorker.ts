@@ -1,6 +1,7 @@
-import { ExecRegExpResult } from './helpers/evaluateRegExp';
+import { ExecRegExpResult, ExecRegExpMatrixResult } from './helpers/evaluateRegExp';
 import { Scheduler } from './scheduler';
 import { createRequestExecRegExp } from './Procedures/procExecRegExp';
+import { createRequestExecRegExpMatrix } from './Procedures/procExecRegExpMatrix';
 
 export { ExecRegExpResult, toRegExp } from './helpers/evaluateRegExp';
 
@@ -14,6 +15,11 @@ export class RegExpWorker {
 
     public execRegExp(regExp: RegExp, text: string, timeLimitMs?: number): Promise<ExecRegExpResult> {
         const req = createRequestExecRegExp({ regexp: regExp, text });
+        return this.scheduler.scheduleRequest(req, timeLimitMs).then(r => r.data);
+    }
+
+    public execRegExpMatrix(regExpArray: RegExp[], textArray: string[], timeLimitMs?: number): Promise<ExecRegExpMatrixResult> {
+        const req = createRequestExecRegExpMatrix({ regExpArray, textArray });
         return this.scheduler.scheduleRequest(req, timeLimitMs).then(r => r.data);
     }
 
