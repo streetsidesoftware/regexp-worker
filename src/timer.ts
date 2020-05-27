@@ -14,6 +14,10 @@ export function measureExecution<T>(fn: () => T): MeasureResult<T> {
     }
 }
 
+export function elapsedTimeMsFrom(relativeTo: [number, number]): number {
+    return hrTimeToMs(process.hrtime(relativeTo));
+}
+
 export function hrTimeToMs(hrTime: [number, number]): number {
     return hrTime[0] * 1.0e-3 + hrTime[1] * 1.0e-6
 }
