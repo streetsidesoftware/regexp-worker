@@ -23,6 +23,9 @@ export class RegExpWorker {
         return this.scheduler.scheduleRequest(req, timeLimitMs).then(r => r.data);
     }
 
+    /**
+     * Shuts down the background Worker and rejects any pending scheduled items.
+     */
     private _dispose(): Promise<void> {
         return this.scheduler.dispose().then();
     }
@@ -34,4 +37,14 @@ export class RegExpWorker {
     get timeout(): number {
         return this.scheduler.executionTimeLimitMs;
     }
+}
+
+export function execRegExpOnWorker(regExp: RegExp, text: string, timeLimitMs?: number): Promise<ExecRegExpResult> {
+    const worker = new RegExpWorker();
+    return worker.execRegExp(regExp, text, timeLimitMs).finally(worker.dispose);
+}
+
+export function execRegExpMatrixOnWorker(regExpArray: RegExp[], textArray: string[], timeLimitMs?: number): Promise<ExecRegExpMatrixResult> {
+    const worker = new RegExpWorker();
+    return worker.execRegExpMatrix(regExpArray, textArray, timeLimitMs).finally(worker.dispose);
 }

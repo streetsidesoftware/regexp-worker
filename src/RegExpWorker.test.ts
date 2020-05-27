@@ -1,4 +1,4 @@
-import { RegExpWorker } from './RegExpWorker';
+import { RegExpWorker, execRegExpOnWorker, execRegExpMatrixOnWorker } from './RegExpWorker';
 import 'jest-extended';
 
 // cspell:ignore hellothere
@@ -43,6 +43,21 @@ describe('RegExpWorker', () => {
             }));
         })
     );
+
+    test('execRegExpOnWorker', async () => {
+        const response = await execRegExpOnWorker(/\b\w+/g, 'Good Morning')
+        expect(response.matches.map(m => m[0])).toEqual(['Good', 'Morning'])
+    });
+
+    test('execRegExpOnWorker on word boundaries', async () => {
+        const response = await execRegExpOnWorker(/\b/g, 'Good Morning');
+        expect(response.matches.map(m => m.index)).toEqual([0, 4, 5, 12])
+    });
+
+    test('execRegExpMatrixOnWorker', async () => {
+        const response = await execRegExpMatrixOnWorker([/\b\w+/g], ['Good Morning']);
+        expect(response.matrix[0].results[0].matches.map(m => m[0])).toEqual(['Good', 'Morning'])
+    });
 });
 
 function run(fn: (w: RegExpWorker) => Promise<any>, w = new RegExpWorker()): () => Promise<void> {
