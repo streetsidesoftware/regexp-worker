@@ -1,38 +1,27 @@
 const useTSJest = !process.env['TEST_JS'];
-
+let custom = {};
 if (useTSJest) {
     console.log('test-ts');
-    module.exports = {
-        roots: [
-            './src'
-        ],
+    custom = {
+        roots: ['./src'],
         transform: {
             '^.+\\.tsx?$': 'ts-jest'
         },
-        testRegex: '(/__tests__/.*|(\\.|/)(test|spec|perf))\\.tsx?$',
-        coverageReporters: [ 'json', 'lcov', 'text', 'clover', 'html' ],
-        moduleFileExtensions: [
-            'ts',
-            'tsx',
-            'js',
-            'jsx',
-            'json',
-            'node'
-        ],
     }
 } else {
     console.log('test-js');
-    module.exports = {
-        roots: [
-            './lib'
-        ],
-        testRegex: '(/__tests__/.*|(\\.|/)(test|spec|perf))\\.jsx?$',
-        moduleFileExtensions: [
-            'js',
-            'jsx',
-            'ts',
-            'tsx',
-        ],
-        coverageReporters: [ 'json', 'lcov', 'text', 'clover', 'html' ]
-    }
+    custom = { roots: ['./lib'], }
+}
+
+module.exports = {
+    testRegex: '(/__tests__/.*|(\\.|/)(test|spec|perf))\\.[tj]sx?$',
+    moduleFileExtensions: [
+        'js',
+        'jsx',
+        'ts',
+        'tsx',
+    ],
+    coverageReporters: [ 'json', 'lcov', 'text', 'clover', 'html' ],
+    setupFilesAfterEnv: ['jest-extended'],
+    ...custom,
 }
