@@ -42,7 +42,7 @@ const x2 = 'hello';
             matrix: expect.arrayContaining([]),
         }));
         const result = execRegExpMatrix(
-            [/\bt\w+/g, /\d+/g, /\bimport.*/],
+            [/\bt\w+/g, /\d+/g, /\execRegExpMatrix.*/],
             [ text, code, ]
         );
         expect(result.elapsedTimeMs).toBeGreaterThan(0);
