@@ -7,7 +7,7 @@ export { ExecRegExpResult, toRegExp } from './helpers/evaluateRegExp';
 
 export class RegExpWorker {
     private scheduler: Scheduler;
-    public dispose: () => void = () => this._dispose();
+    public dispose: () => Promise<void> = () => this._dispose();
 
     constructor(timeoutMs?: number) {
         this.scheduler = new Scheduler(timeoutMs);
@@ -26,8 +26,8 @@ export class RegExpWorker {
     /**
      * Shuts down the background Worker and rejects any pending scheduled items.
      */
-    private _dispose(): void {
-        this.scheduler.dispose();
+    private _dispose(): Promise<void> {
+        return this.scheduler.dispose().then();
     }
 
     set timeout(timeoutMs: number) {
