@@ -20,6 +20,7 @@
     "test-all": "npm run test-js && npm run test-ts",
     "test": "jest"
   },
+  "engines": { "node": ">= 10.5.0" },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/streetsidesoftware/regexp-worker.git"
