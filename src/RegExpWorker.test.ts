@@ -36,7 +36,7 @@ describe('RegExpWorker', () => {
     test(
         'very slow regexp',
         run((worker) => {
-            const r = worker.execRegExp(/(x+x+)+y/, 'x'.repeat(50), 5);
+            const r = worker.execRegExp(/(x+x+)+y/, 'x'.repeat(30), 5);
             return expect(r).rejects.toEqual(expect.objectContaining({
                 'elapsedTimeMs': expect.toBeWithin(3, 50),
                 'message': expect.stringContaining('Request Timeout'),
