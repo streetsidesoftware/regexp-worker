@@ -1,4 +1,4 @@
-import { createWorker, Worker } from '../worker/worker';
+import { createWorker, Worker } from '../worker';
 import { Request, Response, isResponse, createRequest, ErrorResponse, isErrorResponse, isRequest  } from '../Procedures/procedure';
 import { UniqueID } from '../Procedures/uniqueId';
 import { elapsedTimeMsFrom } from '../timer';
