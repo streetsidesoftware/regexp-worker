@@ -1,8 +1,9 @@
-import { createWorker, Worker } from '../worker/worker';
+import { createWorker, Worker } from '../worker';
 import { Request, Response, isResponse, createRequest, ErrorResponse, isErrorResponse, isRequest  } from '../Procedures/procedure';
 import { UniqueID } from '../Procedures/uniqueId';
+import { elapsedTimeMsFrom } from '../timer';
 
-const defaultTimeLimitMs = 100;
+const defaultTimeLimitMs = 1000;
 
 export class Scheduler {
     private pending: Map<UniqueID, (v: Response | Promise<Response>) => any>;
@@ -36,7 +37,7 @@ export class Scheduler {
             this.pending.set(request.id, v => resolve(v as U));
             this.trigger();
         }).then(r => checkResponse(r, request.data));
-        this.requestQueue.set(request.id, { request, promise, timeLimitMs })
+        this.requestQueue.set(request.id, { request, promise, timeLimitMs, startTime: undefined })
         this.trigger()
         return promise;
     }
@@ -67,29 +68,31 @@ export class Scheduler {
             return Promise.reject(new ErrorBadRequest('Unknown Request'))
         }
         const request = this.requestQueue.get(requestId);
-        resolve(Promise.reject(new ErrorCanceledRequest(message, request?.request.requestType || 'Unknown')));
+        const elapsedTime = request?.startTime ? elapsedTimeMsFrom(request.startTime) : 0;
+        resolve(Promise.reject(new ErrorCanceledRequest(message, request?.request.requestType || 'Unknown', elapsedTime)));
         this.cleanupRequest(requestId);
         return Promise.resolve();
     }
 
     private restartWorker(): Promise<void> {
-        return this.stopWorker()
-        .then(() => {
-            this.worker = createWorker();
-            this.worker.on('message', v => this.listener(v))
-        });
-    }
+        // Do not wait on the worker, it can take a long time to stop.
+        this.stopWorker(this.worker);
+        this.worker = createWorker();
+        this.worker.on('message', v => this.listener(v))
+        return Promise.resolve();
+   }
 
-    private stopWorker(): Promise<void> {
-        if (!this.worker) return Promise.resolve();
-        this.worker.removeAllListeners();
-        return this.worker.terminate().then();
+    private stopWorker(worker: Worker): Promise<void> {
+        if (!worker) return Promise.resolve();
+        worker.removeAllListeners();
+        return worker.terminate().then();
     }
 
     private listener(m: any) {
         if (isResponse(m)) {
             const resolveFn = this.pending.get(m.id);
             this.cleanupRequest(m.id);
+            // istanbul ignore else
             if (resolveFn) {
                 resolveFn(m);
                 return;
@@ -105,6 +108,7 @@ export class Scheduler {
             if (this.currentRequest) return;
             const req = this.getNextRequest();
             if (!req) return;
+            req.startTime = process.hrtime();
             const requestId = req.request.id;
             this.currentRequest = requestId;
             this.timeoutID = setTimeout(() => {
@@ -118,6 +122,7 @@ export class Scheduler {
     private cleanupRequest(id: UniqueID) {
         this.pending.delete(id);
         this.requestQueue.delete(id);
+        // istanbul ignore else
         if (this.currentRequest === id) {
             this.currentRequest = undefined;
             if (this.timeoutID) clearTimeout(this.timeoutID);
@@ -139,7 +144,11 @@ export class Scheduler {
 
 export class ErrorCanceledRequest<T> {
     readonly timestamp = Date.now();
-    constructor(readonly message: string, readonly requestType: string | undefined, readonly data?: T) {}
+    constructor(
+        readonly message: string,
+        readonly requestType: string | undefined,
+        readonly elapsedTimeMs: number,
+        readonly data?: T) {}
 }
 
 export class ErrorFailedRequest<T> {
@@ -169,4 +178,5 @@ interface PendingRequest {
     request: Request;
     promise: Promise<Response>;
     timeLimitMs: number;
+    startTime: [number, number] | undefined;
 }

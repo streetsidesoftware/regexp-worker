@@ -4,7 +4,7 @@
   "description": "Runs regular expressions on a background thread.",
   "main": "index.js",
   "scripts": {
-    "clean": "rimraf lib",
+    "clean": "rimraf lib && rimraf coverage",
     "lint": "eslint \"src/**/*.ts\"",
     "build": "npm run compile",
     "clean-build": "npm run clean && npm run build",
@@ -16,9 +16,12 @@
     "tsc": "tsc -p .",
     "test-watch": "jest --watch",
     "test-js": "cross-env TEST_JS=true jest",
-    "test-ts": "cross-env TEST_TS=true jest",
+    "test-ts": "cross-env TEST_TS=true jest --useStderr --runInBand --verbose",
     "test-all": "npm run test-js && npm run test-ts",
     "test": "jest"
+  },
+  "engines": {
+    "node": ">= 12.0.0"
   },
   "repository": {
     "type": "git",
@@ -37,14 +40,22 @@
   "bugs": {
     "url": "https://github.com/streetsidesoftware/regexp-worker/issues"
   },
+  "files": [
+    "index.js",
+    "lib/**/*.js",
+    "!*.test.js"
+  ],
   "devDependencies": {
     "@types/jest": "^25.2.3",
     "@types/node": "^12.12.41",
     "@typescript-eslint/eslint-plugin": "^3.0.0",
     "@typescript-eslint/parser": "^3.0.0",
+    "conventional-changelog": "^3.1.21",
     "cross-env": "^7.0.2",
     "eslint": "^7.1.0",
     "jest": "^26.0.1",
+    "jest-extended": "^0.11.5",
+    "lorem-ipsum": "^2.0.3",
     "prettier": "^2.0.5",
     "rimraf": "^3.0.2",
     "ts-jest": "^26.0.0",

@@ -1,4 +1,6 @@
-import { execRegExp, ExecRegExpResult, toRegExp } from './evaluateRegExp';
+import { execRegExp, ExecRegExpResult, toRegExp, execRegExpMatrix } from './evaluateRegExp';
+import * as fs from 'fs';
+import * as Path from 'path';
 
 describe('EvaluateRegExp', () => {
     const text = `
@@ -11,6 +13,7 @@ Some more cool text.
 Numbers: 1, 2, 3, 4, 1000, -55.0, 1.34e2
 const x2 = 'hello';
 `
+    const code = fs.readFileSync(Path.join(__filename), 'utf8');
     const w = (result: ExecRegExpResult) => matchesToText(result.matches);
 
     test('evaluateRegExp', () => {
@@ -32,6 +35,23 @@ const x2 = 'hello';
         expect(toRegExp('hello*')).toEqual(/hello*/);
     });
 
+    test('execRegExpMatrix', () => {
+        const empty = execRegExpMatrix([], []);
+        expect(empty).toEqual(expect.objectContaining({
+            elapsedTimeMs: expect.any(Number),
+            matrix: expect.arrayContaining([]),
+        }));
+        const result = execRegExpMatrix(
+            [/\bt\w+/g, /\d+/g, /\execRegExpMatrix.*/],
+            [ text, code, ]
+        );
+        expect(result.elapsedTimeMs).toBeGreaterThan(0);
+        expect(result.matrix).toEqual(expect.any(Array));
+        expect(result.matrix).toHaveLength(3);
+        expect(result.matrix[0].regExp).toEqual(/\bt\w+/g)
+        expect(result.matrix[2].results).toHaveLength(2)
+        expect(result.matrix[2].results[1].matches).toHaveLength(1)
+    });
 });
 
 function notEmpty<T>(v: T | null | undefined | '' | 0): v is T {
