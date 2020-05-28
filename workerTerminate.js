@@ -1,8 +1,9 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { isMainThread, Worker } = require('worker_threads')
 
+// a Very costly RegExp
 const regEx = /(x+x+)+y+/g;
-const sample = 'x'.repeat(30) + '';
+const sample = 'x'.repeat(50) + '';
 
 if (!isMainThread) {
     console.log('Worker: Starting')
@@ -21,6 +22,7 @@ if (isMainThread) {
         worker.terminate().then(i => {
             console.log('Terminated with ' + i)
             console.log(`After ${elapsedTimeMsFrom(start)}ms`)
+            console.log('Successfully Terminated!')
             process.exit(0)
         })
         setTimeout(() => {
