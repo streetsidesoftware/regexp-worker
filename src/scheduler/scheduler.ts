@@ -75,17 +75,17 @@ export class Scheduler {
     }
 
     private restartWorker(): Promise<void> {
-        return this.stopWorker()
-        .then(() => {
-            this.worker = createWorker();
-            this.worker.on('message', v => this.listener(v))
-        });
-    }
+        // Do not wait on the worker, it can take a long time to stop.
+        this.stopWorker(this.worker);
+        this.worker = createWorker();
+        this.worker.on('message', v => this.listener(v))
+        return Promise.resolve();
+   }
 
-    private stopWorker(): Promise<void> {
-        if (!this.worker) return Promise.resolve();
-        this.worker.removeAllListeners();
-        return this.worker.terminate().then();
+    private stopWorker(worker: Worker): Promise<void> {
+        if (!worker) return Promise.resolve();
+        worker.removeAllListeners();
+        return worker.terminate().then();
     }
 
     private listener(m: any) {
