@@ -16,7 +16,7 @@
     "tsc": "tsc -p .",
     "test-watch": "jest --watch",
     "test-js": "cross-env TEST_JS=true jest",
-    "test-ts": "cross-env TEST_TS=true jest --useStderr --runInBand --debug",
+    "test-ts": "cross-env TEST_TS=true jest --useStderr --runInBand --verbose",
     "test-all": "npm run test-js && npm run test-ts",
     "test": "jest"
   },
