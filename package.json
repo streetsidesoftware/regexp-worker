@@ -4,7 +4,7 @@
   "description": "Runs regular expressions on a background thread.",
   "main": "index.js",
   "scripts": {
-    "clean": "rimraf lib",
+    "clean": "rimraf lib && rimraf coverage",
     "lint": "eslint \"src/**/*.ts\"",
     "build": "npm run compile",
     "clean-build": "npm run clean && npm run build",
