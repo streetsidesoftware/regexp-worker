@@ -21,7 +21,7 @@ if (isMainThread) {
         worker.terminate().then(i => {
             console.log('Terminated with ' + i)
             console.log(`After ${elapsedTimeMsFrom(start)}ms`)
-            process.exit(i || 0)
+            process.exit(0)
         })
         setTimeout(() => {
             console.log('Hard Exit')
