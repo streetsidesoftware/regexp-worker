@@ -3,7 +3,7 @@ import { Request, Response, isResponse, createRequest, ErrorResponse, isErrorRes
 import { UniqueID } from '../Procedures/uniqueId';
 import { elapsedTimeMsFrom } from '../timer';
 
-const defaultTimeLimitMs = 100;
+const defaultTimeLimitMs = 1000;
 
 export class Scheduler {
     private pending: Map<UniqueID, (v: Response | Promise<Response>) => any>;
