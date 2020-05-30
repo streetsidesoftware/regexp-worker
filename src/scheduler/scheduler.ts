@@ -4,20 +4,19 @@ import { UniqueID } from '../Procedures/uniqueId';
 import { elapsedTimeMsFrom } from '../timer';
 
 const defaultTimeLimitMs = 1000;
+const defaultSleepAfter = 2000;
 
 export class Scheduler {
     private pending: Map<UniqueID, (v: Response | Promise<Response>) => any>;
     private requestQueue: Map<UniqueID, PendingRequest>;
-    private worker: Worker;
+    private _worker: Worker | undefined;
     private currentRequest: UniqueID | undefined;
     private timeoutID: NodeJS.Timeout | undefined;
     private stopped = false;
-    public dispose: () => Promise<number>;
+    public dispose: () => Promise<void>;
 
     constructor(public executionTimeLimitMs = defaultTimeLimitMs) {
         this.dispose = () => this._dispose();
-        this.worker = createWorker();
-        this.worker.on('message', v => this.listener(v))
         this.pending = new Map();
         this.requestQueue = new Map();
         this.currentRequest = undefined;
@@ -27,11 +26,11 @@ export class Scheduler {
         if (this.stopped) {
             return Promise.reject(new ErrorCanceledRequest('Scheduler has been stopped', request.requestType, request.data))
         }
-        if (this.requestQueue.has(request.id)) {
-            return this.requestQueue.get(request.id)!.promise as Promise<U>;
-        }
         if (!isRequest(request)) {
             return Promise.reject(new ErrorBadRequest('Bad Request', request))
+        }
+        if (this.requestQueue.has(request.id)) {
+            return this.requestQueue.get(request.id)!.promise as Promise<U>;
         }
         const promise = new Promise<U>((resolve) => {
             this.pending.set(request.id, v => resolve(v as U));
@@ -42,18 +41,12 @@ export class Scheduler {
         return promise;
     }
 
-    public terminateRequest(requestId: UniqueID, message = 'Request Terminated'): Promise<void> {
-        const pRestartWorker = (requestId === this.currentRequest) ? this.restartWorker() : Promise.resolve();
-        return pRestartWorker.then(() => this._terminateRequest(requestId, message));
-    }
-
     private _dispose() {
-        if (this.stopped) return Promise.resolve(0);
+        if (this.stopped) return Promise.resolve();
         this.stopped = true;
-        this.worker.removeAllListeners();
-        const ret = this.worker.terminate();
+        const ret = this.stopWorker();
         for (const requestId of this.requestQueue.keys()) {
-            this._terminateRequest(requestId, 'Scheduler has been stopped');
+            this.terminateRequest(requestId, 'Scheduler has been stopped');
         }
         this.pending.clear()
         this.requestQueue.clear();
@@ -61,7 +54,8 @@ export class Scheduler {
         return ret;
     }
 
-    private _terminateRequest(requestId: UniqueID, message: string): Promise<void> {
+    public terminateRequest(requestId: UniqueID, message = 'Request Terminated'): Promise<void> {
+        if (requestId === this.currentRequest) this.stopWorker();
         const resolve = this.pending.get(requestId);
         if (!resolve) {
             this.cleanupRequest(requestId);
@@ -74,18 +68,12 @@ export class Scheduler {
         return Promise.resolve();
     }
 
-    private restartWorker(): Promise<void> {
-        // Do not wait on the worker, it can take a long time to stop.
-        this.stopWorker(this.worker);
-        this.worker = createWorker();
-        this.worker.on('message', v => this.listener(v))
-        return Promise.resolve();
-   }
-
-    private stopWorker(worker: Worker): Promise<void> {
-        if (!worker) return Promise.resolve();
-        worker.removeAllListeners();
-        return worker.terminate().then();
+    private stopWorker(): Promise<void> {
+        if (!this._worker) return Promise.resolve();
+        this._worker.removeAllListeners();
+        const p = this._worker.terminate().then(() => {});
+        this._worker = undefined;
+        return p;
     }
 
     private listener(m: any) {
@@ -105,17 +93,19 @@ export class Scheduler {
         if (this.stopped || this.currentRequest) return;
 
         setImmediate(() => {
-            if (this.currentRequest) return;
+            if (this.stopped || this.currentRequest) return;
             const req = this.getNextRequest();
-            if (!req) return;
+            if (!req) {
+                // Nothing to do, stop the worker
+                // This helps prevent shutdown issues if the app forgets to call dispose()
+                this.scheduleTimeout(() => this.stopWorker(), defaultSleepAfter);
+                return;
+            }
             req.startTime = process.hrtime();
             const requestId = req.request.id;
             this.currentRequest = requestId;
-            this.timeoutID = setTimeout(() => {
-                this.terminateRequest(requestId, 'Request Timeout');
-            }, req.timeLimitMs)
+            this.scheduleTimeout(() => this.terminateRequest(requestId, 'Request Timeout'), req.timeLimitMs)
             this.worker.postMessage(req.request);
-
         })
     }
 
@@ -131,6 +121,11 @@ export class Scheduler {
         this.trigger();
     }
 
+    private scheduleTimeout(fn: () => any, delayMs: number) {
+        if (this.timeoutID) clearTimeout(this.timeoutID);
+        this.timeoutID = setTimeout(fn, delayMs);
+    }
+
     private getNextRequest(): PendingRequest | undefined {
         const next = this.requestQueue.entries().next();
         if (next.done) return undefined;
@@ -139,6 +134,15 @@ export class Scheduler {
 
     public static createRequest<T extends Request>(requestType: T['requestType'], data: T['data']): T {
         return createRequest<T>(requestType, data);
+    }
+
+    private get worker(): Worker {
+        if (!this._worker) {
+            this._worker = createWorker();
+            this._worker.on('message', v => this.listener(v))
+        }
+
+        return this._worker;
     }
 }
 

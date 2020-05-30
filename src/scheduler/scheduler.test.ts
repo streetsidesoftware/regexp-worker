@@ -6,8 +6,13 @@ import { createRequestSpin } from '../Procedures/procSpin';
 describe('Scheduler', () => {
 
     test('Create', () => {
-        const m = new Scheduler();
-        return expect(m.dispose()).resolves.toBe(0);
+        const s = new Scheduler();
+        return expect(s.dispose()).resolves.toBe(undefined);
+    });
+
+    test('Create forget to dispose', () => {
+        const s = new Scheduler();
+        expect(s).toBeDefined();
     });
 
     test('Echo', run(async scheduler => {
@@ -75,10 +80,10 @@ describe('Scheduler', () => {
             expect(scheduler.scheduleRequest(createRequestSpin(5000))).rejects.toEqual(expect.objectContaining({ message: expect.stringContaining('stopped')})),
             expect(scheduler.scheduleRequest(createRequestSpin(4000))).rejects.toEqual(expect.objectContaining({ message: expect.stringContaining('stopped')})),
             expect(scheduler.scheduleRequest(createRequestSpin(2000))).rejects.toEqual(expect.objectContaining({ message: expect.stringContaining('stopped')})),
-            expect(delay(1).then(() => scheduler.dispose())).resolves.toEqual(expect.any(Number)),
+            expect(delay(1).then(() => scheduler.dispose())).resolves.toBeUndefined(),
             expect(delay(5).then(() => scheduler.scheduleRequest(createRequestEcho('Too Late')))).rejects.toEqual(expect.objectContaining({ message: expect.stringContaining('stopped')})),
-            expect(delay(2).then(() => scheduler.dispose())).resolves.toEqual(expect.any(Number)),
-            expect(delay(3).then(() => scheduler.dispose())).resolves.toEqual(expect.any(Number)),
+            expect(delay(2).then(() => scheduler.dispose())).resolves.toBeUndefined(),
+            expect(delay(3).then(() => scheduler.dispose())).resolves.toBeUndefined(),
         ]);
     });
 
