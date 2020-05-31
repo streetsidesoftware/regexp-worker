@@ -58,11 +58,16 @@ export class WorkerMessageHandler {
         const request = value;
 
         for (const proc of procedures) {
-            const response = proc(request);
-            if (response) {
-                Promise.resolve(response)
-                .catch(reason => createErrorResponse(request, reason.toString()))
-                .then(r => this.post(r));
+            try {
+                const response = proc(request);
+                if (response !== undefined) {
+                    Promise.resolve(response)
+                    .catch(reason => createErrorResponse(request, reason.toString(), reason))
+                    .then(r => this.post(r));
+                    return;
+                }
+            } catch (e) {
+                this.post(createErrorResponse(request, e.message || e.toString(), e))
                 return;
             }
         }

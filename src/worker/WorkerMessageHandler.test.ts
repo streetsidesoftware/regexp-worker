@@ -3,6 +3,7 @@ import { createHandler, LogLevel } from './WorkerMessageHandler';
 import { createRequestEcho } from '../Procedures/procEcho';
 import { createRequest } from '../Procedures/procedure';
 import { NullID } from '../Procedures/uniqueId';
+import { createRequestGenError } from '../Procedures/procGenError';
 
 const consoleLog = console.log = jest.fn();
 const consoleWarn = console.warn = jest.fn();
@@ -33,6 +34,18 @@ describe('WorkerMessageHandler', () => {
         const handler = createHandler(port);
         port.sendMessage(createRequestEcho('Hello'));
         const response = await messagesIterator.next();
+        expect(response.value).toEqual(expect.objectContaining({
+            data: 'Hello'
+        }))
+        handler.dispose();
+        port.close();
+    });
+
+    test('Echo using Iterator', async () => {
+        const port = mockMessagePort();
+        const handler = createHandler(port);
+        port.sendMessage(createRequestEcho('Hello'));
+        const response = await port.next();
         expect(response.value).toEqual(expect.objectContaining({
             data: 'Hello'
         }))
@@ -82,10 +95,40 @@ describe('WorkerMessageHandler', () => {
         expect(consoleWarn).not.toBeCalled();
         expect(consoleError).toBeCalled();
     });
+
+    test('Generating Errors', async () => {
+        const port = mockMessagePort();
+        const handler = createHandler(port);
+
+        const requestThrow = createRequestGenError('Throw');
+        port.sendMessage(requestThrow);
+        const responseThrow = await port.next();
+        expect(responseThrow.value).toEqual(expect.objectContaining({
+            id: requestThrow.id,
+            responseType: 'Error',
+            data: expect.objectContaining({
+                message: 'Error Thrown'
+            })
+        }))
+
+        const requestReject = createRequestGenError('reject');
+        port.sendMessage(requestReject);
+        const responseReject = await port.next();
+        expect(responseReject.value).toEqual(expect.objectContaining({
+            id: requestReject.id,
+            responseType: 'Error',
+            data: expect.objectContaining({
+                message: 'Error: Reject'
+            })
+        }))
+
+        handler.dispose();
+        port.close();
+    });
 });
 
 
-interface AsyncMessagePort extends MessagePort {
+interface AsyncMessagePort extends MessagePort, AsyncIterator<any> {
     messages: any[];
     messagesAsync: AsyncIterable<any>;
     registeredCallbacks: Map<string, Set<(value?: any) => void>>;
@@ -141,6 +184,9 @@ function mockMessagePort(): AsyncMessagePort {
     const mockOn = jest.fn(on) as AsyncMessagePort['on'];
     const mockOff = jest.fn(off) as AsyncMessagePort['off'];
 
+    const iterator = messagesAsync[Symbol.asyncIterator]();
+    const next = () => iterator.next();
+
     const port: AsyncMessagePort = {
         messages,
         messagesAsync,
@@ -149,6 +195,7 @@ function mockMessagePort(): AsyncMessagePort {
         postMessage: jest.fn(postMessage) as AsyncMessagePort['postMessage'],
         on: mockOn,
         off: mockOff,
+        next,
         close,
     };
 
