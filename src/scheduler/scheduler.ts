@@ -4,7 +4,7 @@ import { UniqueID } from '../Procedures/uniqueId';
 import { elapsedTimeMsFrom } from '../timer';
 
 const defaultTimeLimitMs = 1000;
-const defaultSleepAfter = 2000;
+const defaultSleepAfter = 200;
 
 export class Scheduler {
     private pending: Map<UniqueID, (v: Response | Promise<Response>) => any>;
