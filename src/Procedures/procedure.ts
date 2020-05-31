@@ -48,6 +48,7 @@ export function createResponse<T extends Response>(id: UniqueID, responseType: T
 export interface ErrorData {
     requestType: RequestType | undefined;
     message: string;
+    error: Error | undefined;
 }
 
 export interface ErrorResponse extends Response {
@@ -58,20 +59,20 @@ export interface ErrorResponse extends Response {
 export const responseTypeError: ErrorResponse['responseType'] = 'Error';
 
 
-export function createErrorResponse(request: Request | any, message: string): ErrorResponse {
+export function createErrorResponse(request: Request | any, message: string, error?: Error): ErrorResponse {
     if (!isRequest(request)) {
-        if (!isRequest(request)) {
-            return createResponse(request?.id || NullID, responseTypeError, {
-                requestType: request?.requestType,
-                message
-            });
-        }
+        return createResponse(request?.id || NullID, responseTypeError, {
+            requestType: request?.requestType,
+            message,
+            error,
+        });
     }
 
     const { id, requestType } = request;
     return createResponse(id, responseTypeError, {
         requestType,
-        message
+        message,
+        error
     });
 }
 

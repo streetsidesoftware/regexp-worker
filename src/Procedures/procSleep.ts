@@ -44,5 +44,5 @@ export function createResponseSleep(request: RequestSleep, data: ResponseSleep['
 }
 
 function isValid(request: RequestSleep): boolean {
-    return !!(request.data && request.data.durationMs);
+    return !!(request.data && typeof request.data.durationMs === 'number');
 }

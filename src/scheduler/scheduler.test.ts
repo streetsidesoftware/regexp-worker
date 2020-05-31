@@ -2,12 +2,19 @@ import { Scheduler, ErrorFailedRequest } from './scheduler';
 import { RequestEcho, createRequestEcho } from '../Procedures/procEcho';
 import { createRequestSleep } from '../Procedures/procSleep';
 import { createRequestSpin } from '../Procedures/procSpin';
+import { Response } from '../Procedures/procedure'
+import { createRequestGenError } from '../Procedures/procGenError';
 
 describe('Scheduler', () => {
 
     test('Create', () => {
-        const m = new Scheduler();
-        return expect(m.dispose()).resolves.toBe(0);
+        const s = new Scheduler();
+        return expect(s.dispose()).resolves.toBe(undefined);
+    });
+
+    test('Create forget to dispose', () => {
+        const s = new Scheduler();
+        expect(s).toBeDefined();
     });
 
     test('Echo', run(async scheduler => {
@@ -34,6 +41,25 @@ describe('Scheduler', () => {
             scheduler.scheduleRequest(createRequestEcho('Three')),
             scheduler.scheduleRequest(createRequestEcho('Four')),
         ]);
+        const timestamps = results.map(v => v.timestamp);
+        timestamps.reduce((a, n) => {
+            expect(n).toBeGreaterThanOrEqual(a)
+            return n;
+        }, 0);
+    }));
+
+    test('Requests with time in between requests.', run(async scheduler => {
+        const requests: Promise<Response>[] = [];
+        requests.push(scheduler.scheduleRequest(createRequestEcho('One')))
+        await delay(100)
+        requests.push(scheduler.scheduleRequest(createRequestEcho('Two')))
+        await delay(5);
+        requests.push(scheduler.scheduleRequest(createRequestEcho('Three')))
+        await delay(10);
+        requests.push(scheduler.scheduleRequest(createRequestEcho('Four')))
+        await delay(10);
+
+        const results = await Promise.all(requests);
         const timestamps = results.map(v => v.timestamp);
         timestamps.reduce((a, n) => {
             expect(n).toBeGreaterThanOrEqual(a)
@@ -75,10 +101,10 @@ describe('Scheduler', () => {
             expect(scheduler.scheduleRequest(createRequestSpin(5000))).rejects.toEqual(expect.objectContaining({ message: expect.stringContaining('stopped')})),
             expect(scheduler.scheduleRequest(createRequestSpin(4000))).rejects.toEqual(expect.objectContaining({ message: expect.stringContaining('stopped')})),
             expect(scheduler.scheduleRequest(createRequestSpin(2000))).rejects.toEqual(expect.objectContaining({ message: expect.stringContaining('stopped')})),
-            expect(delay(1).then(() => scheduler.dispose())).resolves.toEqual(expect.any(Number)),
+            expect(delay(1).then(() => scheduler.dispose())).resolves.toBeUndefined(),
             expect(delay(5).then(() => scheduler.scheduleRequest(createRequestEcho('Too Late')))).rejects.toEqual(expect.objectContaining({ message: expect.stringContaining('stopped')})),
-            expect(delay(2).then(() => scheduler.dispose())).resolves.toEqual(expect.any(Number)),
-            expect(delay(3).then(() => scheduler.dispose())).resolves.toEqual(expect.any(Number)),
+            expect(delay(2).then(() => scheduler.dispose())).resolves.toBeUndefined(),
+            expect(delay(3).then(() => scheduler.dispose())).resolves.toBeUndefined(),
         ]);
     });
 
@@ -104,6 +130,16 @@ describe('Scheduler', () => {
             expect(scheduler.scheduleRequest(spinRequest, 5)).rejects.toEqual(expect.objectContaining({ message: expect.stringContaining('Request Timeout')})),
             expect(scheduler.scheduleRequest(createRequestEcho('Three'))).resolves.toEqual(expect.objectContaining({ data: 'Three' })),
         ]);
+    }));
+
+    test('Errors', run(async scheduler => {
+       const errorThrow = await scheduler.scheduleRequest(createRequestGenError('Throw')).catch(e => e);
+       expect(errorThrow).toEqual(expect.objectContaining({
+            message: 'Error Thrown',
+            data: 'Throw',
+       }));
+       await expect(scheduler.scheduleRequest(createRequestGenError('reject')))
+       .rejects.toEqual(expect.objectContaining({ message: 'Error: Reject'}))
     }));
 });
 

@@ -58,5 +58,5 @@ export function createResponseSpin(request: RequestSpin, data: ResponseSpin['dat
 }
 
 function isValid(request: RequestSpin): boolean {
-    return !!(request.data && request.data.durationMs);
+    return !!(request.data && typeof request.data.durationMs === 'number');
 }
