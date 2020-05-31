@@ -11,8 +11,11 @@ npm install regexp-worker
 
 ## Basic Usage
 
-In the example below, a new Worker thread is created, the regular expression is executed on the thread,
-the result is returned, and the thread is stopped.
+In the example below:
+1. a new Worker thread is created
+1. the regular expression is executed on the thread
+1. the result is returned
+1. the thread is stopped
 
 For the occasional request, this is the easiest way, but the Worker startup and shutdown is expensive.
 
@@ -81,7 +84,18 @@ let numbers = await worker.execRegExp(/\b\w{3}\s+\w{3}/g, 'Lots of text ...', mo
 
 // ...
 
-// It is a good idea to dispose of the work before shutdown.
+// It is a good idea to dispose of the worker before shutdown.
 // The worker thread will stop on its own if left idle for more than 200ms.
 worker.dispose();
+```
+
+## Handling Timeouts
+
+If the request times out, the promise will be rejected with:
+
+```js
+interface TimeoutError {
+    message: string;
+    elapsedTimeMs: number;
+}
 ```
