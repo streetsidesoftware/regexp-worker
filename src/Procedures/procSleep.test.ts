@@ -19,4 +19,12 @@ describe('Sleep', () => {
         // Note Node.js timers are not accurate, so it is possible it can finish faster than expected.
         expect(m.elapsedTimeMs).toBeGreaterThan(req.data.durationMs - 2);
     });
+
+    test('Sleep for -5ms', async () => {
+        const req: any = { id: createId(), requestType: 'Sleep' };
+        const m = await measurePromise(() => procSleep(req));
+        const r = m.r;
+        expect(r.id).toBe(req.id);
+        expect(r.responseType).toBe('Error');
+    });
 });

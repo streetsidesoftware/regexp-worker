@@ -2,6 +2,8 @@ import { Scheduler, ErrorFailedRequest } from './scheduler';
 import { RequestEcho, createRequestEcho } from '../Procedures/procEcho';
 import { createRequestSleep } from '../Procedures/procSleep';
 import { createRequestSpin } from '../Procedures/procSpin';
+import { Response } from '../Procedures/procedure'
+import { createRequestGenError } from '../Procedures/procGenError';
 
 describe('Scheduler', () => {
 
@@ -39,6 +41,25 @@ describe('Scheduler', () => {
             scheduler.scheduleRequest(createRequestEcho('Three')),
             scheduler.scheduleRequest(createRequestEcho('Four')),
         ]);
+        const timestamps = results.map(v => v.timestamp);
+        timestamps.reduce((a, n) => {
+            expect(n).toBeGreaterThanOrEqual(a)
+            return n;
+        }, 0);
+    }));
+
+    test('Requests with time in between requests.', run(async scheduler => {
+        const requests: Promise<Response>[] = [];
+        requests.push(scheduler.scheduleRequest(createRequestEcho('One')))
+        await delay(100)
+        requests.push(scheduler.scheduleRequest(createRequestEcho('Two')))
+        await delay(5);
+        requests.push(scheduler.scheduleRequest(createRequestEcho('Three')))
+        await delay(10);
+        requests.push(scheduler.scheduleRequest(createRequestEcho('Four')))
+        await delay(10);
+
+        const results = await Promise.all(requests);
         const timestamps = results.map(v => v.timestamp);
         timestamps.reduce((a, n) => {
             expect(n).toBeGreaterThanOrEqual(a)
@@ -109,6 +130,16 @@ describe('Scheduler', () => {
             expect(scheduler.scheduleRequest(spinRequest, 5)).rejects.toEqual(expect.objectContaining({ message: expect.stringContaining('Request Timeout')})),
             expect(scheduler.scheduleRequest(createRequestEcho('Three'))).resolves.toEqual(expect.objectContaining({ data: 'Three' })),
         ]);
+    }));
+
+    test('Errors', run(async scheduler => {
+       const errorThrow = await scheduler.scheduleRequest(createRequestGenError('Throw')).catch(e => e);
+       expect(errorThrow).toEqual(expect.objectContaining({
+            message: 'Error Thrown',
+            data: 'Throw',
+       }));
+       await expect(scheduler.scheduleRequest(createRequestGenError('reject')))
+       .rejects.toEqual(expect.objectContaining({ message: 'Error: Reject'}))
     }));
 });
 

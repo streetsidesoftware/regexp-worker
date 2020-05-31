@@ -21,4 +21,10 @@ describe('Spin', () => {
         }));
         expect(m.elapsedTimeMs).toBeGreaterThan(req.data.durationMs);
     });
+
+    test('Bad Request', async () => {
+        const req: any = { id: createId(), requestType: 'Spin', data: {}};
+        const r = await procSpin(req)
+        expect(r.responseType).toBe('Error')
+    });
 });

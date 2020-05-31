@@ -62,7 +62,9 @@ export class Scheduler {
             return Promise.reject(new ErrorBadRequest('Unknown Request'))
         }
         const request = this.requestQueue.get(requestId);
+        // istanbul ignore else
         const elapsedTime = request?.startTime ? elapsedTimeMsFrom(request.startTime) : 0;
+        // istanbul ignore else
         resolve(Promise.reject(new ErrorCanceledRequest(message, request?.request.requestType || 'Unknown', elapsedTime)));
         this.cleanupRequest(requestId);
         return Promise.resolve();
@@ -77,6 +79,7 @@ export class Scheduler {
     }
 
     private listener(m: any) {
+        // istanbul ignore else
         if (isResponse(m)) {
             const resolveFn = this.pending.get(m.id);
             this.cleanupRequest(m.id);
@@ -115,6 +118,7 @@ export class Scheduler {
         // istanbul ignore else
         if (this.currentRequest === id) {
             this.currentRequest = undefined;
+            // istanbul ignore else
             if (this.timeoutID) clearTimeout(this.timeoutID);
             this.timeoutID = undefined;
         }
@@ -128,7 +132,9 @@ export class Scheduler {
 
     private getNextRequest(): PendingRequest | undefined {
         const next = this.requestQueue.entries().next();
-        if (next.done) return undefined;
+        if (next.done) {
+            return undefined;
+        }
         return next.value[1];
     }
 
