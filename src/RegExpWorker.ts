@@ -1,9 +1,19 @@
 import { ExecRegExpResult, ExecRegExpMatrixResult } from './helpers/evaluateRegExp';
 import { Scheduler } from './scheduler';
-import { createRequestExecRegExp } from './Procedures/procExecRegExp';
-import { createRequestExecRegExpMatrix } from './Procedures/procExecRegExpMatrix';
+import {
+    createRequestExecRegExp,
+    createRequestExecRegExpMatrix,
+    Response,
+    RequestExecRegExp,
+    RequestExecRegExpMatrix,
+} from './Procedures';
 
 export { ExecRegExpResult, toRegExp } from './helpers/evaluateRegExp';
+
+export interface TimeoutError {
+    message: string;
+    elapsedTimeMs: number;
+}
 
 export class RegExpWorker {
     private scheduler: Scheduler;
@@ -15,12 +25,18 @@ export class RegExpWorker {
 
     public execRegExp(regExp: RegExp, text: string, timeLimitMs?: number): Promise<ExecRegExpResult> {
         const req = createRequestExecRegExp({ regexp: regExp, text });
-        return this.scheduler.scheduleRequest(req, timeLimitMs).then(r => r.data);
+        return this.makeRequest(req, timeLimitMs);
     }
 
     public execRegExpMatrix(regExpArray: RegExp[], textArray: string[], timeLimitMs?: number): Promise<ExecRegExpMatrixResult> {
         const req = createRequestExecRegExpMatrix({ regExpArray, textArray });
-        return this.scheduler.scheduleRequest(req, timeLimitMs).then(r => r.data);
+        return this.makeRequest(req, timeLimitMs);
+    }
+
+    private makeRequest(req: RequestExecRegExp, timeLimitMs: number | undefined): Promise<ExecRegExpResult>;
+    private makeRequest(req: RequestExecRegExpMatrix, timeLimitMs: number | undefined): Promise<ExecRegExpMatrixResult>;
+    private makeRequest(req: RequestExecRegExp | RequestExecRegExpMatrix, timeLimitMs: number | undefined): Promise<ExecRegExpResult> | Promise<ExecRegExpMatrixResult> {
+        return this.scheduler.scheduleRequest(req, timeLimitMs).then(extractResult, timeoutRejection);
     }
 
     /**
@@ -37,6 +53,18 @@ export class RegExpWorker {
     get timeout(): number {
         return this.scheduler.executionTimeLimitMs;
     }
+}
+
+function extractResult<T extends Response>(response: T): T['data'] {
+    return response.data;
+}
+
+function timeoutRejection(e: any) {
+    if (!e || !e.message || !e.elapsedTimeMs) return Promise.reject(e);
+    return Promise.reject({
+        message: e.message,
+        elapsedTimeMs: e.elapsedTimeMs,
+    });
 }
 
 export function execRegExpOnWorker(regExp: RegExp, text: string, timeLimitMs?: number): Promise<ExecRegExpResult> {
