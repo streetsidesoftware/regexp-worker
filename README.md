@@ -2,7 +2,7 @@
 
 Execute Regular Expression Matches on a Node [Worker Thread](https://nodejs.org/api/worker_threads.html).
 
-Regular Expressions can suffer from [Catastrophic Backtracking](https://www.regular-expressions.info/catastrophic.html). A very simple expression like `/x+x+y/` can cause your JavaScript application to freeze. This library allows you to run these expressions on another thread. If they take to long to complete, they are terminated, protecting your application from locking up.
+Regular Expressions can suffer from [Catastrophic Backtracking](https://www.regular-expressions.info/catastrophic.html). A very simple expression like `/(x+x+)+y/` can cause your JavaScript application to freeze. This library allows you to run these expressions on another thread. If they take to long to complete, they are terminated, protecting your application from locking up.
 
 ## Installation
 ```
@@ -81,6 +81,7 @@ let numbers = await worker.execRegExp(/\b\w{3}\s+\w{3}/g, 'Lots of text ...', mo
 
 // ...
 
-// It is important to dispose of the worker.
+// It is a good idea to dispose of the work before shutdown.
+// The worker thread will stop on its own if left idle for more than 200ms.
 worker.dispose();
 ```
