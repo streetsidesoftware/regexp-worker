@@ -8,7 +8,7 @@ import {
     RequestExecRegExpMatrix,
 } from './Procedures';
 
-export { ExecRegExpResult, toRegExp } from './helpers/evaluateRegExp';
+export { ExecRegExpResult, ExecRegExpMatrixResult, toRegExp } from './helpers/evaluateRegExp';
 
 export interface TimeoutError {
     message: string;
