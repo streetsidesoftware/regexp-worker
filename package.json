@@ -1,6 +1,6 @@
 {
   "name": "regexp-worker",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Runs regular expressions on a background thread.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
