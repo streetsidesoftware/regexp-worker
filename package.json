@@ -2,7 +2,8 @@
   "name": "regexp-worker",
   "version": "1.0.0",
   "description": "Runs regular expressions on a background thread.",
-  "main": "index.js",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
     "clean": "rimraf lib && rimraf coverage",
     "lint": "eslint \"src/**/*.ts\"",
