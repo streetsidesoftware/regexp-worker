@@ -19,7 +19,7 @@ export function elapsedTimeMsFrom(relativeTo: [number, number]): number {
 }
 
 export function hrTimeToMs(hrTime: [number, number]): number {
-    return hrTime[0] * 1.0e-3 + hrTime[1] * 1.0e-6
+    return hrTime[0] * 1.0e3 + hrTime[1] * 1.0e-6
 }
 
 export async function measurePromise<T>(fn: () => Promise<T> | T): Promise<MeasureResult<T>> {
