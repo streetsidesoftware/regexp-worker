@@ -6,8 +6,13 @@ import { elapsedTimeMsFrom } from '../timer';
 const defaultTimeLimitMs = 1000;
 const defaultSleepAfter = 200;
 
+interface Contract {
+    resolve: (v: Response | Promise<Response>) => any;
+    reject: (err: any) => any;
+}
+
 export class Scheduler {
-    private pending: Map<UniqueID, (v: Response | Promise<Response>) => any>;
+    private pending: Map<UniqueID, Contract>;
     private requestQueue: Map<UniqueID, PendingRequest>;
     private _worker: Worker | undefined;
     private currentRequest: UniqueID | undefined;
@@ -32,8 +37,8 @@ export class Scheduler {
         if (this.requestQueue.has(request.id)) {
             return this.requestQueue.get(request.id)!.promise as Promise<U>;
         }
-        const promise = new Promise<U>((resolve) => {
-            this.pending.set(request.id, v => resolve(v as U));
+        const promise = new Promise<U>((resolve, reject) => {
+            this.pending.set(request.id, { resolve: v => resolve(v as U), reject } );
             this.trigger();
         }).then(r => checkResponse(r, request.data));
         this.requestQueue.set(request.id, { request, promise, timeLimitMs, startTime: undefined })
@@ -56,8 +61,8 @@ export class Scheduler {
 
     public terminateRequest(requestId: UniqueID, message = 'Request Terminated'): Promise<void> {
         if (requestId === this.currentRequest) this.stopWorker();
-        const resolve = this.pending.get(requestId);
-        if (!resolve) {
+        const contract = this.pending.get(requestId);
+        if (!contract) {
             this.cleanupRequest(requestId);
             return Promise.reject(new ErrorBadRequest('Unknown Request'))
         }
@@ -65,7 +70,7 @@ export class Scheduler {
         // istanbul ignore else
         const elapsedTime = request?.startTime ? elapsedTimeMsFrom(request.startTime) : 0;
         // istanbul ignore else
-        resolve(Promise.reject(new ErrorCanceledRequest(message, request?.request.requestType || 'Unknown', elapsedTime)));
+        contract.reject(new ErrorCanceledRequest(message, request?.request.requestType || 'Unknown', elapsedTime));
         this.cleanupRequest(requestId);
         return Promise.resolve();
     }
@@ -81,11 +86,11 @@ export class Scheduler {
     private listener(m: any) {
         // istanbul ignore else
         if (isResponse(m)) {
-            const resolveFn = this.pending.get(m.id);
+            const contract = this.pending.get(m.id);
             this.cleanupRequest(m.id);
             // istanbul ignore else
-            if (resolveFn) {
-                resolveFn(m);
+            if (contract) {
+                contract.resolve(m);
                 return;
             }
         }

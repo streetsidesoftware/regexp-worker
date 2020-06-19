@@ -113,6 +113,7 @@ describe('Scheduler', () => {
         const junkRequest: any = {};
         const spinRequest = createRequestSpin(5000);
         return Promise.all([
+            expect(scheduler.scheduleRequest(spinRequest).then(() => false, () => true)).resolves.toBeTrue(),
             expect(scheduler.scheduleRequest(spinRequest)).rejects.toEqual(expect.objectContaining({ message: expect.stringContaining('Request Terminated')})),
             expect(scheduler.scheduleRequest(createRequestEcho('One'))).resolves.toEqual(expect.objectContaining({ data: 'One' })),
             expect(scheduler.scheduleRequest(createRequestEcho('Two'))).resolves.toEqual(expect.objectContaining({ data: 'Two' })),
