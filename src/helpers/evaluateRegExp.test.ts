@@ -1,4 +1,4 @@
-import { execRegExp, ExecRegExpResult, toRegExp, execRegExpMatrix } from './evaluateRegExp';
+import { execRegExp, ExecRegExpResult, toRegExp, execRegExpMatrix, execRegExpArray, FlatRanges, flatRangesToRanges, matchRegExp, matchRegExpArray } from './evaluateRegExp';
 import * as fs from 'fs';
 import * as Path from 'path';
 
@@ -14,7 +14,7 @@ Numbers: 1, 2, 3, 4, 1000, -55.0, 1.34e2
 const x2 = 'hello';
 `
     const code = fs.readFileSync(Path.join(__filename), 'utf8');
-    const w = (result: ExecRegExpResult) => matchesToText(result.matches);
+    const w = (result: ExecRegExpResult) => resultsToTexts(result.matches);
 
     test('evaluateRegExp', () => {
         const words = w(execRegExp(/\w+/g, text));
@@ -52,16 +52,53 @@ const x2 = 'hello';
         expect(result.matrix[2].results).toHaveLength(2)
         expect(result.matrix[2].results[1].matches).toHaveLength(1)
     });
+
+    test('execRegExpArray', () => {
+        const r = execRegExpArray([/\w+/g], text);
+        expect(r.results.map(r => r.matches).map(resultsToTexts))
+        .toEqual([w(execRegExp(/\w+/g, text))]);
+    });
+
+    test('matchRegExp', () => {
+        const r = matchRegExp(text, /\w+/g);
+        const words = [...flatRangesToTexts(r.ranges, text)];
+        expect(words).toEqual(text.split(/\b/g).map(s => s.replace(/[^\w]/g, '')).filter(notEmpty));
+        expect(r.elapsedTimeMs).toBeGreaterThan(0);
+        expect(r.elapsedTimeMs).toBeLessThan(100);
+    });
+
+    test('matchRegExpArray', () => {
+        const regExps = [/\w+/g, /\d+/g];
+        const r = matchRegExpArray(text, regExps);
+        expect(r.elapsedTimeMs).toBeGreaterThan(0);
+        expect(r.elapsedTimeMs).toBeLessThan(100);
+        expect(r.elapsedTimeMs).toBeGreaterThan(r.results.map(a => a.elapsedTimeMs).reduce( (a, b) => a + b,0));
+        for (let i = 0; i < r.results.length; ++i) {
+            const result = r.results[i];
+            const regexp = regExps[i];
+            expect(result.elapsedTimeMs).toBeGreaterThan(0);
+            expect(result.elapsedTimeMs).toBeLessThan(100);
+            const expectedWords = w(execRegExp(regexp, text));
+            const words = [...flatRangesToTexts(result.ranges, text)];
+            expect(words).toEqual(expectedWords);
+        }
+    });
 });
 
 function notEmpty<T>(v: T | null | undefined | '' | 0): v is T {
     return !!v;
 }
 
-function matchToText(match: RegExpExecArray): string {
+function regExpExecArrayToText(match: RegExpExecArray): string {
     return match[0];
 }
 
-function matchesToText(matches: RegExpExecArray[]): string[] {
-    return matches.map(matchToText);
+function resultsToTexts(matches: RegExpExecArray[]): string[] {
+    return matches.map(regExpExecArrayToText);
+}
+
+function *flatRangesToTexts(ranges: FlatRanges, text: string): IterableIterator<string> {
+    for (const [start, end] of flatRangesToRanges(ranges)) {
+        yield text.slice(start, end);
+    }
 }
