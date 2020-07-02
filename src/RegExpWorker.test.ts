@@ -23,6 +23,28 @@ describe('RegExpWorker', () => {
     );
 
     test(
+        'matchRegExp',
+        run(async (w) => {
+            const text = 'hello\nthere';
+            const r = await w.matchRegExp(text, /\w/g, );
+            expect([...r.ranges].map((m) => text.slice(...m))).toEqual('hellothere'.split(''));
+            expect(r.elapsedTimeMs).toBeGreaterThan(0);
+        })
+    );
+
+    test(
+        'matchRegExpArray',
+        run(async (w) => {
+            const text = 'hello\nthere';
+            const r = await w.matchRegExpArray(text, [/\w/g], );
+            expect([...r.results[0].ranges].map((m) => text.slice(...m))).toEqual('hellothere'.split(''));
+            expect(r.elapsedTimeMs).toBeGreaterThan(0);
+            expect(r.results[0].elapsedTimeMs).toBeGreaterThan(0);
+            expect(r.elapsedTimeMs).toBeGreaterThanOrEqual(r.results[0].elapsedTimeMs)
+        })
+    );
+
+    test(
         'set timeout',
         run(async (worker) => {
             expect(worker.timeout).toBeGreaterThan(0);
