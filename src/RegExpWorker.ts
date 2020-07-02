@@ -1,4 +1,12 @@
-import { ExecRegExpResult, ExecRegExpMatrixResult } from './helpers/evaluateRegExp';
+import {
+    ExecRegExpMatrixResult,
+    ExecRegExpResult,
+    FlatRanges,
+    flatRangesToRanges,
+    MatchRegExpArrayResult as _MatchRegExpArrayResult,
+    MatchRegExpResult as _MatchRegExpResult,
+    Range,
+} from './helpers/evaluateRegExp';
 import { Scheduler } from './scheduler';
 import {
     createRequestExecRegExp,
@@ -7,8 +15,10 @@ import {
     RequestExecRegExp,
     RequestExecRegExpMatrix,
 } from './Procedures';
+import { RequestMatchRegExp, createRequestMatchRegExp } from './Procedures/procMatchRegExp';
+import { RequestMatchRegExpArray, createRequestMatchRegExpArray } from './Procedures/procMatchRegExpArray';
 
-export { ExecRegExpResult, ExecRegExpMatrixResult, toRegExp } from './helpers/evaluateRegExp';
+export { ExecRegExpResult, ExecRegExpMatrixResult, toRegExp, Range } from './helpers/evaluateRegExp';
 
 export interface TimeoutError {
     message: string;
@@ -33,9 +43,31 @@ export class RegExpWorker {
         return this.makeRequest(req, timeLimitMs);
     }
 
+    public matchRegExp(text: string, regExp: RegExp, timeLimitMs?: number): Promise<MatchRegExpResult> {
+        const req = createRequestMatchRegExp({ regexp: regExp, text });
+        return this.makeRequest(req, timeLimitMs)
+        .then(MatchRegExpResult.create);
+    }
+
+    public matchRegExpArray(text: string, regExp: RegExp[], timeLimitMs?: number): Promise<MatchRegExpArrayResult> {
+        const req = createRequestMatchRegExpArray({ regexps: regExp, text });
+        return this.makeRequest(req, timeLimitMs).then(MatchRegExpArrayResult.create);
+    }
+
     private makeRequest(req: RequestExecRegExp, timeLimitMs: number | undefined): Promise<ExecRegExpResult>;
     private makeRequest(req: RequestExecRegExpMatrix, timeLimitMs: number | undefined): Promise<ExecRegExpMatrixResult>;
-    private makeRequest(req: RequestExecRegExp | RequestExecRegExpMatrix, timeLimitMs: number | undefined): Promise<ExecRegExpResult> | Promise<ExecRegExpMatrixResult> {
+    private makeRequest(req: RequestMatchRegExp, timeLimitMs: number | undefined): Promise<_MatchRegExpResult>;
+    private makeRequest(req: RequestMatchRegExpArray, timeLimitMs: number | undefined): Promise<_MatchRegExpArrayResult>;
+    private makeRequest(
+        req: RequestExecRegExp
+            | RequestExecRegExpMatrix
+            | RequestMatchRegExp
+            | RequestMatchRegExpArray,
+        timeLimitMs: number | undefined
+    ): Promise<ExecRegExpResult>
+    | Promise<ExecRegExpMatrixResult>
+    | Promise<_MatchRegExpResult>
+    | Promise<_MatchRegExpArrayResult> {
         return this.scheduler.scheduleRequest(req, timeLimitMs).then(extractResult, timeoutRejection);
     }
 
@@ -75,4 +107,39 @@ export function execRegExpOnWorker(regExp: RegExp, text: string, timeLimitMs?: n
 export function execRegExpMatrixOnWorker(regExpArray: RegExp[], textArray: string[], timeLimitMs?: number): Promise<ExecRegExpMatrixResult> {
     const worker = new RegExpWorker();
     return worker.execRegExpMatrix(regExpArray, textArray, timeLimitMs).finally(worker.dispose);
+}
+
+export class MatchRegExpResult {
+    private constructor(
+        readonly elapsedTimeMs: number,
+        readonly raw_ranges: FlatRanges
+    ) {
+    }
+
+    /**
+     * The range tuples that matched the full regular expression.
+     * Each tuple is: [startIndex, endIndex]
+     */
+    get ranges(): IterableIterator<Range> {
+        return flatRangesToRanges(this.raw_ranges);
+    }
+
+    static create(res: _MatchRegExpResult): MatchRegExpResult {
+        return new MatchRegExpResult(res.elapsedTimeMs, res.ranges);
+    }
+}
+
+export class MatchRegExpArrayResult {
+    constructor(
+        readonly elapsedTimeMs: number,
+        readonly results: MatchRegExpResult[]
+    ) {
+    }
+
+    static create(res: _MatchRegExpArrayResult): MatchRegExpArrayResult {
+        return new MatchRegExpArrayResult(
+            res.elapsedTimeMs,
+            res.results.map(MatchRegExpResult.create),
+        );
+    }
 }
