@@ -1,0 +1,19 @@
+name: "code coverage"
+on: # rebuild any PRs and main branch changes
+  pull_request:
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: npm install
+    - run: npm run coverage
+    - name: Publish Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.github_token }}
+    - name: Publish Codecov
+      uses: codecov/codecov-action@v1
+      with:
+        file: ./coverage/lcov.info
