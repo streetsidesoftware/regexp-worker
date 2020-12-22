@@ -10,11 +10,11 @@ describe('procExecRegExp', () => {
         const response = isExecRegExpResponse(result) ? result : undefined;
         expect(response?.data.elapsedTimeMs).toBeGreaterThan(0);
         expect(response?.data.matches).toHaveLength(2);
-        expect(response?.data.matches.map(m => m[0])).toEqual(['wo', 'words'])
+        expect(response?.data.matches.map((m) => m[0])).toEqual(['wo', 'words']);
     });
 
     test('non-RequestExecRegExp', () => {
-        const req: Request = { id: createId(), requestType: 'unknown', data: { text: 'two words', regexp: /w\w+/g }};
+        const req: Request = { id: createId(), requestType: 'unknown', data: { text: 'two words', regexp: /w\w+/g } };
         const result = procExecRegExp(req);
         expect(isExecRegExpResponse(result)).toBe(false);
         expect(result).toBeUndefined();
@@ -33,7 +33,7 @@ describe('procExecRegExp', () => {
 
     test('RequestExecRegExp missing regex', () => {
         const req: RequestExecRegExp = createRequest(requestTypeExecRegExp, { text: 'two words', regexp: '' });
-        delete req.data.regexp;
+        delete (req as any).data.regexp;
         const result = procExecRegExp(req);
         const response = isErrorResponse(result) ? result : undefined;
         expect(response?.id).toBe(req.id);
@@ -42,7 +42,7 @@ describe('procExecRegExp', () => {
 
     test('RequestExecRegExp missing data', () => {
         const req: RequestExecRegExp = createRequest(requestTypeExecRegExp, { text: 'two words', regexp: '/./g' });
-        delete req.data;
+        delete (req as any).data;
         const result = procExecRegExp(req);
         const response = isErrorResponse(result) ? result : undefined;
         expect(response?.id).toBe(req.id);
@@ -51,7 +51,7 @@ describe('procExecRegExp', () => {
 
     test('RequestExecRegExp data is a number', () => {
         const req: RequestExecRegExp = createRequest(requestTypeExecRegExp, { text: 'two words', regexp: '/./g' });
-        Object.assign(req, { data: 42 })
+        Object.assign(req, { data: 42 });
         const result = procExecRegExp(req);
         const response = isErrorResponse(result) ? result : undefined;
         expect(response?.id).toBe(req.id);
