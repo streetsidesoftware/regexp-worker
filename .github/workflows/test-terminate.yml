@@ -2,20 +2,38 @@ name: "test-terminate"
 on: # rebuild any PRs and main branch changes
   pull_request:
   push:
+    branch:
+      - master
 
 jobs:
-  test: # make sure build/ci work properly
+  test-os: # make sure build/ci work properly
     # runs-on: ubuntu-latest
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node-version: [15.x]
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: node -v
+      - run: node workerTerminate.js
+
+  test-node-older: # make sure build/ci work properly
+    # runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
         node-version: [14.x, 12.x]
     steps:
-    - uses: actions/checkout@v2.3.4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2.1.5
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: node -v
-    - run: node workerTerminate.js
+      - uses: actions/checkout@v2.3.4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: node -v
+      - run: node workerTerminate.js
