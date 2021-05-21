@@ -14,6 +14,6 @@ jobs:
       with:
         github-token: ${{ secrets.github_token }}
     - name: Publish Codecov
-      uses: codecov/codecov-action@v1
+      uses: codecov/codecov-action@v1.5.0
       with:
         file: ./coverage/lcov.info
