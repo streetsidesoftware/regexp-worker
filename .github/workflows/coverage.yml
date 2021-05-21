@@ -6,14 +6,14 @@ jobs:
   coverage:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2.3.4
-    - run: npm install
-    - run: npm run coverage
-    - name: Publish Coveralls
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ secrets.github_token }}
-    - name: Publish Codecov
-      uses: codecov/codecov-action@v1.5.0
-      with:
-        file: ./coverage/lcov.info
+      - uses: actions/checkout@v2.3.4
+      - run: npm install
+      - run: npm run coverage
+      - name: Publish Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.github_token }}
+      - name: Publish Codecov
+        uses: codecov/codecov-action@v1.5.0
+        with:
+          file: ./coverage/lcov.info

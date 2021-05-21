@@ -6,12 +6,20 @@
             "path": "./cspell-words.txt"
         }
     ],
-    "dictionaries": ["cspell-words"],
+    "dictionaries": [
+        "cspell-words"
+    ],
     "overrides": [
         {
             "filename": "**/lorem*.*",
             "enabled": false
         }
     ],
-    "customWorkspaceDictionaries": ["cspell-words"]
+    "customWorkspaceDictionaries": [
+        "cspell-words"
+    ],
+    "words": [
+        "coverallsapp",
+        "Dependabot"
+    ]
 }
