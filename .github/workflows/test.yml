@@ -7,7 +7,6 @@ on: # rebuild any PRs and main branch changes
 
 jobs:
   test-os: # make sure build/ci work properly
-    # runs-on: ubuntu-latest
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -25,8 +24,7 @@ jobs:
       - run: npm run test-ts
       - run: npm run coverage
 
-  test-os: # make sure build/ci work properly
-    # runs-on: ubuntu-latest
+  test-legacy-node: # make sure build/ci work properly
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
