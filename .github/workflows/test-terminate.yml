@@ -2,8 +2,8 @@ name: "test-terminate"
 on: # rebuild any PRs and main branch changes
   pull_request:
   push:
-    branch:
-      - master
+    branches:
+      - main
 
 jobs:
   test-os: # make sure build/ci work properly

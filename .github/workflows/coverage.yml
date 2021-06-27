@@ -2,8 +2,8 @@ name: "code coverage"
 on: # rebuild any PRs and main branch changes
   pull_request:
   push:
-    branch:
-      - master
+    branches:
+      - main
 
 jobs:
   coverage:
