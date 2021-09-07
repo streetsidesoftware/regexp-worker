@@ -1,4 +1,13 @@
-import { Request, Response, genIsRequest, genIsResponse, createErrorResponse, ErrorResponse, createRequest, createResponse } from './procedure';
+import {
+    Request,
+    Response,
+    genIsRequest,
+    genIsResponse,
+    createErrorResponse,
+    ErrorResponse,
+    createRequest,
+    createResponse,
+} from './procedure';
 
 export type SleepRequestType = 'Sleep';
 export type SleepResponseType = SleepRequestType;
@@ -28,7 +37,7 @@ export function procSleep(r: RequestSleep | Request): Promise<ResponseSleep | Er
     if (!isValid(r)) {
         return Promise.resolve(createErrorResponse(r, 'Empty Sleep Duration'));
     }
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         const response = createResponseSleep(r, r.data);
         setTimeout(() => resolve(response), r.data.durationMs);
     });

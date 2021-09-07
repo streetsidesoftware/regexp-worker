@@ -22,13 +22,13 @@ export interface ExecRegExpMatrixResult {
 }
 
 export function execRegExpMatrix(regExpArray: RegExp[], textArray: string[]): ExecRegExpMatrixResult {
-    const { elapsedTimeMs, r: matrix }  = measureExecution(() => {
-        return regExpArray.map(r => execRegExpOnTextArray(r, textArray));
+    const { elapsedTimeMs, r: matrix } = measureExecution(() => {
+        return regExpArray.map((r) => execRegExpOnTextArray(r, textArray));
     });
     return {
         elapsedTimeMs,
         matrix,
-    }
+    };
 }
 
 export interface ExecRegExpArrayResult {
@@ -37,24 +37,24 @@ export interface ExecRegExpArrayResult {
 }
 
 export function execRegExpArray(regExpArray: RegExp[], text: string): ExecRegExpArrayResult {
-    const { elapsedTimeMs, r: results }  = measureExecution(() => {
-        return regExpArray.map(r => execRegExp(r, text));
+    const { elapsedTimeMs, r: results } = measureExecution(() => {
+        return regExpArray.map((r) => execRegExp(r, text));
     });
     return {
         elapsedTimeMs,
         results,
-    }
+    };
 }
 
 export function execRegExpOnTextArray(regExp: RegExp, texts: string[]): ExecRegExpOnTextArray {
-    const { elapsedTimeMs, r: results }  = measureExecution(() => {
-        return texts.map(t => execRegExp(regExp, t));
+    const { elapsedTimeMs, r: results } = measureExecution(() => {
+        return texts.map((t) => execRegExp(regExp, t));
     });
     return {
         regExp,
         elapsedTimeMs,
         results,
-    }
+    };
 }
 
 export type RegExpOrString = RegExp | string;
@@ -80,9 +80,11 @@ function _execRegExp(regExp: RegExp, text: string): RegExpExecArray[] {
     let lastPos = -1;
     let match;
     let retry = true;
-    while (match = re.exec(text)) {
+    while ((match = re.exec(text))) {
         if (match.index === lastPos) {
-            if (!re.global && retry) { break; }
+            if (!re.global && retry) {
+                break;
+            }
             re.lastIndex = re.lastIndex + 1;
             retry = false;
             continue;
@@ -116,8 +118,8 @@ function mapExecRegExpResultToMatchRegExpResult(r: ExecRegExpResult): MatchRegEx
     }
     return {
         elapsedTimeMs: r.elapsedTimeMs,
-        ranges
-    }
+        ranges,
+    };
 }
 
 export function matchRegExp(text: string, regExp: RegExp): MatchRegExpResult {
@@ -130,20 +132,20 @@ export interface MatchRegExpArrayResult {
 }
 
 export function matchRegExpArray(text: string, regExp: RegExp[]): MatchRegExpArrayResult {
-    const { elapsedTimeMs, r: results }  = measureExecution(() => {
-        return regExp.map(r => matchRegExp(text, r));
+    const { elapsedTimeMs, r: results } = measureExecution(() => {
+        return regExp.map((r) => matchRegExp(text, r));
     });
 
     return {
         elapsedTimeMs,
         results,
-    }
+    };
 }
 
 export type Range = [number, number];
 
-export function *flatRangesToRanges(flatRanges: FlatRanges): IterableIterator<Range> {
+export function* flatRangesToRanges(flatRanges: FlatRanges): IterableIterator<Range> {
     for (let i = 0; i < flatRanges.length - 1; i += 2) {
-        yield [flatRanges[i], flatRanges[i+1]] as Range;
+        yield [flatRanges[i], flatRanges[i + 1]] as Range;
     }
 }

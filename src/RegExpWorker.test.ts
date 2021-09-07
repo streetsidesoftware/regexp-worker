@@ -26,7 +26,7 @@ describe('RegExpWorker', () => {
         'matchRegExp',
         run(async (w) => {
             const text = 'hello\nthere';
-            const r = await w.matchRegExp(text, /\w/g, );
+            const r = await w.matchRegExp(text, /\w/g);
             expect([...r.ranges].map((m) => text.slice(...m))).toEqual('hellothere'.split(''));
             expect(r.elapsedTimeMs).toBeGreaterThan(0);
         })
@@ -36,11 +36,11 @@ describe('RegExpWorker', () => {
         'matchRegExpArray',
         run(async (w) => {
             const text = 'hello\nthere';
-            const r = await w.matchRegExpArray(text, [/\w/g], );
+            const r = await w.matchRegExpArray(text, [/\w/g]);
             expect([...r.results[0].ranges].map((m) => text.slice(...m))).toEqual('hellothere'.split(''));
             expect(r.elapsedTimeMs).toBeGreaterThan(0);
             expect(r.results[0].elapsedTimeMs).toBeGreaterThan(0);
-            expect(r.elapsedTimeMs).toBeGreaterThanOrEqual(r.results[0].elapsedTimeMs)
+            expect(r.elapsedTimeMs).toBeGreaterThanOrEqual(r.results[0].elapsedTimeMs);
         })
     );
 
@@ -59,26 +59,28 @@ describe('RegExpWorker', () => {
         'very slow regexp',
         run((worker) => {
             const r = worker.execRegExp(/(x+x+)+y/, 'x'.repeat(30), 5);
-            return expect(r).rejects.toEqual(expect.objectContaining({
-                'elapsedTimeMs': expect.toBeWithin(3, 50),
-                'message': expect.stringContaining('Request Timeout'),
-            }));
+            return expect(r).rejects.toEqual(
+                expect.objectContaining({
+                    elapsedTimeMs: expect.toBeWithin(3, 50),
+                    message: expect.stringContaining('Request Timeout'),
+                })
+            );
         })
     );
 
     test('execRegExpOnWorker', async () => {
-        const response = await execRegExpOnWorker(/\b\w+/g, 'Good Morning')
-        expect(response.matches.map(m => m[0])).toEqual(['Good', 'Morning'])
+        const response = await execRegExpOnWorker(/\b\w+/g, 'Good Morning');
+        expect(response.matches.map((m) => m[0])).toEqual(['Good', 'Morning']);
     });
 
     test('execRegExpOnWorker on word boundaries', async () => {
         const response = await execRegExpOnWorker(/\b/g, 'Good Morning');
-        expect(response.matches.map(m => m.index)).toEqual([0, 4, 5, 12])
+        expect(response.matches.map((m) => m.index)).toEqual([0, 4, 5, 12]);
     });
 
     test('execRegExpMatrixOnWorker', async () => {
         const response = await execRegExpMatrixOnWorker([/\b\w+/g], ['Good Morning']);
-        expect(response.matrix[0].results[0].matches.map(m => m[0])).toEqual(['Good', 'Morning'])
+        expect(response.matrix[0].results[0].matches.map((m) => m[0])).toEqual(['Good', 'Morning']);
     });
 });
 

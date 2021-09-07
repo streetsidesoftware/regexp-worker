@@ -1,4 +1,3 @@
-
 let id = process.hrtime()[0];
 
 export type UniqueID = string;
@@ -12,20 +11,23 @@ export function createId(): UniqueID {
     ++id;
     const t = process.hrtime();
     const v = id ^ t[0] ^ t[1];
-    const a = ('0' + v % 13).slice(-2);
+    const a = ('0' + (v % 13)).slice(-2);
     const b = v;
     const c = id;
-    const d = (c + b) % 7
-    return `ID-${a}-${b}-${c}-${d}` ;
+    const d = (c + b) % 7;
+    return `ID-${a}-${b}-${c}-${d}`;
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function isId(value: any): value is UniqueID {
     if (typeof value === 'string' && /^ID-\d+-\d+-\d+-\d+$/.test(value)) {
-        const [a, b, c, d] = value.split('-').slice(1).map(v => Number.parseInt(v, 10));
+        const [a, b, c, d] = value
+            .split('-')
+            .slice(1)
+            .map((v) => Number.parseInt(v, 10));
         return a === b % 13 && d === (b + c) % 7;
     }
     return false;
 }
 
-export const NullID = 'ID-0-0-0-0'
+export const NullID = 'ID-0-0-0-0';

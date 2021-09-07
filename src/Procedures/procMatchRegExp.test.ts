@@ -1,4 +1,4 @@
-import { createRequestMatchRegExp, procMatchRegExp, isMatchRegExpResponse, } from './procMatchRegExp';
+import { createRequestMatchRegExp, procMatchRegExp, isMatchRegExpResponse } from './procMatchRegExp';
 import { Request, isErrorResponse } from './procedure';
 import { createId } from './uniqueId';
 
@@ -13,7 +13,7 @@ describe('procMatchRegExp', () => {
     });
 
     test('non-RequestMatchRegExp', () => {
-        const req: Request = { id: createId(), requestType: 'unknown', data: { text: 'two words', regexp: /w\w+/g }};
+        const req: Request = { id: createId(), requestType: 'unknown', data: { text: 'two words', regexp: /w\w+/g } };
         const result = procMatchRegExp(req);
         expect(isMatchRegExpResponse(result)).toBe(false);
         expect(result).toBeUndefined();

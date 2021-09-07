@@ -1,3 +1,5 @@
+import { format } from 'util';
+import { matchRegExp, MatchRegExpResult, toRegExp } from '../helpers/evaluateRegExp';
 import {
     createErrorResponse,
     createRequest,
@@ -8,7 +10,6 @@ import {
     Request,
     Response,
 } from './procedure';
-import { toRegExp, matchRegExp, MatchRegExpResult } from '../helpers/evaluateRegExp';
 
 export const requestTypeMatchRegExp = 'MatchRegExp';
 export type MatchRegExpRequestType = typeof requestTypeMatchRegExp;
@@ -40,7 +41,7 @@ export function procMatchRegExp(r: RequestMatchRegExp | Request): ResponseMatchR
 
         return createResponseMatchRegExp(r, regexResult);
     } catch (e) {
-        return createErrorResponse(r, e.toString());
+        return createErrorResponse(r, format(e));
     }
 }
 

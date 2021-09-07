@@ -18,9 +18,9 @@ export interface Response {
 }
 
 export function genIsRequest<T extends Request>(key: T['requestType']): (v: any) => v is T {
-    return  (v: any): v is T => {
+    return (v: any): v is T => {
         return isRequest(v) && v.requestType === key;
-    }
+    };
 }
 
 export function isRequest(v: any): v is Request {
@@ -28,9 +28,9 @@ export function isRequest(v: any): v is Request {
 }
 
 export function genIsResponse<T extends Response>(key: T['responseType']): (v: any) => v is T {
-    return  (v: any): v is T => {
+    return (v: any): v is T => {
         return isResponse(v) && v.responseType === key;
-    }
+    };
 }
 
 export function isResponse(v: any): v is Response {
@@ -52,12 +52,11 @@ export interface ErrorData {
 }
 
 export interface ErrorResponse extends Response {
-    responseType: 'Error',
+    responseType: 'Error';
     data: ErrorData;
 }
 
 export const responseTypeError: ErrorResponse['responseType'] = 'Error';
-
 
 export function createErrorResponse(request: Request | any, message: string, error?: Error): ErrorResponse {
     if (!isRequest(request)) {
@@ -72,7 +71,7 @@ export function createErrorResponse(request: Request | any, message: string, err
     return createResponse(id, responseTypeError, {
         requestType,
         message,
-        error
+        error,
     });
 }
 

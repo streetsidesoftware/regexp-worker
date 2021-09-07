@@ -8,9 +8,9 @@ import { procGenError } from './procGenError';
 import { procMatchRegExpArray } from './procMatchRegExpArray';
 import { procMatchRegExp } from './procMatchRegExp';
 
-type Procedure = (r: Request) => any
+type Procedure = (r: Request) => any;
 
-export const procedures: Procedure[]  = [
+export const procedures: Procedure[] = [
     procExecRegExp,
     procExecRegExpMatrix,
     procMatchRegExp,

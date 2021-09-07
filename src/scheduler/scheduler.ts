@@ -1,5 +1,5 @@
 import { createWorker, Worker } from '../worker';
-import { Request, Response, isResponse, createRequest, ErrorResponse, isErrorResponse, isRequest  } from '../Procedures/procedure';
+import { Request, Response, isResponse, createRequest, ErrorResponse, isErrorResponse, isRequest } from '../Procedures/procedure';
 import { UniqueID } from '../Procedures/uniqueId';
 import { elapsedTimeMsFrom } from '../timer';
 
@@ -29,20 +29,20 @@ export class Scheduler {
 
     public scheduleRequest<T extends Request, U extends Response>(request: T, timeLimitMs = this.executionTimeLimitMs): Promise<U> {
         if (this.stopped) {
-            return Promise.reject(new ErrorCanceledRequest('Scheduler has been stopped', request.requestType, request.data))
+            return Promise.reject(new ErrorCanceledRequest('Scheduler has been stopped', request.requestType, request.data));
         }
         if (!isRequest(request)) {
-            return Promise.reject(new ErrorBadRequest('Bad Request', request))
+            return Promise.reject(new ErrorBadRequest('Bad Request', request));
         }
         if (this.requestQueue.has(request.id)) {
             return this.requestQueue.get(request.id)!.promise as Promise<U>;
         }
         const promise = new Promise<U>((resolve, reject) => {
-            this.pending.set(request.id, { resolve: v => resolve(v as U), reject } );
+            this.pending.set(request.id, { resolve: (v) => resolve(v as U), reject });
             this.trigger();
-        }).then(r => checkResponse(r, request.data));
-        this.requestQueue.set(request.id, { request, promise, timeLimitMs, startTime: undefined })
-        this.trigger()
+        }).then((r) => checkResponse(r, request.data));
+        this.requestQueue.set(request.id, { request, promise, timeLimitMs, startTime: undefined });
+        this.trigger();
         return promise;
     }
 
@@ -53,7 +53,7 @@ export class Scheduler {
         for (const requestId of this.requestQueue.keys()) {
             this.terminateRequest(requestId, 'Scheduler has been stopped');
         }
-        this.pending.clear()
+        this.pending.clear();
         this.requestQueue.clear();
         this.currentRequest = undefined;
         return ret;
@@ -64,7 +64,7 @@ export class Scheduler {
         const contract = this.pending.get(requestId);
         if (!contract) {
             this.cleanupRequest(requestId);
-            return Promise.reject(new ErrorBadRequest('Unknown Request'))
+            return Promise.reject(new ErrorBadRequest('Unknown Request'));
         }
         const request = this.requestQueue.get(requestId);
         // istanbul ignore else
@@ -112,9 +112,9 @@ export class Scheduler {
             req.startTime = process.hrtime();
             const requestId = req.request.id;
             this.currentRequest = requestId;
-            this.scheduleTimeout(() => this.terminateRequest(requestId, 'Request Timeout'), req.timeLimitMs)
+            this.scheduleTimeout(() => this.terminateRequest(requestId, 'Request Timeout'), req.timeLimitMs);
             this.worker.postMessage(req.request);
-        })
+        });
     }
 
     private cleanupRequest(id: UniqueID) {
@@ -150,7 +150,7 @@ export class Scheduler {
     private get worker(): Worker {
         if (!this._worker) {
             this._worker = createWorker();
-            this._worker.on('message', v => this.listener(v))
+            this._worker.on('message', (v) => this.listener(v));
         }
 
         return this._worker;
@@ -159,11 +159,7 @@ export class Scheduler {
 
 export class ErrorCanceledRequest<T> {
     readonly timestamp = Date.now();
-    constructor(
-        readonly message: string,
-        readonly requestType: string | undefined,
-        readonly elapsedTimeMs: number,
-        readonly data?: T) {}
+    constructor(readonly message: string, readonly requestType: string | undefined, readonly elapsedTimeMs: number, readonly data?: T) {}
 }
 
 export class ErrorFailedRequest<T> {
@@ -179,10 +175,7 @@ export class ErrorBadRequest<T> {
 /**
  * Checks the type of a response or throws the response
  */
-function checkResponse<T extends Response, D>(
-    response: T | ErrorResponse,
-    data: D
-): T {
+function checkResponse<T extends Response, D>(response: T | ErrorResponse, data: D): T {
     if (isErrorResponse(response)) {
         throw new ErrorFailedRequest(response.data.message, response.data.requestType, data);
     }

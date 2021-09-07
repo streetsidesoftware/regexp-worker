@@ -1,4 +1,13 @@
-import { Request, Response, genIsRequest, genIsResponse, createErrorResponse, ErrorResponse, createRequest, createResponse } from './procedure';
+import {
+    Request,
+    Response,
+    genIsRequest,
+    genIsResponse,
+    createErrorResponse,
+    ErrorResponse,
+    createRequest,
+    createResponse,
+} from './procedure';
 
 export type EchoRequestType = 'Echo';
 export type EchoResponseType = EchoRequestType;

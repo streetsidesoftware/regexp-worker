@@ -1,3 +1,5 @@
+import { format } from 'util';
+import { execRegExp, ExecRegExpResult, toRegExp } from '../helpers/evaluateRegExp';
 import {
     createErrorResponse,
     createRequest,
@@ -8,7 +10,6 @@ import {
     Request,
     Response,
 } from './procedure';
-import { ExecRegExpResult, execRegExp, toRegExp } from '../helpers/evaluateRegExp';
 
 export type ExecRegExpRequestType = 'ExecRegExp';
 export type ExecRegExpResponseType = ExecRegExpRequestType;
@@ -38,7 +39,7 @@ export function procExecRegExp(r: RequestExecRegExp | Request): ResponseExecRegE
         const regex = toRegExp(r.data.regexp);
         return createResponseExecRegExp(r, execRegExp(regex, r.data.text));
     } catch (e) {
-        return createErrorResponse(r, e.toString());
+        return createErrorResponse(r, format(e));
     }
 }
 

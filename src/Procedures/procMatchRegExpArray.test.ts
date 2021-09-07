@@ -1,4 +1,4 @@
-import { createRequestMatchRegExpArray, procMatchRegExpArray, isMatchRegExpArrayResponse, } from './procMatchRegExpArray';
+import { createRequestMatchRegExpArray, procMatchRegExpArray, isMatchRegExpArrayResponse } from './procMatchRegExpArray';
 import { Request, isErrorResponse } from './procedure';
 import { createId } from './uniqueId';
 
@@ -13,7 +13,7 @@ describe('procMatchRegExpArray', () => {
     });
 
     test('non-RequestMatchRegExpArray', () => {
-        const req: Request = { id: createId(), requestType: 'unknown', data: { text: 'two words', regexps: [/w\w+/g] }};
+        const req: Request = { id: createId(), requestType: 'unknown', data: { text: 'two words', regexps: [/w\w+/g] } };
         const result = procMatchRegExpArray(req);
         expect(isMatchRegExpArrayResponse(result)).toBe(false);
         expect(result).toBeUndefined();
