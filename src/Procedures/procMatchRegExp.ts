@@ -1,3 +1,9 @@
+import { format } from 'util';
+import {
+    matchRegExp,
+    MatchRegExpResult,
+    toRegExp,
+} from '../helpers/evaluateRegExp';
 import {
     createErrorResponse,
     createRequest,
@@ -8,7 +14,6 @@ import {
     Request,
     Response,
 } from './procedure';
-import { toRegExp, matchRegExp, MatchRegExpResult } from '../helpers/evaluateRegExp';
 
 export const requestTypeMatchRegExp = 'MatchRegExp';
 export type MatchRegExpRequestType = typeof requestTypeMatchRegExp;
@@ -27,12 +32,20 @@ export interface ResponseMatchRegExp extends Response {
     data: MatchRegExpResult;
 }
 
-export const isMatchRegExpRequest = genIsRequest<RequestMatchRegExp>(requestTypeMatchRegExp);
-export const isMatchRegExpResponse = genIsResponse<ResponseMatchRegExp>(requestTypeMatchRegExp);
+export const isMatchRegExpRequest = genIsRequest<RequestMatchRegExp>(
+    requestTypeMatchRegExp
+);
+export const isMatchRegExpResponse = genIsResponse<ResponseMatchRegExp>(
+    requestTypeMatchRegExp
+);
 
-export function procMatchRegExp(r: RequestMatchRegExp): ResponseMatchRegExp | ErrorResponse;
+export function procMatchRegExp(
+    r: RequestMatchRegExp
+): ResponseMatchRegExp | ErrorResponse;
 export function procMatchRegExp(r: Request): Response | undefined;
-export function procMatchRegExp(r: RequestMatchRegExp | Request): ResponseMatchRegExp | ErrorResponse | undefined {
+export function procMatchRegExp(
+    r: RequestMatchRegExp | Request
+): ResponseMatchRegExp | ErrorResponse | undefined {
     if (!isMatchRegExpRequest(r)) return undefined;
     try {
         const regex = toRegExp(r.data.regexp);
@@ -40,14 +53,19 @@ export function procMatchRegExp(r: RequestMatchRegExp | Request): ResponseMatchR
 
         return createResponseMatchRegExp(r, regexResult);
     } catch (e) {
-        return createErrorResponse(r, e.toString());
+        return createErrorResponse(r, format(e));
     }
 }
 
-export function createRequestMatchRegExp(data: RequestMatchRegExp['data']): RequestMatchRegExp {
+export function createRequestMatchRegExp(
+    data: RequestMatchRegExp['data']
+): RequestMatchRegExp {
     return createRequest(requestTypeMatchRegExp, data);
 }
 
-export function createResponseMatchRegExp(request: RequestMatchRegExp, data: ResponseMatchRegExp['data']): ResponseMatchRegExp {
+export function createResponseMatchRegExp(
+    request: RequestMatchRegExp,
+    data: ResponseMatchRegExp['data']
+): ResponseMatchRegExp {
     return createResponse(request.id, request.requestType, data);
 }

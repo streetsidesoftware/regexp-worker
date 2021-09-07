@@ -1,10 +1,8 @@
-import { MessagePort, nullPort } from './MessagePort';
-import {
-    isRequest, createErrorResponse
-} from '../Procedures/procedure';
-
+import { format } from 'util';
+import { isError } from '../helpers/errors';
+import { createErrorResponse, isRequest } from '../Procedures/procedure';
 import { procedures } from '../Procedures/procedures';
-
+import { MessagePort, nullPort } from './MessagePort';
 
 export function createHandler(port: MessagePort): WorkerMessageHandler {
     return new WorkerMessageHandler(port);
@@ -39,9 +37,13 @@ export class WorkerMessageHandler {
 
     private log(level: LogLevel, message?: any, ...rest: any[]) {
         if (level > this.logLevel) return;
-        switch(level) {
-            case LogLevel.LogLevelError: console.error(message, ...rest); break;
-            case LogLevel.LogLevelWarn: console.warn(message, ...rest); break;
+        switch (level) {
+            case LogLevel.LogLevelError:
+                console.error(message, ...rest);
+                break;
+            case LogLevel.LogLevelWarn:
+                console.warn(message, ...rest);
+                break;
             default:
                 console.log(message, ...rest);
         }
@@ -62,17 +64,33 @@ export class WorkerMessageHandler {
                 const response = proc(request);
                 if (response !== undefined) {
                     Promise.resolve(response)
-                    .catch(reason => createErrorResponse(request, reason.toString(), reason))
-                    .then(r => this.post(r));
+                        .catch((reason) =>
+                            createErrorResponse(
+                                request,
+                                reason.toString(),
+                                reason
+                            )
+                        )
+                        .then((r) => this.post(r));
                     return;
                 }
             } catch (e) {
-                this.post(createErrorResponse(request, e.message || e.toString(), e))
+                const msg = isError(e) ? e.message : format(e);
+                this.post(
+                    createErrorResponse(
+                        request,
+                        msg,
+                        isError(e) ? e : undefined
+                    )
+                );
                 return;
             }
         }
 
-        this.log(LogLevel.LogLevelWarn, `Unhandled Request "${value.requestType}"`)
+        this.log(
+            LogLevel.LogLevelWarn,
+            `Unhandled Request "${value.requestType}"`
+        );
         this.post(createErrorResponse(request, 'Unhandled Request'));
     }
 }

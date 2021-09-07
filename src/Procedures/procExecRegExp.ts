@@ -1,3 +1,9 @@
+import { format } from 'util';
+import {
+    execRegExp,
+    ExecRegExpResult,
+    toRegExp,
+} from '../helpers/evaluateRegExp';
 import {
     createErrorResponse,
     createRequest,
@@ -8,7 +14,6 @@ import {
     Request,
     Response,
 } from './procedure';
-import { ExecRegExpResult, execRegExp, toRegExp } from '../helpers/evaluateRegExp';
 
 export type ExecRegExpRequestType = 'ExecRegExp';
 export type ExecRegExpResponseType = ExecRegExpRequestType;
@@ -27,25 +32,38 @@ export interface ResponseExecRegExp extends Response {
     data: ExecRegExpResult;
 }
 
-export const isExecRegExpRequest = genIsRequest<RequestExecRegExp>(requestTypeExecRegExp);
-export const isExecRegExpResponse = genIsResponse<ResponseExecRegExp>(requestTypeExecRegExp);
+export const isExecRegExpRequest = genIsRequest<RequestExecRegExp>(
+    requestTypeExecRegExp
+);
+export const isExecRegExpResponse = genIsResponse<ResponseExecRegExp>(
+    requestTypeExecRegExp
+);
 
-export function procExecRegExp(r: RequestExecRegExp): ResponseExecRegExp | ErrorResponse;
+export function procExecRegExp(
+    r: RequestExecRegExp
+): ResponseExecRegExp | ErrorResponse;
 export function procExecRegExp(r: Request): undefined;
-export function procExecRegExp(r: RequestExecRegExp | Request): ResponseExecRegExp | ErrorResponse | undefined {
+export function procExecRegExp(
+    r: RequestExecRegExp | Request
+): ResponseExecRegExp | ErrorResponse | undefined {
     if (!isExecRegExpRequest(r)) return undefined;
     try {
         const regex = toRegExp(r.data.regexp);
         return createResponseExecRegExp(r, execRegExp(regex, r.data.text));
     } catch (e) {
-        return createErrorResponse(r, e.toString());
+        return createErrorResponse(r, format(e));
     }
 }
 
-export function createRequestExecRegExp(data: RequestExecRegExp['data']): RequestExecRegExp {
+export function createRequestExecRegExp(
+    data: RequestExecRegExp['data']
+): RequestExecRegExp {
     return createRequest(requestTypeExecRegExp, data);
 }
 
-export function createResponseExecRegExp(request: RequestExecRegExp, data: ResponseExecRegExp['data']): ResponseExecRegExp {
+export function createResponseExecRegExp(
+    request: RequestExecRegExp,
+    data: ResponseExecRegExp['data']
+): ResponseExecRegExp {
     return createResponse(request.id, request.requestType, data);
 }

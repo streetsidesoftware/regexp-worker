@@ -1,3 +1,9 @@
+import { format } from 'util';
+import {
+    matchRegExpArray,
+    MatchRegExpArrayResult,
+    toRegExp,
+} from '../helpers/evaluateRegExp';
 import {
     createErrorResponse,
     createRequest,
@@ -8,7 +14,6 @@ import {
     Request,
     Response,
 } from './procedure';
-import { toRegExp, MatchRegExpArrayResult, matchRegExpArray } from '../helpers/evaluateRegExp';
 
 export const requestTypeMatchRegExpArray = 'MatchRegExpArray';
 export type MatchRegExpArrayRequestType = typeof requestTypeMatchRegExpArray;
@@ -27,27 +32,41 @@ export interface ResponseMatchRegExpArray extends Response {
     data: MatchRegExpArrayResult;
 }
 
-export const isMatchRegExpArrayRequest = genIsRequest<RequestMatchRegExpArray>(requestTypeMatchRegExpArray);
-export const isMatchRegExpArrayResponse = genIsResponse<ResponseMatchRegExpArray>(requestTypeMatchRegExpArray);
+export const isMatchRegExpArrayRequest = genIsRequest<RequestMatchRegExpArray>(
+    requestTypeMatchRegExpArray
+);
+export const isMatchRegExpArrayResponse =
+    genIsResponse<ResponseMatchRegExpArray>(requestTypeMatchRegExpArray);
 
-export function procMatchRegExpArray(r: RequestMatchRegExpArray): ResponseMatchRegExpArray | ErrorResponse;
-export function procMatchRegExpArray(r: Request): undefined | ResponseMatchRegExpArray | ErrorResponse;
-export function procMatchRegExpArray(r: RequestMatchRegExpArray | Request): ResponseMatchRegExpArray | ErrorResponse | undefined {
+export function procMatchRegExpArray(
+    r: RequestMatchRegExpArray
+): ResponseMatchRegExpArray | ErrorResponse;
+export function procMatchRegExpArray(
+    r: Request
+): undefined | ResponseMatchRegExpArray | ErrorResponse;
+export function procMatchRegExpArray(
+    r: RequestMatchRegExpArray | Request
+): ResponseMatchRegExpArray | ErrorResponse | undefined {
     if (!isMatchRegExpArrayRequest(r)) return undefined;
     try {
-        const regex = r.data.regexps.map(r => toRegExp(r));
+        const regex = r.data.regexps.map((r) => toRegExp(r));
         const regexResult = matchRegExpArray(r.data.text, regex);
 
         return createResponseMatchRegExpArray(r, regexResult);
     } catch (e) {
-        return createErrorResponse(r, e.toString());
+        return createErrorResponse(r, format(e));
     }
 }
 
-export function createRequestMatchRegExpArray(data: RequestMatchRegExpArray['data']): RequestMatchRegExpArray {
+export function createRequestMatchRegExpArray(
+    data: RequestMatchRegExpArray['data']
+): RequestMatchRegExpArray {
     return createRequest(requestTypeMatchRegExpArray, data);
 }
 
-export function createResponseMatchRegExpArray(request: RequestMatchRegExpArray, data: ResponseMatchRegExpArray['data']): ResponseMatchRegExpArray {
+export function createResponseMatchRegExpArray(
+    request: RequestMatchRegExpArray,
+    data: ResponseMatchRegExpArray['data']
+): ResponseMatchRegExpArray {
     return createResponse(request.id, request.requestType, data);
 }
