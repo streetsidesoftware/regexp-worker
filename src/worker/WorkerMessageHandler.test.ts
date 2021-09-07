@@ -5,9 +5,9 @@ import { createRequest } from '../Procedures/procedure';
 import { NullID } from '../Procedures/uniqueId';
 import { createRequestGenError } from '../Procedures/procGenError';
 
-const consoleLog = console.log = jest.fn();
-const consoleWarn = console.warn = jest.fn();
-const consoleError = console.error = jest.fn();
+const consoleLog = (console.log = jest.fn());
+const consoleWarn = (console.warn = jest.fn());
+const consoleError = (console.error = jest.fn());
 
 describe('WorkerMessageHandler', () => {
     beforeEach(() => {
@@ -34,9 +34,11 @@ describe('WorkerMessageHandler', () => {
         const handler = createHandler(port);
         port.sendMessage(createRequestEcho('Hello'));
         const response = await messagesIterator.next();
-        expect(response.value).toEqual(expect.objectContaining({
-            data: 'Hello'
-        }))
+        expect(response.value).toEqual(
+            expect.objectContaining({
+                data: 'Hello',
+            })
+        );
         handler.dispose();
         port.close();
     });
@@ -46,9 +48,11 @@ describe('WorkerMessageHandler', () => {
         const handler = createHandler(port);
         port.sendMessage(createRequestEcho('Hello'));
         const response = await port.next();
-        expect(response.value).toEqual(expect.objectContaining({
-            data: 'Hello'
-        }))
+        expect(response.value).toEqual(
+            expect.objectContaining({
+                data: 'Hello',
+            })
+        );
         handler.dispose();
         port.close();
     });
@@ -60,13 +64,15 @@ describe('WorkerMessageHandler', () => {
         handler.logLevel = LogLevel.LogLevelDebug;
         port.sendMessage(createRequest('Test Unknown', {}));
         const response = await messagesIterator.next();
-        expect(response.value).toEqual(expect.objectContaining({
-            responseType: 'Error',
-            data: {
-                message: 'Unhandled Request',
-                requestType: 'Test Unknown'
-            }
-        }))
+        expect(response.value).toEqual(
+            expect.objectContaining({
+                responseType: 'Error',
+                data: {
+                    message: 'Unhandled Request',
+                    requestType: 'Test Unknown',
+                },
+            })
+        );
         handler.dispose();
         port.close();
         expect(consoleLog).toBeCalled();
@@ -81,14 +87,16 @@ describe('WorkerMessageHandler', () => {
         handler.logLevel = LogLevel.LogLevelDebug;
         port.sendMessage('Bad Request');
         const response = await messagesIterator.next();
-        expect(response.value).toEqual(expect.objectContaining({
-            responseType: 'Error',
-            id: NullID,
-            data: {
-                message: expect.stringContaining('Badly formed Request'),
-                requestType: undefined
-            }
-        }))
+        expect(response.value).toEqual(
+            expect.objectContaining({
+                responseType: 'Error',
+                id: NullID,
+                data: {
+                    message: expect.stringContaining('Badly formed Request'),
+                    requestType: undefined,
+                },
+            })
+        );
         handler.dispose();
         port.close();
         expect(consoleLog).toBeCalled();
@@ -103,30 +111,33 @@ describe('WorkerMessageHandler', () => {
         const requestThrow = createRequestGenError('Throw');
         port.sendMessage(requestThrow);
         const responseThrow = await port.next();
-        expect(responseThrow.value).toEqual(expect.objectContaining({
-            id: requestThrow.id,
-            responseType: 'Error',
-            data: expect.objectContaining({
-                message: 'Error Thrown'
+        expect(responseThrow.value).toEqual(
+            expect.objectContaining({
+                id: requestThrow.id,
+                responseType: 'Error',
+                data: expect.objectContaining({
+                    message: 'Error Thrown',
+                }),
             })
-        }))
+        );
 
         const requestReject = createRequestGenError('reject');
         port.sendMessage(requestReject);
         const responseReject = await port.next();
-        expect(responseReject.value).toEqual(expect.objectContaining({
-            id: requestReject.id,
-            responseType: 'Error',
-            data: expect.objectContaining({
-                message: 'Error: Reject'
+        expect(responseReject.value).toEqual(
+            expect.objectContaining({
+                id: requestReject.id,
+                responseType: 'Error',
+                data: expect.objectContaining({
+                    message: 'Error: Reject',
+                }),
             })
-        }))
+        );
 
         handler.dispose();
         port.close();
     });
 });
-
 
 interface AsyncMessagePort extends MessagePort, AsyncIterator<any> {
     messages: any[];
@@ -137,19 +148,18 @@ interface AsyncMessagePort extends MessagePort, AsyncIterator<any> {
 }
 
 function mockMessagePort(): AsyncMessagePort {
-
     let resolveAsync: ResolveAsync<any> | undefined;
     const messages = [] as Array<any>;
-    const messagesAsync = callbackIterable<any>(resolve => {
+    const messagesAsync = callbackIterable<any>((resolve) => {
         resolveAsync = resolve;
     });
 
     function postMessage(value: any) {
         messages.push(value);
-        resolveAsync?.(Promise.resolve({ value }))
+        resolveAsync?.(Promise.resolve({ value }));
     }
 
-    const registeredCallbacks = new Map<string, Set<(value?: any) => void>>()
+    const registeredCallbacks = new Map<string, Set<(value?: any) => void>>();
 
     function on(event: string, callback: (valid?: any) => void) {
         const callbacks = registeredCallbacks.get(event) ?? new Set();
@@ -232,13 +242,13 @@ function callbackIterable<T>(callBack: CallbackAsync<T>): AsyncIterable<T> {
             return v;
         }
 
-        return new Promise<IteratorResult<T>>(resolve => {
+        return new Promise<IteratorResult<T>>((resolve) => {
             pending = resolve;
         });
     }
 
     const iterable = {
-        [Symbol.asyncIterator]: () => ({ next })
-    }
+        [Symbol.asyncIterator]: () => ({ next }),
+    };
     return iterable;
 }

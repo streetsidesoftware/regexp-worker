@@ -1,7 +1,9 @@
-function getTypeOf(t: unknown) {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+function _getTypeOf(t: unknown) {
     return typeof t;
 }
-type TypeOfTypes = ReturnType<typeof getTypeOf>;
+
+type TypeOfTypes = ReturnType<typeof _getTypeOf>;
 
 type AllowedTypes = Partial<Record<TypeOfTypes, true>>;
 
@@ -18,9 +20,9 @@ const allowStringOrUndefined: AllowedTypes = {
 export function isError(e: unknown): e is Error {
     if (!e || typeof e !== 'object') return false;
     const ex = <Error>e;
-    return (
-        typeof ex.name == 'string' &&
-        typeof ex.message == 'string' &&
-        typeof ex.stack in allowStringOrUndefined
-    );
+    return typeof ex.name == 'string' && typeof ex.message == 'string' && typeof ex.stack in allowStringOrUndefined;
 }
+
+export const __testing__ = {
+    _getTypeOf,
+};

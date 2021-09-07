@@ -1,9 +1,5 @@
 import { format } from 'util';
-import {
-    matchRegExp,
-    MatchRegExpResult,
-    toRegExp,
-} from '../helpers/evaluateRegExp';
+import { matchRegExp, MatchRegExpResult, toRegExp } from '../helpers/evaluateRegExp';
 import {
     createErrorResponse,
     createRequest,
@@ -32,20 +28,12 @@ export interface ResponseMatchRegExp extends Response {
     data: MatchRegExpResult;
 }
 
-export const isMatchRegExpRequest = genIsRequest<RequestMatchRegExp>(
-    requestTypeMatchRegExp
-);
-export const isMatchRegExpResponse = genIsResponse<ResponseMatchRegExp>(
-    requestTypeMatchRegExp
-);
+export const isMatchRegExpRequest = genIsRequest<RequestMatchRegExp>(requestTypeMatchRegExp);
+export const isMatchRegExpResponse = genIsResponse<ResponseMatchRegExp>(requestTypeMatchRegExp);
 
-export function procMatchRegExp(
-    r: RequestMatchRegExp
-): ResponseMatchRegExp | ErrorResponse;
+export function procMatchRegExp(r: RequestMatchRegExp): ResponseMatchRegExp | ErrorResponse;
 export function procMatchRegExp(r: Request): Response | undefined;
-export function procMatchRegExp(
-    r: RequestMatchRegExp | Request
-): ResponseMatchRegExp | ErrorResponse | undefined {
+export function procMatchRegExp(r: RequestMatchRegExp | Request): ResponseMatchRegExp | ErrorResponse | undefined {
     if (!isMatchRegExpRequest(r)) return undefined;
     try {
         const regex = toRegExp(r.data.regexp);
@@ -57,15 +45,10 @@ export function procMatchRegExp(
     }
 }
 
-export function createRequestMatchRegExp(
-    data: RequestMatchRegExp['data']
-): RequestMatchRegExp {
+export function createRequestMatchRegExp(data: RequestMatchRegExp['data']): RequestMatchRegExp {
     return createRequest(requestTypeMatchRegExp, data);
 }
 
-export function createResponseMatchRegExp(
-    request: RequestMatchRegExp,
-    data: ResponseMatchRegExp['data']
-): ResponseMatchRegExp {
+export function createResponseMatchRegExp(request: RequestMatchRegExp, data: ResponseMatchRegExp['data']): ResponseMatchRegExp {
     return createResponse(request.id, request.requestType, data);
 }

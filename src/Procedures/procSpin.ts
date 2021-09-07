@@ -1,4 +1,13 @@
-import { Request, Response, genIsRequest, genIsResponse, createErrorResponse, ErrorResponse, createRequest, createResponse } from './procedure';
+import {
+    Request,
+    Response,
+    genIsRequest,
+    genIsResponse,
+    createErrorResponse,
+    ErrorResponse,
+    createRequest,
+    createResponse,
+} from './procedure';
 import { hrTimeToMs } from '../timer';
 
 export type SpinRequestType = 'Spin';
@@ -30,19 +39,19 @@ export function procSpin(r: RequestSpin | Request): Promise<ResponseSpin | Error
     if (!isValid(r)) {
         return Promise.resolve(createErrorResponse(r, 'Empty Spin Duration'));
     }
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         const { durationMs } = r.data;
         let elapsedTimeMs = 0;
         let count = 0;
         let n = 0.001;
         const startTime = process.hrtime();
-        while((elapsedTimeMs = hrTimeToMs(process.hrtime(startTime))) < durationMs ) {
+        while ((elapsedTimeMs = hrTimeToMs(process.hrtime(startTime))) < durationMs) {
             count++;
             n = Math.sqrt(n) / 2;
         }
         const response = createResponseSpin(r, {
             elapsedTimeMs,
-            count
+            count,
         });
         resolve(response);
     });

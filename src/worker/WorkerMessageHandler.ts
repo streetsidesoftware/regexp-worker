@@ -64,33 +64,18 @@ export class WorkerMessageHandler {
                 const response = proc(request);
                 if (response !== undefined) {
                     Promise.resolve(response)
-                        .catch((reason) =>
-                            createErrorResponse(
-                                request,
-                                reason.toString(),
-                                reason
-                            )
-                        )
+                        .catch((reason) => createErrorResponse(request, reason.toString(), reason))
                         .then((r) => this.post(r));
                     return;
                 }
             } catch (e) {
                 const msg = isError(e) ? e.message : format(e);
-                this.post(
-                    createErrorResponse(
-                        request,
-                        msg,
-                        isError(e) ? e : undefined
-                    )
-                );
+                this.post(createErrorResponse(request, msg, isError(e) ? e : undefined));
                 return;
             }
         }
 
-        this.log(
-            LogLevel.LogLevelWarn,
-            `Unhandled Request "${value.requestType}"`
-        );
+        this.log(LogLevel.LogLevelWarn, `Unhandled Request "${value.requestType}"`);
         this.post(createErrorResponse(request, 'Unhandled Request'));
     }
 }
