@@ -1,5 +1,11 @@
 import { isError, __testing__ } from './errors';
 
+class MyError extends Error {
+    constructor(msg: string) {
+        super(msg);
+    }
+}
+
 describe('errors', () => {
     test.each`
         value                                   | expected
@@ -10,7 +16,9 @@ describe('errors', () => {
         ${{ message: '', name: '' }}            | ${true}
         ${{ message: '', name: '', stack: '' }} | ${true}
         ${{ message: '', name: '', stack: 5 }}  | ${false}
-    `('isError', ({ value, expected }) => {
+        ${new Error('test error')}              | ${true}
+        ${new MyError('test error')}            | ${true}
+    `('isError $value', ({ value, expected }) => {
         expect(isError(value)).toBe(expected);
     });
 
