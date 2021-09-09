@@ -42,7 +42,7 @@ jobs:
           git --no-pager diff --compact-summary >> $GITHUB_ENV
           echo "<details>" >> $GITHUB_ENV
           echo "<summary>" >> $GITHUB_ENV
-          Details
+          echo Full Diff >> $GITHUB_ENV
           echo "</summary>" >> $GITHUB_ENV
           echo "<br />" >> $GITHUB_ENV
           echo "``````diff" >> $GITHUB_ENV
