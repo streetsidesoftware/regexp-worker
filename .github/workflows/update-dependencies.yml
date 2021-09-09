@@ -37,9 +37,16 @@ jobs:
           git --no-pager diff --compact-summary
       - name: Gen Body
         run: |
-          echo 'git_body<<DIFF' >> $GITHUB_ENV
+          echo "git_body<<DIFF" >> $GITHUB_ENV
+          echo "## Update Dependencies" >> $GITHUB_ENV
+          echo "<details>" >> $GITHUB_ENV
+          echo "<summary>" >> $GITHUB_ENV
           git --no-pager diff --compact-summary >> $GITHUB_ENV
-          echo 'DIFF' >> $GITHUB_ENV
+          echo "</summary>" >> $GITHUB_ENV
+          echo "<br />" >> $GITHUB_ENV
+          git --no-pager diff >> $GITHUB_ENV
+          echo "</details>" >> $GITHUB_ENV
+          echo "DIFF" >> $GITHUB_ENV
       - name: Echo git_status
         run: echo ${{ env.git_status }}
       - uses: tibdex/github-app-token@v1.4 # cspell:ignore tibdex
@@ -54,8 +61,7 @@ jobs:
         with:
           commit-message: "ci: Workflow Bot -- Update ALL Dependencies"
           branch: ${{ env.NEW_BRANCH }}
-          base: ${{ env.REF_BRANCH }}
-          title: "ci: Workflow Bot -- Update ALL Dependencies (${{ env.REF_BRANCH }})"
+          title: "ci: Workflow Bot -- Update ALL Dependencies"
           token: ${{ steps.generate-token.outputs.token }}
           body: ${{ env.git_body }}
           delete-branch: true
