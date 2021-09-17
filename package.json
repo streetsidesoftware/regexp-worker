@@ -14,6 +14,8 @@
     "prepublishOnly": "npm run test-all",
     "compile": "tsc -p .",
     "watch": "tsc --watch -p .",
+    "release": "npx standard-version",
+    "release-alpha": "npm release -- -p alpha",
     "tsc": "tsc -p .",
     "test-watch": "jest --watch",
     "test-js": "cross-env TEST_JS=true jest",
