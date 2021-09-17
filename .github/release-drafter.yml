@@ -61,6 +61,8 @@ autolabeler:
   - label: "chore"
     title:
       - "/chore/i"
+  - label: "dependencies"
+    title:
       - "/^ci[:](?! Workflow Bot)/i"
       - "/ci: Workflow Bot/i"
   - label: "documentation"
