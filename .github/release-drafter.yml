@@ -56,7 +56,7 @@ version-resolver:
       - "patch"
   default: patch
 exclude-labels:
-  - "exclude"
+  - "dependencies"
 autolabeler:
   - label: "chore"
     title:
