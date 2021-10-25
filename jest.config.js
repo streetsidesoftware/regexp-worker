@@ -29,6 +29,6 @@ module.exports = {
         'tsx',
     ],
     coverageReporters: [ 'json', 'lcov', 'text', 'clover', 'html' ],
-    setupFilesAfterEnv: ['jest-extended'],
+    setupFilesAfterEnv: ['jest-extended/all'],
     ...custom,
 }
