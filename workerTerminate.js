@@ -29,7 +29,7 @@ if (isMainThread) {
             console.log('Hard Exit')
             console.log(`After ${elapsedTimeMsFrom(start)}ms`)
             process.exit(1)
-        }, 100)
+        }, 200)
     }, 500)
 }
 
