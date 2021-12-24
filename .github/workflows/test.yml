@@ -10,7 +10,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [windows-latest, macos-latest]
         node-version: [16.x]
     steps:
       - uses: actions/checkout@v2.4.0
@@ -22,14 +22,13 @@ jobs:
       - run: npm install
       - run: npm run test-js
       - run: npm run test-ts
-      - run: npm run coverage
 
-  test-legacy-node: # make sure build/ci work properly
+  test-node-versions: # make sure build/ci work properly
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node-version: [14.x, 12.x]
+        node-version: [17.x, 16.x, 14.x, 12.x]
     steps:
       - uses: actions/checkout@v2.4.0
       - name: Use Node.js ${{ matrix.node-version }}
