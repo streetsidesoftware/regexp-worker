@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.1](https://github.com/streetsidesoftware/regexp-worker/compare/v2.0.0...v2.0.1) (2022-09-04)
+
+
+### Bug Fixes
+
+* Fix publish to NPM ([c426c5e](https://github.com/streetsidesoftware/regexp-worker/commit/c426c5e754507e3e92c871d1b8dcfa6a50325a87))
+
 ## [2.0.0](https://github.com/streetsidesoftware/regexp-worker/compare/v1.1.1...v2.0.0) (2022-09-04)
 
 
