@@ -52,18 +52,18 @@
   "devDependencies": {
     "@types/jest": "^27.5.2",
     "@types/node": "^18.11.11",
-    "@typescript-eslint/eslint-plugin": "^5.45.1",
-    "@typescript-eslint/parser": "^5.45.1",
+    "@typescript-eslint/eslint-plugin": "^5.46.0",
+    "@typescript-eslint/parser": "^5.46.0",
     "conventional-changelog": "^3.1.25",
     "cross-env": "^7.0.3",
     "eslint": "^8.29.0",
     "jest": "^27.5.1",
     "jest-extended": "^3.2.0",
     "lorem-ipsum": "^2.0.8",
-    "prettier": "^2.8.0",
+    "prettier": "^2.8.1",
     "rimraf": "^3.0.2",
     "ts-jest": "^27.1.5",
-    "typescript": "^4.9.3"
+    "typescript": "^4.9.4"
   },
   "homepage": "https://github.com/streetsidesoftware/regexp-worker#readme"
 }
