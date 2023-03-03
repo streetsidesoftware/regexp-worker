@@ -45,9 +45,9 @@
   },
   "files": [
     "index.js",
-    "lib/**/*.js",
-    "lib/**/*.d.ts",
-    "!**/*.test.*"
+    "lib",
+    "!**/*.test.*",
+    "!**/*.map"
   ],
   "devDependencies": {
     "@types/jest": "^27.5.2",
