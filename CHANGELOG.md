@@ -9,6 +9,13 @@ All notable changes to this project will be documented in this file. See [standa
 
 * Do not package test files ([#658](https://github.com/streetsidesoftware/regexp-worker/issues/658)) ([e1ea2f7](https://github.com/streetsidesoftware/regexp-worker/commit/e1ea2f7c8786864ed9d0b3bc625fa2c7e2a2b647))
 
+## [2.0.2](https://github.com/streetsidesoftware/regexp-worker/compare/v2.0.1...v2.0.2) (2023-08-16)
+
+
+### Bug Fixes
+
+* Do not package test files ([#658](https://github.com/streetsidesoftware/regexp-worker/issues/658)) ([e1ea2f7](https://github.com/streetsidesoftware/regexp-worker/commit/e1ea2f7c8786864ed9d0b3bc625fa2c7e2a2b647))
+
 ## [2.0.1](https://github.com/streetsidesoftware/regexp-worker/compare/v2.0.0...v2.0.1) (2022-09-04)
 
 
