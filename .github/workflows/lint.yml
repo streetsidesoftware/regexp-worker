@@ -9,12 +9,12 @@ jobs:
   cspell:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: npx cspell "**/{*.ts,*.md}"
 
   eslint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: npm i
       - run: npm run lint
