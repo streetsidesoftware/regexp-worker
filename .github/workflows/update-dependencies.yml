@@ -28,7 +28,7 @@ jobs:
       - name: Update Root
         run: |
           npm i
-          npx npm-check-updates -t minor -u
+          npx npm-check-updates -t semver -u
           rm -rf node_modules package-lock.json
 
       - name: Install
