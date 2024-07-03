@@ -32,7 +32,7 @@ const x2 = 'hello';
             text
                 .split(/\b/g)
                 .map((s) => s.replace(/[^\w]/g, ''))
-                .filter(notEmpty)
+                .filter(notEmpty),
         );
         const wordBreaks = execRegExp(/\b/g, text).matches;
         expect(wordBreaks.map((r) => r.index).slice(0, 5)).toEqual([1, 5, 6, 8, 9]);
@@ -56,9 +56,9 @@ const x2 = 'hello';
             expect.objectContaining({
                 elapsedTimeMs: expect.any(Number),
                 matrix: expect.arrayContaining([]),
-            })
+            }),
         );
-        const result = execRegExpMatrix([/\bt\w+/g, /\d+/g, /\execRegExpMatrix.*/], [text, code]);
+        const result = execRegExpMatrix([/\bt\w+/g, /\d+/g, /execRegExpMatrix.*/], [text, code]);
         expect(result.elapsedTimeMs).toBeGreaterThan(0);
         expect(result.matrix).toEqual(expect.any(Array));
         expect(result.matrix).toHaveLength(3);
@@ -79,7 +79,7 @@ const x2 = 'hello';
             text
                 .split(/\b/g)
                 .map((s) => s.replace(/[^\w]/g, ''))
-                .filter(notEmpty)
+                .filter(notEmpty),
         );
         expect(r.elapsedTimeMs).toBeGreaterThan(0);
         expect(r.elapsedTimeMs).toBeLessThan(100);
