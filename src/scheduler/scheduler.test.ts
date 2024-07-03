@@ -22,7 +22,7 @@ describe('Scheduler', () => {
             const request = Scheduler.createRequest<RequestEcho>('Echo', sampleText());
             const r = await scheduler.scheduleRequest(request);
             expect(r.data).toBe(sampleText());
-        })
+        }),
     );
 
     test(
@@ -35,7 +35,7 @@ describe('Scheduler', () => {
             expect(r2).toBe(r1);
             expect(r3).toBe(r1);
             expect((await r1).data).toBe(sampleText());
-        })
+        }),
     );
 
     test(
@@ -53,7 +53,7 @@ describe('Scheduler', () => {
                 expect(n).toBeGreaterThanOrEqual(a);
                 return n;
             }, 0);
-        })
+        }),
     );
 
     test(
@@ -75,7 +75,7 @@ describe('Scheduler', () => {
                 expect(n).toBeGreaterThanOrEqual(a);
                 return n;
             }, 0);
-        })
+        }),
     );
 
     test(
@@ -98,7 +98,7 @@ describe('Scheduler', () => {
                 expect(next).toBeGreaterThanOrEqual(last);
                 return next;
             });
-        })
+        }),
     );
 
     test(
@@ -112,26 +112,26 @@ describe('Scheduler', () => {
                     message: 'Unhandled Request',
                     requestType: 'My Unknown Request',
                     data: 'data',
-                })
+                }),
             );
-        })
+        }),
     );
 
     test('Termination on shutdown', () => {
         const scheduler = new Scheduler();
         return Promise.all([
             expect(scheduler.scheduleRequest(createRequestSpin(5000))).rejects.toEqual(
-                expect.objectContaining({ message: expect.stringContaining('stopped') })
+                expect.objectContaining({ message: expect.stringContaining('stopped') }),
             ),
             expect(scheduler.scheduleRequest(createRequestSpin(4000))).rejects.toEqual(
-                expect.objectContaining({ message: expect.stringContaining('stopped') })
+                expect.objectContaining({ message: expect.stringContaining('stopped') }),
             ),
             expect(scheduler.scheduleRequest(createRequestSpin(2000))).rejects.toEqual(
-                expect.objectContaining({ message: expect.stringContaining('stopped') })
+                expect.objectContaining({ message: expect.stringContaining('stopped') }),
             ),
             expect(delay(1).then(() => scheduler.dispose())).resolves.toBeUndefined(),
             expect(delay(5).then(() => scheduler.scheduleRequest(createRequestEcho('Too Late')))).rejects.toEqual(
-                expect.objectContaining({ message: expect.stringContaining('stopped') })
+                expect.objectContaining({ message: expect.stringContaining('stopped') }),
             ),
             expect(delay(2).then(() => scheduler.dispose())).resolves.toBeUndefined(),
             expect(delay(3).then(() => scheduler.dispose())).resolves.toBeUndefined(),
@@ -147,11 +147,11 @@ describe('Scheduler', () => {
                 expect(
                     scheduler.scheduleRequest(spinRequest).then(
                         () => false,
-                        () => true
-                    )
+                        () => true,
+                    ),
                 ).resolves.toBeTrue(),
                 expect(scheduler.scheduleRequest(spinRequest)).rejects.toEqual(
-                    expect.objectContaining({ message: expect.stringContaining('Request Terminated') })
+                    expect.objectContaining({ message: expect.stringContaining('Request Terminated') }),
                 ),
                 expect(scheduler.scheduleRequest(createRequestEcho('One'))).resolves.toEqual(expect.objectContaining({ data: 'One' })),
                 expect(scheduler.scheduleRequest(createRequestEcho('Two'))).resolves.toEqual(expect.objectContaining({ data: 'Two' })),
@@ -159,7 +159,7 @@ describe('Scheduler', () => {
                 expect(scheduler.terminateRequest('Bad ID')).rejects.toEqual(expect.objectContaining({ message: 'Unknown Request' })),
                 expect(delay(1).then(() => scheduler.terminateRequest(spinRequest.id))),
             ]);
-        })
+        }),
     );
 
     test(
@@ -170,11 +170,11 @@ describe('Scheduler', () => {
                 expect(scheduler.scheduleRequest(createRequestEcho('One'))).resolves.toEqual(expect.objectContaining({ data: 'One' })),
                 expect(scheduler.scheduleRequest(createRequestEcho('Two'))).resolves.toEqual(expect.objectContaining({ data: 'Two' })),
                 expect(scheduler.scheduleRequest(spinRequest, 5)).rejects.toEqual(
-                    expect.objectContaining({ message: expect.stringContaining('Request Timeout') })
+                    expect.objectContaining({ message: expect.stringContaining('Request Timeout') }),
                 ),
                 expect(scheduler.scheduleRequest(createRequestEcho('Three'))).resolves.toEqual(expect.objectContaining({ data: 'Three' })),
             ]);
-        })
+        }),
     );
 
     test(
@@ -185,12 +185,12 @@ describe('Scheduler', () => {
                 expect.objectContaining({
                     message: 'Error Thrown',
                     data: 'Throw',
-                })
+                }),
             );
             await expect(scheduler.scheduleRequest(createRequestGenError('reject'))).rejects.toEqual(
-                expect.objectContaining({ message: 'Error: Reject' })
+                expect.objectContaining({ message: 'Error: Reject' }),
             );
-        })
+        }),
     );
 });
 
@@ -199,7 +199,7 @@ function sampleText() {
     test('EvaluateRegExp', () => {
         const manager = new Manager(libDir);
         async function run() {
-            const r = await manager.evaluateRegExp(/\w+/g, );
+            const r = await manager.evaluateRegExp(/\\w+/g, );
             expect(r).toBe('hello there');
         }
 
