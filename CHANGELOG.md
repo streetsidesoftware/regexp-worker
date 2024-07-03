@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://github.com/streetsidesoftware/regexp-worker/compare/v2.0.2...v3.0.0) (2024-07-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* Require Node 18 ([#854](https://github.com/streetsidesoftware/regexp-worker/issues/854))
+
+### Bug Fixes
+
+* Require Node 18 ([#854](https://github.com/streetsidesoftware/regexp-worker/issues/854)) ([d95c061](https://github.com/streetsidesoftware/regexp-worker/commit/d95c06100b5d39c84b0d73c74d7276cc4511ebdb))
+
 ## [2.0.2](https://github.com/streetsidesoftware/regexp-worker/compare/v2.0.1...v2.0.2) (2023-08-16)
 
 
