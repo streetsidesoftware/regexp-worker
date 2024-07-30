@@ -6,7 +6,7 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "clean": "rimraf lib coverage",
+    "clean": "shx rm -rf lib coverage",
     "lint": "eslint \"src/**/*.ts\"",
     "build": "npm run compile",
     "clean-build": "npm run clean && npm run build",
@@ -62,7 +62,7 @@
     "jest-extended": "^4.0.2",
     "lorem-ipsum": "^2.0.8",
     "prettier": "^3.3.3",
-    "rimraf": "^5.0.9",
+    "shx": "^0.3.4",
     "ts-jest": "^29.2.3",
     "typescript": "^5.5.3",
     "typescript-eslint": "^7.16.1"
