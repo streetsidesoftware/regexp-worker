@@ -7,7 +7,7 @@ import {
     ErrorResponse,
     createRequest,
     createResponse,
-} from './procedure';
+} from './procedure.js';
 
 export type SleepRequestType = 'Sleep';
 export type SleepResponseType = SleepRequestType;

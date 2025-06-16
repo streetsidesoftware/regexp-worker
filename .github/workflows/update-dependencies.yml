@@ -5,19 +5,19 @@ on:
     branches:
       - main
     paths:
-      - "**/package.json"
-      - "**/package-lock.json"
+      - '**/package.json'
+      - '**/package-lock.json'
 
   workflow_dispatch:
   schedule:
-    - cron: "0 12 * * 0"
+    - cron: '0 12 * * 0'
 
 jobs:
   update-dependencies:
     if: github.repository_owner == 'streetsidesoftware'
     runs-on: ubuntu-latest
     env:
-      NEW_BRANCH: "update-dependencies-main"
+      NEW_BRANCH: 'update-dependencies-main'
     steps:
       - name: Start
         run: |
@@ -44,7 +44,7 @@ jobs:
       - name: PR
         uses: streetsidesoftware/actions/.github/actions/pr@v1
         with:
-          commit-message: "ci: Workflow Bot -- Update ALL Dependencies"
+          commit-message: 'ci: Workflow Bot -- Update ALL Dependencies'
           branch: ${{ env.NEW_BRANCH }}
           body: ${{ steps.body.outputs.body }}
           app_id: ${{ secrets.AUTOMATION_APP_ID }}

@@ -1,5 +1,31 @@
-import { RegExpWorker, execRegExpOnWorker, execRegExpMatrixOnWorker } from './RegExpWorker';
-import 'jest-extended';
+import { describe, test, expect } from 'vitest';
+import { RegExpWorker, execRegExpOnWorker, execRegExpMatrixOnWorker } from './RegExpWorker.js';
+
+interface CustomMatchers<R = unknown> {
+    toBeWithin: (floor: number, ceiling: number) => R;
+}
+
+declare module 'vitest' {
+    // eslint-disable-next-line  @typescript-eslint/no-empty-object-type
+    interface Matchers<T = any> extends CustomMatchers<T> {}
+}
+
+expect.extend({
+    toBeWithin(received, floor, ceiling) {
+        const pass = received >= floor && received <= ceiling;
+        if (pass) {
+            return {
+                message: () => `expected ${received} not to be within range ${floor} - ${ceiling}`,
+                pass,
+            };
+        } else {
+            return {
+                message: () => `expected ${received} to be within range ${floor} - ${ceiling}`,
+                pass,
+            };
+        }
+    },
+});
 
 // cspell:ignore hellothere
 
@@ -10,7 +36,7 @@ describe('RegExpWorker', () => {
             const r = await w.execRegExp(/\w/g, 'hello\nthere');
             expect(r.matches.map((m) => m[0])).toEqual('hellothere'.split(''));
             expect(r.elapsedTimeMs).toBeGreaterThan(0);
-        })
+        }),
     );
 
     test(
@@ -19,7 +45,7 @@ describe('RegExpWorker', () => {
             const r = await w.execRegExpMatrix([/\w/g], ['hello\nthere']);
             expect(r.matrix[0].results[0].matches.map((m) => m[0])).toEqual('hellothere'.split(''));
             expect(r.elapsedTimeMs).toBeGreaterThan(0);
-        })
+        }),
     );
 
     test(
@@ -29,7 +55,7 @@ describe('RegExpWorker', () => {
             const r = await w.matchRegExp(text, /\w/g);
             expect([...r.ranges].map((m) => text.slice(...m))).toEqual('hellothere'.split(''));
             expect(r.elapsedTimeMs).toBeGreaterThan(0);
-        })
+        }),
     );
 
     test(
@@ -41,7 +67,7 @@ describe('RegExpWorker', () => {
             expect(r.elapsedTimeMs).toBeGreaterThan(0);
             expect(r.results[0].elapsedTimeMs).toBeGreaterThan(0);
             expect(r.elapsedTimeMs).toBeGreaterThanOrEqual(r.results[0].elapsedTimeMs);
-        })
+        }),
     );
 
     test(
@@ -52,20 +78,20 @@ describe('RegExpWorker', () => {
             expect(worker.timeout).toBe(5.2);
             worker.timeout = 0;
             expect(worker.timeout).toBe(0);
-        })
+        }),
     );
 
     test(
         'very slow regexp',
-        run((worker) => {
+        run(async (worker) => {
             const r = worker.execRegExp(/(x+x+)+y/, 'x'.repeat(30), 5);
             return expect(r).rejects.toEqual(
                 expect.objectContaining({
                     elapsedTimeMs: expect.toBeWithin(3, 50),
                     message: expect.stringContaining('Request Timeout'),
-                })
+                }),
             );
-        })
+        }),
     );
 
     test('execRegExpOnWorker', async () => {

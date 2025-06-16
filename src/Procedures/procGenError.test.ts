@@ -1,11 +1,12 @@
+import { describe, test, expect } from 'vitest';
 import {
     createRequestGenError,
     // createResponseGenError,
     isGenErrorRequest,
     // isGenErrorResponse,
     procGenError,
-} from './procGenError';
-import { createId } from './uniqueId';
+} from './procGenError.js';
+import { createId } from './uniqueId.js';
 
 describe('GenError', () => {
     test('isA', () => {
@@ -16,6 +17,6 @@ describe('GenError', () => {
 
     test('text errors', async () => {
         expect(() => procGenError(createRequestGenError('Throw'))).toThrowError('Error Thrown');
-        expect(procGenError(createRequestGenError('undefined'))).resolves.toBeUndefined();
+        await expect(procGenError(createRequestGenError('undefined'))).resolves.toBeUndefined();
     });
 });

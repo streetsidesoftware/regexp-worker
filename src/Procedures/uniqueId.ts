@@ -18,7 +18,6 @@ export function createId(): UniqueID {
     return `ID-${a}-${b}-${c}-${d}`;
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function isId(value: any): value is UniqueID {
     if (typeof value === 'string' && /^ID-\d+-\d+-\d+-\d+$/.test(value)) {
         const [a, b, c, d] = value

@@ -1,5 +1,6 @@
-import { isRequest } from './procedure';
-import { createId } from './uniqueId';
+import { describe, it, expect } from 'vitest';
+import { isRequest } from './procedure.js';
+import { createId } from './uniqueId.js';
 
 describe('procedures', () => {
     it('isA', () => {

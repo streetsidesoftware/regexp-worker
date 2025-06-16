@@ -1,4 +1,5 @@
-import { RegExpWorker } from '.';
+import { describe, test, expect } from 'vitest';
+import { RegExpWorker } from './index.mjs';
 
 describe('Validate Index', () => {
     test(
@@ -8,7 +9,7 @@ describe('Validate Index', () => {
             expect(r.elapsedTimeMs).toBeGreaterThan(0);
             expect(r.elapsedTimeMs).toBeLessThan(10);
             expect(r.matches.map((m) => m[0])).toEqual('hello'.split(''));
-        })
+        }),
     );
 
     test('Auto cleanup after delay', async () => {

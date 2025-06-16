@@ -1,5 +1,5 @@
 import { format } from 'util';
-import { matchRegExpArray, MatchRegExpArrayResult, toRegExp } from '../helpers/evaluateRegExp';
+import { matchRegExpArray, MatchRegExpArrayResult, toRegExp } from '../helpers/evaluateRegExp.js';
 import {
     createErrorResponse,
     createRequest,
@@ -9,7 +9,7 @@ import {
     genIsResponse,
     Request,
     Response,
-} from './procedure';
+} from './procedure.js';
 
 export const requestTypeMatchRegExpArray = 'MatchRegExpArray';
 export type MatchRegExpArrayRequestType = typeof requestTypeMatchRegExpArray;
@@ -51,7 +51,7 @@ export function createRequestMatchRegExpArray(data: RequestMatchRegExpArray['dat
 
 export function createResponseMatchRegExpArray(
     request: RequestMatchRegExpArray,
-    data: ResponseMatchRegExpArray['data']
+    data: ResponseMatchRegExpArray['data'],
 ): ResponseMatchRegExpArray {
     return createResponse(request.id, request.requestType, data);
 }

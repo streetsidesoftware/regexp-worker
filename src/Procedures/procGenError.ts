@@ -1,4 +1,4 @@
-import { Request, Response, genIsRequest, genIsResponse, ErrorResponse, createRequest } from './procedure';
+import { Request, Response, genIsRequest, genIsResponse, ErrorResponse, createRequest } from './procedure.js';
 
 export type GenErrorRequestType = 'GenError';
 export type GenErrorResponseType = GenErrorRequestType;

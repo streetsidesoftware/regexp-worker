@@ -1,7 +1,11 @@
 import { parentPort, isMainThread, Worker } from 'worker_threads';
-import { createHandler } from './WorkerMessageHandler';
-import { toOutDir } from '../util/toOutDir';
-export { Worker } from 'worker_threads';
+import { createHandler } from './WorkerMessageHandler.js';
+import { toOutDir } from '../util/toOutDir.js';
+import { fileURLToPath } from 'url';
+
+export type { Worker } from 'worker_threads';
+
+const __filename = fileURLToPath(import.meta.url);
 
 let defaultFilename = __filename;
 

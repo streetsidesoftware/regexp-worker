@@ -1,12 +1,12 @@
-import { Request } from './procedure';
-import { procEcho } from './procEcho';
-import { procExecRegExp } from './procExecRegExp';
-import { procSleep } from './procSleep';
-import { procSpin } from './procSpin';
-import { procExecRegExpMatrix } from './procExecRegExpMatrix';
-import { procGenError } from './procGenError';
-import { procMatchRegExpArray } from './procMatchRegExpArray';
-import { procMatchRegExp } from './procMatchRegExp';
+import { Request } from './procedure.js';
+import { procEcho } from './procEcho.js';
+import { procExecRegExp } from './procExecRegExp.js';
+import { procSleep } from './procSleep.js';
+import { procSpin } from './procSpin.js';
+import { procExecRegExpMatrix } from './procExecRegExpMatrix.js';
+import { procGenError } from './procGenError.js';
+import { procMatchRegExpArray } from './procMatchRegExpArray.js';
+import { procMatchRegExp } from './procMatchRegExp.js';
 
 type Procedure = (r: Request) => any;
 

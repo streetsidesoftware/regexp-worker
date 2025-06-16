@@ -1,4 +1,5 @@
-import { isError, __testing__ } from './errors';
+import { describe, test, expect } from 'vitest';
+import { isError, __testing__ } from './errors.js';
 
 class MyError extends Error {
     constructor(msg: string) {

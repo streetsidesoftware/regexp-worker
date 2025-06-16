@@ -1,4 +1,5 @@
-import { hrTimeToMs } from './timer';
+import { describe, test, expect } from 'vitest';
+import { hrTimeToMs } from './timer.js';
 
 describe('Validate timer', () => {
     test('hrTimeToMs', () => {

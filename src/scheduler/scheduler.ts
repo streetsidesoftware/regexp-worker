@@ -1,7 +1,7 @@
-import { createWorker, Worker } from '../worker';
-import { Request, Response, isResponse, createRequest, ErrorResponse, isErrorResponse, isRequest } from '../Procedures/procedure';
-import { UniqueID } from '../Procedures/uniqueId';
-import { elapsedTimeMsFrom } from '../timer';
+import { createWorker, Worker } from '../worker/index.js';
+import { Request, Response, isResponse, createRequest, ErrorResponse, isErrorResponse, isRequest } from '../Procedures/procedure.js';
+import { UniqueID } from '../Procedures/uniqueId.js';
+import { elapsedTimeMsFrom } from '../timer.js';
 
 const defaultTimeLimitMs = 1000;
 const defaultSleepAfter = 200;
@@ -159,17 +159,29 @@ export class Scheduler {
 
 export class ErrorCanceledRequest<T> {
     readonly timestamp = Date.now();
-    constructor(readonly message: string, readonly requestType: string | undefined, readonly elapsedTimeMs: number, readonly data?: T) {}
+    constructor(
+        readonly message: string,
+        readonly requestType: string | undefined,
+        readonly elapsedTimeMs: number,
+        readonly data?: T,
+    ) {}
 }
 
 export class ErrorFailedRequest<T> {
     readonly timestamp = Date.now();
-    constructor(readonly message: string, readonly requestType: string | undefined, readonly data?: T) {}
+    constructor(
+        readonly message: string,
+        readonly requestType: string | undefined,
+        readonly data?: T,
+    ) {}
 }
 
 export class ErrorBadRequest<T> {
     readonly timestamp = Date.now();
-    constructor(readonly message: string, readonly data?: T) {}
+    constructor(
+        readonly message: string,
+        readonly data?: T,
+    ) {}
 }
 
 /**
