@@ -1,9 +1,10 @@
-import { Scheduler, ErrorFailedRequest } from './scheduler';
-import { RequestEcho, createRequestEcho } from '../Procedures/procEcho';
-import { createRequestSleep } from '../Procedures/procSleep';
-import { createRequestSpin } from '../Procedures/procSpin';
-import { Response } from '../Procedures/procedure';
-import { createRequestGenError } from '../Procedures/procGenError';
+import { describe, test, expect } from 'vitest';
+import { Scheduler, ErrorFailedRequest } from './scheduler.js';
+import { RequestEcho, createRequestEcho } from '../Procedures/procEcho.js';
+import { createRequestSleep } from '../Procedures/procSleep.js';
+import { createRequestSpin } from '../Procedures/procSpin.js';
+import { Response } from '../Procedures/procedure.js';
+import { createRequestGenError } from '../Procedures/procGenError.js';
 
 describe('Scheduler', () => {
     test('Create', () => {
@@ -149,7 +150,7 @@ describe('Scheduler', () => {
                         () => false,
                         () => true,
                     ),
-                ).resolves.toBeTrue(),
+                ).resolves.toBe(true),
                 expect(scheduler.scheduleRequest(spinRequest)).rejects.toEqual(
                     expect.objectContaining({ message: expect.stringContaining('Request Terminated') }),
                 ),

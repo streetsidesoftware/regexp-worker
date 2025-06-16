@@ -1,5 +1,5 @@
 import { format } from 'util';
-import { execRegExp, ExecRegExpResult, toRegExp } from '../helpers/evaluateRegExp';
+import { execRegExp, ExecRegExpResult, toRegExp } from '../helpers/evaluateRegExp.js';
 import {
     createErrorResponse,
     createRequest,
@@ -9,7 +9,7 @@ import {
     genIsResponse,
     Request,
     Response,
-} from './procedure';
+} from './procedure.js';
 
 export type ExecRegExpRequestType = 'ExecRegExp';
 export type ExecRegExpResponseType = ExecRegExpRequestType;

@@ -1,17 +1,18 @@
-import { MessagePort } from './MessagePort';
-import { createHandler, LogLevel } from './WorkerMessageHandler';
-import { createRequestEcho } from '../Procedures/procEcho';
-import { createRequest } from '../Procedures/procedure';
-import { NullID } from '../Procedures/uniqueId';
-import { createRequestGenError } from '../Procedures/procGenError';
+import { beforeEach, describe, test, expect, vi } from 'vitest';
+import { MessagePort } from './MessagePort.js';
+import { createHandler, LogLevel } from './WorkerMessageHandler.js';
+import { createRequestEcho } from '../Procedures/procEcho.js';
+import { createRequest } from '../Procedures/procedure.js';
+import { NullID } from '../Procedures/uniqueId.js';
+import { createRequestGenError } from '../Procedures/procGenError.js';
 
-const consoleLog = (console.log = jest.fn());
-const consoleWarn = (console.warn = jest.fn());
-const consoleError = (console.error = jest.fn());
+const consoleLog = (console.log = vi.fn());
+const consoleWarn = (console.warn = vi.fn());
+const consoleError = (console.error = vi.fn());
 
 describe('WorkerMessageHandler', () => {
     beforeEach(() => {
-        jest.resetAllMocks();
+        vi.resetAllMocks();
     });
 
     test('createHandler', () => {
@@ -37,7 +38,7 @@ describe('WorkerMessageHandler', () => {
         expect(response.value).toEqual(
             expect.objectContaining({
                 data: 'Hello',
-            })
+            }),
         );
         handler.dispose();
         port.close();
@@ -51,7 +52,7 @@ describe('WorkerMessageHandler', () => {
         expect(response.value).toEqual(
             expect.objectContaining({
                 data: 'Hello',
-            })
+            }),
         );
         handler.dispose();
         port.close();
@@ -71,7 +72,7 @@ describe('WorkerMessageHandler', () => {
                     message: 'Unhandled Request',
                     requestType: 'Test Unknown',
                 },
-            })
+            }),
         );
         handler.dispose();
         port.close();
@@ -95,7 +96,7 @@ describe('WorkerMessageHandler', () => {
                     message: expect.stringContaining('Badly formed Request'),
                     requestType: undefined,
                 },
-            })
+            }),
         );
         handler.dispose();
         port.close();
@@ -118,7 +119,7 @@ describe('WorkerMessageHandler', () => {
                 data: expect.objectContaining({
                     message: 'Error Thrown',
                 }),
-            })
+            }),
         );
 
         const requestReject = createRequestGenError('reject');
@@ -131,7 +132,7 @@ describe('WorkerMessageHandler', () => {
                 data: expect.objectContaining({
                     message: 'Error: Reject',
                 }),
-            })
+            }),
         );
 
         handler.dispose();
@@ -191,8 +192,8 @@ function mockMessagePort(): AsyncMessagePort {
         resolveAsync?.(Promise.resolve({ done: true, value: undefined }));
     }
 
-    const mockOn = jest.fn(on) as AsyncMessagePort['on'];
-    const mockOff = jest.fn(off) as AsyncMessagePort['off'];
+    const mockOn = vi.fn(on) as AsyncMessagePort['on'];
+    const mockOff = vi.fn(off) as AsyncMessagePort['off'];
 
     const iterator = messagesAsync[Symbol.asyncIterator]();
     const next = () => iterator.next();
@@ -202,7 +203,7 @@ function mockMessagePort(): AsyncMessagePort {
         messagesAsync,
         registeredCallbacks,
         sendMessage,
-        postMessage: jest.fn(postMessage) as AsyncMessagePort['postMessage'],
+        postMessage: vi.fn(postMessage) as AsyncMessagePort['postMessage'],
         on: mockOn,
         off: mockOff,
         next,

@@ -7,8 +7,8 @@ import {
     ErrorResponse,
     createRequest,
     createResponse,
-} from './procedure';
-import { hrTimeToMs } from '../timer';
+} from './procedure.js';
+import { hrTimeToMs } from '../timer.js';
 
 export type SpinRequestType = 'Spin';
 export type SpinResponseType = SpinRequestType;

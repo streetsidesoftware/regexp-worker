@@ -1,4 +1,4 @@
-name: "code coverage"
+name: 'code coverage'
 on: # rebuild any PRs and main branch changes
   pull_request:
   push:
@@ -10,6 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
       - run: npm install
       - run: npm run coverage
       - name: Publish Coveralls
@@ -19,4 +23,4 @@ jobs:
       - name: Publish Codecov
         uses: codecov/codecov-action@v5
         with:
-          file: ./coverage/lcov.info
+          files: ./coverage/lcov.info

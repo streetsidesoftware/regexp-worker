@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { UniqueID, createId, isId, NullID } from './uniqueId';
+import { UniqueID, createId, isId, NullID } from './uniqueId.js';
 
 export type RequestType = string;
 export type ResponseType = RequestType;

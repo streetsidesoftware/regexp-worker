@@ -1,1 +1,1 @@
-export * from './workerThread';
+export * from './workerThread.js';

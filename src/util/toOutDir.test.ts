@@ -1,5 +1,9 @@
-import { toOutDir } from './toOutDir';
+import { describe, it, expect } from 'vitest';
+import { toOutDir } from './toOutDir.js';
 import * as Path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
 
 describe('toOutDir', () => {
     it('toOutDir', () => {

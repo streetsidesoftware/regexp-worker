@@ -1,6 +1,7 @@
-import { isSleepRequest, procSleep, createRequestSleep } from './procSleep';
-import { createId } from './uniqueId';
-import { measurePromise } from '../timer';
+import { describe, test, expect } from 'vitest';
+import { isSleepRequest, procSleep, createRequestSleep } from './procSleep.js';
+import { createId } from './uniqueId.js';
+import { measurePromise } from '../timer.js';
 
 describe('Sleep', () => {
     test('isA', () => {

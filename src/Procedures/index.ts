@@ -1,3 +1,3 @@
-export { Request, Response } from './procedure';
-export { RequestExecRegExpMatrix, ResponseExecRegExpMatrix, createRequestExecRegExpMatrix } from './procExecRegExpMatrix';
-export { RequestExecRegExp, ResponseExecRegExp, createRequestExecRegExp } from './procExecRegExp';
+export { Request, Response } from './procedure.js';
+export { RequestExecRegExpMatrix, ResponseExecRegExpMatrix, createRequestExecRegExpMatrix } from './procExecRegExpMatrix.js';
+export { RequestExecRegExp, ResponseExecRegExp, createRequestExecRegExp } from './procExecRegExp.js';

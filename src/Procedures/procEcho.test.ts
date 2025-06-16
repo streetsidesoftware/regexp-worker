@@ -1,6 +1,7 @@
-import { isEchoRequest, procEcho, createRequestEcho } from './procEcho';
-import { createRequest, isErrorResponse } from './procedure';
-import { createId } from './uniqueId';
+import { describe, test, expect } from 'vitest';
+import { isEchoRequest, procEcho, createRequestEcho } from './procEcho.js';
+import { createRequest, isErrorResponse } from './procedure.js';
+import { createId } from './uniqueId.js';
 
 describe('Echo', () => {
     test('isA', () => {

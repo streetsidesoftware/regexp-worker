@@ -1,5 +1,5 @@
-import { createRequest, createResponse, ErrorResponse, genIsRequest, genIsResponse, Request, Response } from './procedure';
-import { ExecRegExpMatrixResult, execRegExpMatrix } from '../helpers/evaluateRegExp';
+import { createRequest, createResponse, ErrorResponse, genIsRequest, genIsResponse, Request, Response } from './procedure.js';
+import { ExecRegExpMatrixResult, execRegExpMatrix } from '../helpers/evaluateRegExp.js';
 
 export type ExecRegExpMatrixRequestType = 'ExecRegExpMatrix';
 export type ExecRegExpMatrixResponseType = ExecRegExpMatrixRequestType;
@@ -35,7 +35,7 @@ export function createRequestExecRegExpMatrix(data: RequestExecRegExpMatrix['dat
 
 export function createResponseExecRegExpMatrix(
     request: RequestExecRegExpMatrix,
-    data: ResponseExecRegExpMatrix['data']
+    data: ResponseExecRegExpMatrix['data'],
 ): ResponseExecRegExpMatrix {
     return createResponse(request.id, request.requestType, data);
 }

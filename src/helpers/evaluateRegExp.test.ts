@@ -1,3 +1,4 @@
+import { describe, test, expect } from 'vitest';
 import {
     execRegExp,
     ExecRegExpResult,
@@ -8,9 +9,8 @@ import {
     flatRangesToRanges,
     matchRegExp,
     matchRegExpArray,
-} from './evaluateRegExp';
+} from './evaluateRegExp.js';
 import * as fs from 'fs';
-import * as Path from 'path';
 
 describe('EvaluateRegExp', () => {
     const text = `
@@ -23,7 +23,7 @@ Some more cool text.
 Numbers: 1, 2, 3, 4, 1000, -55.0, 1.34e2
 const x2 = 'hello';
 `;
-    const code = fs.readFileSync(Path.join(__filename), 'utf8');
+    const code = fs.readFileSync(new URL(import.meta.url), 'utf8');
     const w = (result: ExecRegExpResult) => resultsToTexts(result.matches);
 
     test('evaluateRegExp', () => {

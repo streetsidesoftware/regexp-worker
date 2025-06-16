@@ -1,4 +1,5 @@
-import { nullPort } from './MessagePort';
+import { describe, it, expect } from 'vitest';
+import { nullPort } from './MessagePort.js';
 
 describe('MessagePort', () => {
     it('nullPort', () => {

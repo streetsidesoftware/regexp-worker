@@ -8,7 +8,7 @@
             "files": "**/*.{yaml,yml}",
             "options": {
                 "tabWidth": 2,
-                "singleQuote": false
+                "singleQuote": true
             }
         },
         {
@@ -23,18 +23,6 @@
             "options": {
                 "tabWidth": 2,
                 "singleQuote": false
-            }
-        },
-        {
-            "files": "packages/_settingsViewer/src/test/**",
-            "options": {
-                "printWidth": 280
-            }
-        },
-        {
-            "files": "packages/client/src/**/configUpdater.ts",
-            "options": {
-                "printWidth": 200
             }
         }
     ]

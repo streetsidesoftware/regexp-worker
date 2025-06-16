@@ -1,6 +1,7 @@
-import { isSpinRequest, procSpin, createRequestSpin } from './procSpin';
-import { createId } from './uniqueId';
-import { measurePromise } from '../timer';
+import { describe, test, expect } from 'vitest';
+import { isSpinRequest, procSpin, createRequestSpin } from './procSpin.js';
+import { createId } from './uniqueId.js';
+import { measurePromise } from '../timer.js';
 
 describe('Spin', () => {
     test('isA', () => {
@@ -18,7 +19,7 @@ describe('Spin', () => {
             expect.objectContaining({
                 count: expect.any(Number),
                 elapsedTimeMs: expect.any(Number),
-            })
+            }),
         );
         expect(m.elapsedTimeMs).toBeGreaterThan(req.data.durationMs);
     });

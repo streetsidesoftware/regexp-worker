@@ -1,6 +1,7 @@
-import { createRequestExecRegExpMatrix, procExecRegExpMatrix, isExecRegExpMatrixResponse } from './procExecRegExpMatrix';
-import { Request } from './procedure';
-import { createId } from './uniqueId';
+import { describe, test, expect } from 'vitest';
+import { createRequestExecRegExpMatrix, procExecRegExpMatrix, isExecRegExpMatrixResponse } from './procExecRegExpMatrix.js';
+import { Request } from './procedure.js';
+import { createId } from './uniqueId.js';
 
 describe('procExecRegExpMatrix', () => {
     test('basic', () => {

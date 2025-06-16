@@ -6,13 +6,19 @@ import {
     MatchRegExpArrayResult as _MatchRegExpArrayResult,
     MatchRegExpResult as _MatchRegExpResult,
     Range,
-} from './helpers/evaluateRegExp';
-import { Scheduler } from './scheduler';
-import { createRequestExecRegExp, createRequestExecRegExpMatrix, Response, RequestExecRegExp, RequestExecRegExpMatrix } from './Procedures';
-import { RequestMatchRegExp, createRequestMatchRegExp } from './Procedures/procMatchRegExp';
-import { RequestMatchRegExpArray, createRequestMatchRegExpArray } from './Procedures/procMatchRegExpArray';
+} from './helpers/evaluateRegExp.js';
+import { Scheduler } from './scheduler/index.js';
+import {
+    createRequestExecRegExp,
+    createRequestExecRegExpMatrix,
+    Response,
+    RequestExecRegExp,
+    RequestExecRegExpMatrix,
+} from './Procedures/index.js';
+import { RequestMatchRegExp, createRequestMatchRegExp } from './Procedures/procMatchRegExp.js';
+import { RequestMatchRegExpArray, createRequestMatchRegExpArray } from './Procedures/procMatchRegExpArray.js';
 
-export { ExecRegExpResult, ExecRegExpMatrixResult, toRegExp, Range } from './helpers/evaluateRegExp';
+export { ExecRegExpResult, ExecRegExpMatrixResult, toRegExp, Range } from './helpers/evaluateRegExp.js';
 
 export interface TimeoutError {
     message: string;
@@ -53,7 +59,7 @@ export class RegExpWorker {
     private makeRequest(req: RequestMatchRegExpArray, timeLimitMs: number | undefined): Promise<_MatchRegExpArrayResult>;
     private makeRequest(
         req: RequestExecRegExp | RequestExecRegExpMatrix | RequestMatchRegExp | RequestMatchRegExpArray,
-        timeLimitMs: number | undefined
+        timeLimitMs: number | undefined,
     ): Promise<ExecRegExpResult> | Promise<ExecRegExpMatrixResult> | Promise<_MatchRegExpResult> | Promise<_MatchRegExpArrayResult> {
         return this.scheduler.scheduleRequest(req, timeLimitMs).then(extractResult, timeoutRejection);
     }
@@ -94,14 +100,17 @@ export function execRegExpOnWorker(regExp: RegExp, text: string, timeLimitMs?: n
 export function execRegExpMatrixOnWorker(
     regExpArray: RegExp[],
     textArray: string[],
-    timeLimitMs?: number
+    timeLimitMs?: number,
 ): Promise<ExecRegExpMatrixResult> {
     const worker = new RegExpWorker();
     return worker.execRegExpMatrix(regExpArray, textArray, timeLimitMs).finally(worker.dispose);
 }
 
 export class MatchRegExpResult {
-    private constructor(readonly elapsedTimeMs: number, readonly raw_ranges: FlatRanges) {}
+    private constructor(
+        readonly elapsedTimeMs: number,
+        readonly raw_ranges: FlatRanges,
+    ) {}
 
     /**
      * The range tuples that matched the full regular expression.
@@ -117,7 +126,10 @@ export class MatchRegExpResult {
 }
 
 export class MatchRegExpArrayResult {
-    constructor(readonly elapsedTimeMs: number, readonly results: MatchRegExpResult[]) {}
+    constructor(
+        readonly elapsedTimeMs: number,
+        readonly results: MatchRegExpResult[],
+    ) {}
 
     static create(res: _MatchRegExpArrayResult): MatchRegExpArrayResult {
         return new MatchRegExpArrayResult(res.elapsedTimeMs, res.results.map(MatchRegExpResult.create));

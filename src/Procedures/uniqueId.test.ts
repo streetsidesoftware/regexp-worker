@@ -1,4 +1,5 @@
-import { createId, isId, NullID } from './uniqueId';
+import { describe, test, expect } from 'vitest';
+import { createId, isId, NullID } from './uniqueId.js';
 
 describe('unique id', () => {
     test('createId', () => {

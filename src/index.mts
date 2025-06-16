@@ -6,4 +6,4 @@ export {
     RegExpWorker,
     TimeoutError,
     toRegExp,
-} from './RegExpWorker';
+} from './RegExpWorker.js';
