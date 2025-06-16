@@ -59,6 +59,7 @@
     "@eslint/js": "^9.27.0",
     "@tsconfig/node20": "^20.1.6",
     "@types/node": "^18.19.103",
+    "@vitest/coverage-istanbul": "^3.2.3",
     "cross-env": "^7.0.3",
     "eslint": "^9.27.0",
     "globals": "^16.1.0",

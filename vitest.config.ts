@@ -28,6 +28,7 @@ export default defineConfig({
                 '**/samples/**',
                 '**/test*/**',
                 '**/test.*',
+                'workerTerminate.mjs',
                 'coverage',
                 'vitest*',
             ],
