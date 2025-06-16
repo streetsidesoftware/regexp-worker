@@ -16,8 +16,6 @@ jobs:
         include:
           - os: windows-latest
             node-version: 24.x
-          - os: macos-latest
-            node-version: 24.x
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
