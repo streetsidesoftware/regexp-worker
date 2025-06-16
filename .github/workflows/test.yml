@@ -20,8 +20,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: node -v
       - run: npm install
-      - run: npm run test-js
-      - run: npm run test-ts
+      - run: npm run test
 
   test-node-versions: # make sure build/ci work properly
     runs-on: ${{ matrix.os }}
@@ -37,5 +36,4 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: node -v
       - run: npm install
-      - run: npm run test-js
-      - run: npm run test-ts
+      - run: npm run test
