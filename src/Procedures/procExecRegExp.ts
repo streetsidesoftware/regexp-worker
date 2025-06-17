@@ -1,14 +1,14 @@
 import { format } from 'util';
-import { execRegExp, ExecRegExpResult, toRegExp } from '../helpers/evaluateRegExp.js';
+import { execRegExp, type ExecRegExpResult, toRegExp } from '../helpers/evaluateRegExp.js';
 import {
     createErrorResponse,
     createRequest,
     createResponse,
-    ErrorResponse,
+    type ErrorResponse,
     genIsRequest,
     genIsResponse,
-    Request,
-    Response,
+    type Request,
+    type Response,
 } from './procedure.js';
 
 export type ExecRegExpRequestType = 'ExecRegExp';
@@ -17,10 +17,7 @@ export const requestTypeExecRegExp: ExecRegExpRequestType = 'ExecRegExp';
 
 export interface RequestExecRegExp extends Request {
     requestType: ExecRegExpRequestType;
-    data: {
-        text: string;
-        regexp: RegExp | string;
-    };
+    data: { text: string; regexp: RegExp | string };
 }
 
 export interface ResponseExecRegExp extends Response {

@@ -7,17 +7,9 @@ import globals from 'globals';
 export default tsEslint.config(
     eslint.configs.recommended,
     ...tsEslint.configs.recommended,
+    { ignores: ['**/*.d.ts', '**/node_modules/**', 'lib/**/*.js', 'dist'] },
     {
-        ignores: ['**/*.d.ts', '**/node_modules/**', 'lib/**/*.js'],
-    },
-    {
-        languageOptions: {
-            ecmaVersion: 2023,
-            sourceType: 'commonjs',
-            globals: {
-                ...globals.node,
-            },
-        },
+        languageOptions: { ecmaVersion: 2023, sourceType: 'commonjs', globals: { ...globals.node } },
         rules: {
             // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
             quotes: ['warn', 'single', { avoidEscape: true }],

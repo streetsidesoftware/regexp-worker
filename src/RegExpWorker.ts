@@ -1,25 +1,25 @@
 import {
-    ExecRegExpMatrixResult,
-    ExecRegExpResult,
-    FlatRanges,
+    type ExecRegExpMatrixResult,
+    type ExecRegExpResult,
+    type FlatRanges,
     flatRangesToRanges,
-    MatchRegExpArrayResult as _MatchRegExpArrayResult,
-    MatchRegExpResult as _MatchRegExpResult,
-    Range,
+    type MatchRegExpArrayResult as _MatchRegExpArrayResult,
+    type MatchRegExpResult as _MatchRegExpResult,
+    type Range,
 } from './helpers/evaluateRegExp.js';
 import { Scheduler } from './scheduler/index.js';
 import {
     createRequestExecRegExp,
     createRequestExecRegExpMatrix,
-    Response,
-    RequestExecRegExp,
-    RequestExecRegExpMatrix,
+    type Response,
+    type RequestExecRegExp,
+    type RequestExecRegExpMatrix,
 } from './Procedures/index.js';
-import { RequestMatchRegExp, createRequestMatchRegExp } from './Procedures/procMatchRegExp.js';
-import { RequestMatchRegExpArray, createRequestMatchRegExpArray } from './Procedures/procMatchRegExpArray.js';
+import { type RequestMatchRegExp, createRequestMatchRegExp } from './Procedures/procMatchRegExp.js';
+import { type RequestMatchRegExpArray, createRequestMatchRegExpArray } from './Procedures/procMatchRegExpArray.js';
 import { TimeoutError } from './TimeoutError.js';
 
-export { ExecRegExpResult, ExecRegExpMatrixResult, toRegExp, Range } from './helpers/evaluateRegExp.js';
+export { type ExecRegExpResult, type ExecRegExpMatrixResult, toRegExp, type Range } from './helpers/evaluateRegExp.js';
 
 export class RegExpWorker {
     private scheduler: Scheduler;
