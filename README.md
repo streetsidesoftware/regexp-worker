@@ -100,7 +100,7 @@ worker.dispose();
 If the request times out, the promise will be rejected with:
 
 ```js
-interface TimeoutError {
+class TimeoutError extends Error {
     message: string;
     elapsedTimeMs: number;
 }

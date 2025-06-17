@@ -1,5 +1,6 @@
 import { describe, test, expect } from 'vitest';
-import { RegExpWorker, execRegExpOnWorker, execRegExpMatrixOnWorker } from './RegExpWorker.js';
+import { RegExpWorker, execRegExpOnWorker, execRegExpMatrixOnWorker, timeoutRejection } from './RegExpWorker.js';
+import { TimeoutError } from './TimeoutError.js';
 
 interface CustomMatchers<R = unknown> {
     toBeWithin: (floor: number, ceiling: number) => R;
@@ -14,15 +15,9 @@ expect.extend({
     toBeWithin(received, floor, ceiling) {
         const pass = received >= floor && received <= ceiling;
         if (pass) {
-            return {
-                message: () => `expected ${received} not to be within range ${floor} - ${ceiling}`,
-                pass,
-            };
+            return { message: () => `expected ${received} not to be within range ${floor} - ${ceiling}`, pass };
         } else {
-            return {
-                message: () => `expected ${received} to be within range ${floor} - ${ceiling}`,
-                pass,
-            };
+            return { message: () => `expected ${received} to be within range ${floor} - ${ceiling}`, pass };
         }
     },
 });
@@ -86,10 +81,7 @@ describe('RegExpWorker', () => {
         run(async (worker) => {
             const r = worker.execRegExp(/(x+x+)+y/, 'x'.repeat(30), 5);
             return expect(r).rejects.toEqual(
-                expect.objectContaining({
-                    elapsedTimeMs: expect.toBeWithin(3, 50),
-                    message: expect.stringContaining('Request Timeout'),
-                }),
+                expect.objectContaining({ elapsedTimeMs: expect.toBeWithin(3, 50), message: expect.stringContaining('Request Timeout') }),
             );
         }),
     );
@@ -107,6 +99,24 @@ describe('RegExpWorker', () => {
     test('execRegExpMatrixOnWorker', async () => {
         const response = await execRegExpMatrixOnWorker([/\b\w+/g], ['Good Morning']);
         expect(response.matrix[0].results[0].matches.map((m) => m[0])).toEqual(['Good', 'Morning']);
+    });
+});
+
+describe('timeoutRejection', () => {
+    test('TimeoutError', async () => {
+        const error = new TimeoutError('Test timeout', 100);
+        await expect(timeoutRejection(error)).rejects.toBe(error);
+    });
+
+    test('timeoutRejection Error', async () => {
+        const error = new Error('Test timeout');
+        await expect(timeoutRejection(error)).rejects.toBe(error);
+    });
+
+    test('timeoutRejection object', async () => {
+        const error = { message: 'Test timeout', elapsedTimeMs: 100 };
+        await expect(timeoutRejection(error)).rejects.toBeInstanceOf(TimeoutError);
+        await expect(timeoutRejection(error)).rejects.toEqual(expect.objectContaining(error));
     });
 });
 
