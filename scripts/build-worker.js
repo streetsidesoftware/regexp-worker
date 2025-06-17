@@ -5,7 +5,7 @@ async function run() {
     const workerCode = await fs.readFile(workerURL, 'base64');
     const data = splitIntoLines(workerCode);
 
-    const code = `
+    const code = `\
 // This file is auto-generated. Do not edit manually.
 // cspell\x3a disable
 
