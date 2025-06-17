@@ -82,7 +82,7 @@ function extractResult<T extends Response>(response: T): T['data'] {
     return response.data;
 }
 
-function timeoutRejection(e: any) {
+export function timeoutRejection(e: any): Promise<never> {
     if (e instanceof TimeoutError) return Promise.reject(e);
     if (e instanceof Error) return Promise.reject(e);
     if (!e || typeof e !== 'object' || !e.message || !e.elapsedTimeMs) return Promise.reject(new Error('Unknown Error', { cause: e }));
