@@ -109,7 +109,7 @@ export class Scheduler {
                 this.scheduleTimeout(() => this.stopWorker(), defaultSleepAfter);
                 return;
             }
-            req.startTime = process.hrtime();
+            req.startTime = performance.now();
             const requestId = req.request.id;
             this.currentRequest = requestId;
             this.scheduleTimeout(() => this.terminateRequest(requestId, 'Request Timeout'), req.timeLimitMs);
@@ -157,31 +157,40 @@ export class Scheduler {
     }
 }
 
-export class ErrorCanceledRequest<T> {
+export class ErrorCanceledRequest<T> extends Error {
     readonly timestamp = Date.now();
     constructor(
-        readonly message: string,
+        message: string,
         readonly requestType: string | undefined,
         readonly elapsedTimeMs: number,
         readonly data?: T,
-    ) {}
+    ) {
+        super(message);
+        this.name = 'ErrorCanceledRequest';
+    }
 }
 
-export class ErrorFailedRequest<T> {
+export class ErrorFailedRequest<T> extends Error {
     readonly timestamp = Date.now();
     constructor(
-        readonly message: string,
+        message: string,
         readonly requestType: string | undefined,
         readonly data?: T,
-    ) {}
+    ) {
+        super(message);
+        this.name = 'ErrorFailedRequest';
+    }
 }
 
-export class ErrorBadRequest<T> {
+export class ErrorBadRequest<T> extends Error {
     readonly timestamp = Date.now();
     constructor(
-        readonly message: string,
+        message: string,
         readonly data?: T,
-    ) {}
+    ) {
+        super(message);
+        this.name = 'ErrorBadRequest';
+    }
 }
 
 /**
@@ -198,5 +207,5 @@ interface PendingRequest {
     request: Request;
     promise: Promise<Response>;
     timeLimitMs: number;
-    startTime: [number, number] | undefined;
+    startTime: number | undefined;
 }

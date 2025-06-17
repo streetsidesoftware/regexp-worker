@@ -8,7 +8,6 @@ import {
     createRequest,
     createResponse,
 } from './procedure.js';
-import { hrTimeToMs } from '../timer.js';
 
 export type SpinRequestType = 'Spin';
 export type SpinResponseType = SpinRequestType;
@@ -44,8 +43,8 @@ export function procSpin(r: RequestSpin | Request): Promise<ResponseSpin | Error
         let elapsedTimeMs = 0;
         let count = 0;
         let n = 0.001;
-        const startTime = process.hrtime();
-        while ((elapsedTimeMs = hrTimeToMs(process.hrtime(startTime))) < durationMs) {
+        const startTime = performance.now();
+        while ((elapsedTimeMs = performance.now() - startTime) < durationMs) {
             count++;
             n = Math.sqrt(n) / 2;
         }

@@ -17,13 +17,9 @@ import {
 } from './Procedures/index.js';
 import { RequestMatchRegExp, createRequestMatchRegExp } from './Procedures/procMatchRegExp.js';
 import { RequestMatchRegExpArray, createRequestMatchRegExpArray } from './Procedures/procMatchRegExpArray.js';
+import { TimeoutError } from './TimeoutError.js';
 
 export { ExecRegExpResult, ExecRegExpMatrixResult, toRegExp, Range } from './helpers/evaluateRegExp.js';
-
-export interface TimeoutError {
-    message: string;
-    elapsedTimeMs: number;
-}
 
 export class RegExpWorker {
     private scheduler: Scheduler;
@@ -43,14 +39,16 @@ export class RegExpWorker {
         return this.makeRequest(req, timeLimitMs);
     }
 
-    public matchRegExp(text: string, regExp: RegExp, timeLimitMs?: number): Promise<MatchRegExpResult> {
+    public async matchRegExp(text: string, regExp: RegExp, timeLimitMs?: number): Promise<MatchRegExpResult> {
         const req = createRequestMatchRegExp({ regexp: regExp, text });
-        return this.makeRequest(req, timeLimitMs).then(MatchRegExpResult.create);
+        const res = await this.makeRequest(req, timeLimitMs);
+        return MatchRegExpResult.create(res);
     }
 
-    public matchRegExpArray(text: string, regExp: RegExp[], timeLimitMs?: number): Promise<MatchRegExpArrayResult> {
+    public async matchRegExpArray(text: string, regExp: RegExp[], timeLimitMs?: number): Promise<MatchRegExpArrayResult> {
         const req = createRequestMatchRegExpArray({ regexps: regExp, text });
-        return this.makeRequest(req, timeLimitMs).then(MatchRegExpArrayResult.create);
+        const res = await this.makeRequest(req, timeLimitMs);
+        return MatchRegExpArrayResult.create(res);
     }
 
     private makeRequest(req: RequestExecRegExp, timeLimitMs: number | undefined): Promise<ExecRegExpResult>;
@@ -67,8 +65,8 @@ export class RegExpWorker {
     /**
      * Shuts down the background Worker and rejects any pending scheduled items.
      */
-    private _dispose(): Promise<void> {
-        return this.scheduler.dispose().then();
+    private async _dispose(): Promise<void> {
+        return this.scheduler.dispose();
     }
 
     set timeout(timeoutMs: number) {
@@ -85,25 +83,24 @@ function extractResult<T extends Response>(response: T): T['data'] {
 }
 
 function timeoutRejection(e: any) {
-    if (!e || !e.message || !e.elapsedTimeMs) return Promise.reject(e);
-    return Promise.reject({
-        message: e.message,
-        elapsedTimeMs: e.elapsedTimeMs,
-    });
+    if (e instanceof TimeoutError) return Promise.reject(e);
+    if (e instanceof Error) return Promise.reject(e);
+    if (!e || typeof e !== 'object' || !e.message || !e.elapsedTimeMs) return Promise.reject(new Error('Unknown Error', { cause: e }));
+    return Promise.reject(new TimeoutError(e.message, e.elapsedTimeMs));
 }
 
-export function execRegExpOnWorker(regExp: RegExp, text: string, timeLimitMs?: number): Promise<ExecRegExpResult> {
+export async function execRegExpOnWorker(regExp: RegExp, text: string, timeLimitMs?: number): Promise<ExecRegExpResult> {
     const worker = new RegExpWorker();
-    return worker.execRegExp(regExp, text, timeLimitMs).finally(worker.dispose);
+    return await worker.execRegExp(regExp, text, timeLimitMs);
 }
 
-export function execRegExpMatrixOnWorker(
+export async function execRegExpMatrixOnWorker(
     regExpArray: RegExp[],
     textArray: string[],
     timeLimitMs?: number,
 ): Promise<ExecRegExpMatrixResult> {
     const worker = new RegExpWorker();
-    return worker.execRegExpMatrix(regExpArray, textArray, timeLimitMs).finally(worker.dispose);
+    return await worker.execRegExpMatrix(regExpArray, textArray, timeLimitMs);
 }
 
 export class MatchRegExpResult {

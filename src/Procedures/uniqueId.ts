@@ -1,15 +1,21 @@
-let id = process.hrtime()[0];
+let id = tt()[0];
 
 export type UniqueID = string;
+
+function tt(): [number, number] {
+    const n = performance.now();
+    const s = Math.floor(n / 1000);
+    return [s, Math.floor((n - s * 1000) * 1.0e6)];
+}
 
 /**
  * Gets a unique ID for each call.
  * Note: a UUID would be the "correct" solution, but this will work for our purposes.
- * Give that, this is more complex than it needs to be.
+ * Given that, this is more complex than it needs to be.
  */
 export function createId(): UniqueID {
     ++id;
-    const t = process.hrtime();
+    const t = tt();
     const v = id ^ t[0] ^ t[1];
     const a = ('0' + (v % 13)).slice(-2);
     const b = v;
