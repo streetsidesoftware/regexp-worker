@@ -1,13 +1,5 @@
-import {
-    Request,
-    Response,
-    genIsRequest,
-    genIsResponse,
-    createErrorResponse,
-    ErrorResponse,
-    createRequest,
-    createResponse,
-} from './procedure.js';
+import type { Request, Response, ErrorResponse } from './procedure.js';
+import { genIsRequest, genIsResponse, createErrorResponse, createRequest, createResponse } from './procedure.js';
 
 export type EchoRequestType = 'Echo';
 export type EchoResponseType = EchoRequestType;

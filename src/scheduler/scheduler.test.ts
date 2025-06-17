@@ -1,9 +1,10 @@
 import { describe, test, expect } from 'vitest';
 import { Scheduler, ErrorFailedRequest } from './scheduler.js';
-import { RequestEcho, createRequestEcho } from '../Procedures/procEcho.js';
+import type { RequestEcho } from '../Procedures/procEcho.js';
+import { createRequestEcho } from '../Procedures/procEcho.js';
 import { createRequestSleep } from '../Procedures/procSleep.js';
 import { createRequestSpin } from '../Procedures/procSpin.js';
-import { Response } from '../Procedures/procedure.js';
+import type { Response } from '../Procedures/procedure.js';
 import { createRequestGenError } from '../Procedures/procGenError.js';
 
 describe('Scheduler', () => {

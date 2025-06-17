@@ -1,6 +1,8 @@
-import { createWorker, Worker } from '../worker/index.js';
-import { Request, Response, isResponse, createRequest, ErrorResponse, isErrorResponse, isRequest } from '../Procedures/procedure.js';
-import { UniqueID } from '../Procedures/uniqueId.js';
+import type { Worker } from '../worker/index.js';
+import { createWorker } from '../worker/index.js';
+import type { Request, Response, ErrorResponse } from '../Procedures/procedure.js';
+import { isResponse, createRequest, isErrorResponse, isRequest } from '../Procedures/procedure.js';
+import type { UniqueID } from '../Procedures/uniqueId.js';
 import { elapsedTimeMsFrom } from '../timer.js';
 
 const defaultTimeLimitMs = 1000;

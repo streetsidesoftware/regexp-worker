@@ -1,11 +1,10 @@
 import { describe, test, expect } from 'vitest';
+import type { ExecRegExpResult, FlatRanges } from './evaluateRegExp.js';
 import {
     execRegExp,
-    ExecRegExpResult,
     toRegExp,
     execRegExpMatrix,
     execRegExpArray,
-    FlatRanges,
     flatRangesToRanges,
     matchRegExp,
     matchRegExpArray,

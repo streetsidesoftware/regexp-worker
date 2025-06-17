@@ -1,5 +1,5 @@
 import { beforeEach, describe, test, expect, vi } from 'vitest';
-import { MessagePort } from './MessagePort.js';
+import type { MessagePort } from './MessagePort.js';
 import { createHandler, LogLevel } from './WorkerMessageHandler.js';
 import { createRequestEcho } from '../Procedures/procEcho.js';
 import { createRequest } from '../Procedures/procedure.js';
