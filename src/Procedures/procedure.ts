@@ -64,7 +64,7 @@ export const responseTypeError: ErrorResponse['responseType'] = 'Error';
 
 export function createErrorResponse(request: Request | unknown, message: string, error?: Error | unknown): ErrorResponse {
     if (!isRequest(request)) {
-        const r: Record<string, unknown> = request && typeof request === 'object' ? (request as Record<string, unknown>) : {};
+        const r = (request && typeof request === 'object' ? request : {}) as Request;
         const id = isId(r.id) ? r.id : NullID;
         return createResponse(id, responseTypeError, {
             requestType: typeof r.requestType === 'string' ? r.requestType : undefined,
