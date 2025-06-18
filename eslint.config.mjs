@@ -26,7 +26,6 @@ export default tsEslint.config(
     },
     {
         languageOptions: { ecmaVersion: 2023, sourceType: 'module', globals: { ...globals.node } },
-        ignores: ['scripts'],
         rules: {
             // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
             quotes: ['warn', 'single', { avoidEscape: true }],
