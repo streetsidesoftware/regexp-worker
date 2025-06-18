@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { beforeEach, describe, test, expect, vi } from 'vitest';
 import type { MessagePort } from './MessagePort.js';
 import { createHandler, LogLevel } from './WorkerMessageHandler.js';
@@ -22,7 +23,9 @@ describe('WorkerMessageHandler', () => {
         handler.dispose();
         expect(port.registeredCallbacks.size).toBe(0);
         port.close();
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         expect(port.on).toBeCalledWith('message', expect.any(Function));
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         expect(port.off).toBeCalledWith('message', expect.any(Function));
         expect(consoleLog).not.toBeCalled();
         expect(consoleWarn).not.toBeCalled();
@@ -71,7 +74,9 @@ describe('WorkerMessageHandler', () => {
                 data: {
                     message: 'Unhandled Request',
                     requestType: 'Test Unknown',
+                    error: expect.any(Error),
                 },
+                timestamp: expect.any(Number),
             }),
         );
         handler.dispose();
@@ -95,7 +100,9 @@ describe('WorkerMessageHandler', () => {
                 data: {
                     message: expect.stringContaining('Badly formed Request'),
                     requestType: undefined,
+                    error: expect.any(Error),
                 },
+                timestamp: expect.any(Number),
             }),
         );
         handler.dispose();

@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { describe, test, expect } from 'vitest';
 import { RegExpWorker, execRegExpOnWorker, execRegExpMatrixOnWorker, timeoutRejection } from './RegExpWorker.js';
 import { TimeoutError } from './TimeoutError.js';
+import { catchErrors } from './helpers/errors.js';
 
 interface CustomMatchers<R = unknown> {
     toBeWithin: (floor: number, ceiling: number) => R;
@@ -67,7 +69,7 @@ describe('RegExpWorker', () => {
 
     test(
         'set timeout',
-        run(async (worker) => {
+        run((worker) => {
             expect(worker.timeout).toBeGreaterThan(0);
             worker.timeout = 5.2;
             expect(worker.timeout).toBe(5.2);
@@ -120,6 +122,12 @@ describe('timeoutRejection', () => {
     });
 });
 
-function run(fn: (w: RegExpWorker) => Promise<any>, w = new RegExpWorker()): () => Promise<void> {
-    return () => fn(w).finally(w.dispose).then();
+function run(fn: (w: RegExpWorker) => Promise<any> | void, w = new RegExpWorker()): () => Promise<void> {
+    return async () => {
+        try {
+            await fn(w);
+        } finally {
+            catchErrors(w.dispose());
+        }
+    };
 }

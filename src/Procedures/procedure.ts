@@ -1,19 +1,20 @@
+import { toError } from '../helpers/errors.js';
 import { type UniqueID, createId, isId, NullID } from './uniqueId.js';
 
 export type RequestType = string;
 export type ResponseType = RequestType;
 
-export interface Request {
+export interface Request<T = unknown> {
     id: UniqueID;
     requestType: RequestType;
-    data: any;
+    data: T;
 }
 
-export interface Response {
+export interface Response<T = unknown> {
     id: UniqueID;
     timestamp: number;
     responseType: ResponseType;
-    data: any;
+    data: T;
 }
 
 export function genIsRequest<T extends Request>(key: T['requestType']): (v: any) => v is T {
@@ -22,8 +23,10 @@ export function genIsRequest<T extends Request>(key: T['requestType']): (v: any)
     };
 }
 
-export function isRequest(v: any): v is Request {
-    return !!(typeof v === 'object' && typeof (v as Request).requestType === 'string' && isId(v.id));
+export function isRequest(v: unknown): v is Request {
+    if (!v || typeof v !== 'object') return false;
+    const r = v as Request;
+    return typeof r.requestType === 'string' && isId(r.id);
 }
 
 export function genIsResponse<T extends Response>(key: T['responseType']): (v: any) => v is T {
@@ -32,8 +35,10 @@ export function genIsResponse<T extends Response>(key: T['responseType']): (v: a
     };
 }
 
-export function isResponse(v: any): v is Response {
-    return !!(typeof v === 'object' && typeof (v as Response).responseType === 'string' && isId(v.id));
+export function isResponse(v: unknown): v is Response {
+    if (!v || typeof v !== 'object') return false;
+    const r = v as Response;
+    return typeof r.responseType === 'string' && isId(r.id);
 }
 
 export function createRequest<T extends Request>(requestType: T['requestType'], data: T['data']): T {
@@ -57,13 +62,19 @@ export interface ErrorResponse extends Response {
 
 export const responseTypeError: ErrorResponse['responseType'] = 'Error';
 
-export function createErrorResponse(request: Request | any, message: string, error?: Error): ErrorResponse {
+export function createErrorResponse(request: Request | unknown, message: string, error?: Error | unknown): ErrorResponse {
     if (!isRequest(request)) {
-        return createResponse(request?.id || NullID, responseTypeError, { requestType: request?.requestType, message, error });
+        const r = (request && typeof request === 'object' ? request : {}) as Request;
+        const id = isId(r.id) ? r.id : NullID;
+        return createResponse(id, responseTypeError, {
+            requestType: typeof r.requestType === 'string' ? r.requestType : undefined,
+            message,
+            error: toError(error),
+        });
     }
 
     const { id, requestType } = request;
-    return createResponse(id, responseTypeError, { requestType, message, error });
+    return createResponse(id, responseTypeError, { requestType, message, error: toError(error) });
 }
 
 export const isErrorResponse = genIsResponse<ErrorResponse>(responseTypeError);

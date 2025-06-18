@@ -1,5 +1,5 @@
 import { format } from 'util';
-import { isError } from '../helpers/errors.js';
+import { isError, toError } from '../helpers/errors.js';
 import { createErrorResponse, isRequest } from '../Procedures/procedure.js';
 import { procedures } from '../Procedures/procedures.js';
 import type { MessagePort } from './MessagePort.js';
@@ -16,6 +16,8 @@ export enum LogLevel {
     LogLevelInfo = 3,
     LogLevelDebug = 4,
 }
+
+export type LogParams = Parameters<typeof console.log>;
 
 export class WorkerMessageHandler {
     public logLevel: LogLevel = LogLevel.LogLevelError;
@@ -36,21 +38,21 @@ export class WorkerMessageHandler {
         this.port.postMessage(msg);
     }
 
-    private log(level: LogLevel, message?: any, ...rest: any[]) {
+    private log(level: LogLevel, ...params: LogParams) {
         if (level > this.logLevel) return;
         switch (level) {
             case LogLevel.LogLevelError:
-                console.error(message, ...rest);
+                console.error(...params);
                 break;
             case LogLevel.LogLevelWarn:
-                console.warn(message, ...rest);
+                console.warn(...params);
                 break;
             default:
-                console.log(message, ...rest);
+                console.log(...params);
         }
     }
 
-    private listenerMessage(value: any) {
+    private listenerMessage(value: unknown): void {
         this.log(LogLevel.LogLevelDebug, `message: ${JSON.stringify(value)}`);
         if (!isRequest(value)) {
             const msg = `Badly formed Request: ${JSON.stringify(value)}`;
@@ -65,8 +67,9 @@ export class WorkerMessageHandler {
                 const response = proc(request);
                 if (response !== undefined) {
                     Promise.resolve(response)
-                        .catch((reason) => createErrorResponse(request, reason.toString(), reason))
-                        .then((r) => this.post(r));
+                        .catch((reason) => createErrorResponse(request, String(reason), toError(reason)))
+                        .then((r) => this.post(r))
+                        .catch(() => {});
                     return;
                 }
             } catch (e) {

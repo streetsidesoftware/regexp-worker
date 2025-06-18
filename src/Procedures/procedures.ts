@@ -8,7 +8,7 @@ import { procGenError } from './procGenError.js';
 import { procMatchRegExpArray } from './procMatchRegExpArray.js';
 import { procMatchRegExp } from './procMatchRegExp.js';
 
-type Procedure = (r: Request) => any;
+type Procedure = (r: Request) => unknown;
 
 export const procedures: Procedure[] = [
     procExecRegExp,

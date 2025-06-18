@@ -1,4 +1,5 @@
 import { describe, test, expect } from 'vitest';
+import type { RequestSleep } from './procSleep.js';
 import { isSleepRequest, procSleep, createRequestSleep } from './procSleep.js';
 import { createId } from './uniqueId.js';
 import { measurePromise } from '../timer.js';
@@ -21,8 +22,8 @@ describe('Sleep', () => {
     });
 
     test('Sleep for -5ms', async () => {
-        const req: any = { id: createId(), requestType: 'Sleep' };
-        const m = await measurePromise(() => procSleep(req));
+        const req = { id: createId(), requestType: 'Sleep' };
+        const m = await measurePromise(() => procSleep(req as RequestSleep));
         const r = m.r;
         expect(r.id).toBe(req.id);
         expect(r.responseType).toBe('Error');

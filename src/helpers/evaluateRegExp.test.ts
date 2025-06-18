@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { describe, test, expect } from 'vitest';
 import type { ExecRegExpResult, FlatRanges } from './evaluateRegExp.js';
 import {

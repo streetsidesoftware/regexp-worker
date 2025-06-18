@@ -8,7 +8,7 @@
         "noImplicitAny": true,
         "noImplicitThis": true,
         "strictNullChecks": true,
-        "strictFunctionTypes": false,
+        "strictFunctionTypes": true,
         "noUnusedLocals": true,
         "outDir": "./dist",
         "forceConsistentCasingInFileNames": true

@@ -17,7 +17,7 @@ import {
 } from './Procedures/index.js';
 import { type RequestMatchRegExp, createRequestMatchRegExp } from './Procedures/procMatchRegExp.js';
 import { type RequestMatchRegExpArray, createRequestMatchRegExpArray } from './Procedures/procMatchRegExpArray.js';
-import { TimeoutError } from './TimeoutError.js';
+import { isTimeoutErrorLike, TimeoutError } from './TimeoutError.js';
 
 export { type ExecRegExpResult, type ExecRegExpMatrixResult, toRegExp, type Range } from './helpers/evaluateRegExp.js';
 
@@ -59,7 +59,7 @@ export class RegExpWorker {
         req: RequestExecRegExp | RequestExecRegExpMatrix | RequestMatchRegExp | RequestMatchRegExpArray,
         timeLimitMs: number | undefined,
     ): Promise<ExecRegExpResult> | Promise<ExecRegExpMatrixResult> | Promise<_MatchRegExpResult> | Promise<_MatchRegExpArrayResult> {
-        return this.scheduler.scheduleRequest(req, timeLimitMs).then(extractResult, timeoutRejection);
+        return this.scheduler.scheduleRequest(req, timeLimitMs).then(extractResult, timeoutRejection) as Promise<ExecRegExpResult>;
     }
 
     /**
@@ -82,10 +82,10 @@ function extractResult<T extends Response>(response: T): T['data'] {
     return response.data;
 }
 
-export function timeoutRejection(e: any): Promise<never> {
+export function timeoutRejection(e: unknown): Promise<never> {
     if (e instanceof TimeoutError) return Promise.reject(e);
     if (e instanceof Error) return Promise.reject(e);
-    if (!e || typeof e !== 'object' || !e.message || !e.elapsedTimeMs) return Promise.reject(new Error('Unknown Error', { cause: e }));
+    if (!isTimeoutErrorLike(e)) return Promise.reject(new Error('Unknown Error', { cause: e }));
     return Promise.reject(new TimeoutError(e.message, e.elapsedTimeMs));
 }
 
@@ -129,6 +129,9 @@ export class MatchRegExpArrayResult {
     ) {}
 
     static create(res: _MatchRegExpArrayResult): MatchRegExpArrayResult {
-        return new MatchRegExpArrayResult(res.elapsedTimeMs, res.results.map(MatchRegExpResult.create));
+        return new MatchRegExpArrayResult(
+            res.elapsedTimeMs,
+            res.results.map((r) => MatchRegExpResult.create(r)),
+        );
     }
 }
