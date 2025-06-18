@@ -1,11 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { describe, test, expect } from 'vitest';
-import { Scheduler, ErrorFailedRequest } from './scheduler.js';
+import { Scheduler, ErrorFailedRequest, ErrorCanceledRequest } from './scheduler.js';
 import type { RequestEcho } from '../Procedures/procEcho.js';
 import { createRequestEcho } from '../Procedures/procEcho.js';
 import { createRequestSleep } from '../Procedures/procSleep.js';
 import { createRequestSpin } from '../Procedures/procSpin.js';
 import type { Response } from '../Procedures/procedure.js';
 import { createRequestGenError } from '../Procedures/procGenError.js';
+import { catchErrors } from '../helpers/errors.js';
 
 describe('Scheduler', () => {
     test('Create', () => {
@@ -46,7 +49,9 @@ describe('Scheduler', () => {
             const results = await Promise.all([
                 scheduler.scheduleRequest(createRequestEcho('One')),
                 scheduler.scheduleRequest(createRequestEcho('Two')),
-                scheduler.scheduleRequest(createRequestSleep(50), 2).catch((e) => e),
+                scheduler
+                    .scheduleRequest(createRequestSleep(50), 2)
+                    .catch((e) => (console.error(e), e instanceof ErrorCanceledRequest ? e : { timestamp: -1 })),
                 scheduler.scheduleRequest(createRequestEcho('Three')),
                 scheduler.scheduleRequest(createRequestEcho('Four')),
             ]);
@@ -217,7 +222,7 @@ function sampleText() {
 function run<T>(fn: (scheduler: Scheduler) => Promise<T>): () => Promise<T> {
     return () => {
         const s = new Scheduler();
-        return fn(s).finally(s.dispose);
+        return fn(s).finally(() => catchErrors(s.dispose()));
     };
 }
 

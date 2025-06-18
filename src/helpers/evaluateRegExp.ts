@@ -25,10 +25,7 @@ export function execRegExpMatrix(regExpArray: RegExp[], textArray: string[]): Ex
     const { elapsedTimeMs, r: matrix } = measureExecution(() => {
         return regExpArray.map((r) => execRegExpOnTextArray(r, textArray));
     });
-    return {
-        elapsedTimeMs,
-        matrix,
-    };
+    return { elapsedTimeMs, matrix };
 }
 
 export interface ExecRegExpArrayResult {
@@ -40,21 +37,14 @@ export function execRegExpArray(regExpArray: RegExp[], text: string): ExecRegExp
     const { elapsedTimeMs, r: results } = measureExecution(() => {
         return regExpArray.map((r) => execRegExp(r, text));
     });
-    return {
-        elapsedTimeMs,
-        results,
-    };
+    return { elapsedTimeMs, results };
 }
 
 export function execRegExpOnTextArray(regExp: RegExp, texts: string[]): ExecRegExpOnTextArray {
     const { elapsedTimeMs, r: results } = measureExecution(() => {
         return texts.map((t) => execRegExp(regExp, t));
     });
-    return {
-        regExp,
-        elapsedTimeMs,
-        results,
-    };
+    return { regExp, elapsedTimeMs, results };
 }
 
 export type RegExpOrString = RegExp | string;
@@ -69,7 +59,7 @@ export function toRegExp(r: RegExp | string, defaultFlags?: string): RegExp {
     return new RegExp(r, defaultFlags);
 }
 
-export function isRegExp(r: RegExp | any): r is RegExp {
+export function isRegExp(r: unknown): r is RegExp {
     return r instanceof RegExp;
 }
 
@@ -116,10 +106,7 @@ function mapExecRegExpResultToMatchRegExpResult(r: ExecRegExpResult): MatchRegEx
         ranges[i++] = m.index;
         ranges[i++] = m.index + m[0].length;
     }
-    return {
-        elapsedTimeMs: r.elapsedTimeMs,
-        ranges,
-    };
+    return { elapsedTimeMs: r.elapsedTimeMs, ranges };
 }
 
 export function matchRegExp(text: string, regExp: RegExp): MatchRegExpResult {
@@ -136,10 +123,7 @@ export function matchRegExpArray(text: string, regExp: RegExp[]): MatchRegExpArr
         return regExp.map((r) => matchRegExp(text, r));
     });
 
-    return {
-        elapsedTimeMs,
-        results,
-    };
+    return { elapsedTimeMs, results };
 }
 
 export type Range = [number, number];

@@ -1,5 +1,6 @@
 import { describe, test, expect } from 'vitest';
 import { RegExpWorker } from './index.mjs';
+import { catchErrors } from './helpers/errors.js';
 
 describe('Validate Index', () => {
     test(
@@ -23,7 +24,7 @@ describe('Validate Index', () => {
 });
 
 function run(fn: (w: RegExpWorker) => Promise<any>, w = new RegExpWorker()): () => Promise<void> {
-    return () => fn(w).finally(w.dispose).then();
+    return () => fn(w).finally(() => catchErrors(w.dispose()));
 }
 
 function delay(ms: number): Promise<void> {

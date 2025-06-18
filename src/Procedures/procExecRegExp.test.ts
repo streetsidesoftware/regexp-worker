@@ -36,7 +36,7 @@ describe('procExecRegExp', () => {
 
     test('RequestExecRegExp missing regex', () => {
         const req: RequestExecRegExp = createRequest(requestTypeExecRegExp, { text: 'two words', regexp: '' });
-        delete (req as any).data.regexp;
+        delete (req.data as Partial<RequestExecRegExp['data']>).regexp;
         const result = procExecRegExp(req);
         const response = isErrorResponse(result) ? result : undefined;
         expect(response?.id).toBe(req.id);
@@ -45,7 +45,7 @@ describe('procExecRegExp', () => {
 
     test('RequestExecRegExp missing data', () => {
         const req: RequestExecRegExp = createRequest(requestTypeExecRegExp, { text: 'two words', regexp: '/./g' });
-        delete (req as any).data;
+        delete (req as Partial<RequestExecRegExp>).data;
         const result = procExecRegExp(req);
         const response = isErrorResponse(result) ? result : undefined;
         expect(response?.id).toBe(req.id);

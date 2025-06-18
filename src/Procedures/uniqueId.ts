@@ -24,7 +24,7 @@ export function createId(): UniqueID {
     return `ID-${a}-${b}-${c}-${d}`;
 }
 
-export function isId(value: any): value is UniqueID {
+export function isId(value: unknown): value is UniqueID {
     if (typeof value === 'string' && /^ID-\d+-\d+-\d+-\d+$/.test(value)) {
         const [a, b, c, d] = value
             .split('-')

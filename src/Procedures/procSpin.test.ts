@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { describe, test, expect } from 'vitest';
 import { isSpinRequest, procSpin, createRequestSpin } from './procSpin.js';
 import { createId } from './uniqueId.js';
@@ -26,6 +27,7 @@ describe('Spin', () => {
 
     test('Bad Request', async () => {
         const req: any = { id: createId(), requestType: 'Spin', data: {} };
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         const r = await procSpin(req);
         expect(r.responseType).toBe('Error');
     });

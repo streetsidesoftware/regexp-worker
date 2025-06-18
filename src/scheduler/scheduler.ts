@@ -4,6 +4,7 @@ import type { Request, Response, ErrorResponse } from '../Procedures/procedure.j
 import { isResponse, createRequest, isErrorResponse, isRequest } from '../Procedures/procedure.js';
 import type { UniqueID } from '../Procedures/uniqueId.js';
 import { elapsedTimeMsFrom } from '../timer.js';
+import { catchErrors } from '../helpers/errors.js';
 
 const defaultTimeLimitMs = 1000;
 const defaultSleepAfter = 200;
@@ -31,7 +32,7 @@ export class Scheduler {
 
     public scheduleRequest<T extends Request, U extends Response>(request: T, timeLimitMs = this.executionTimeLimitMs): Promise<U> {
         if (this.stopped) {
-            return Promise.reject(new ErrorCanceledRequest('Scheduler has been stopped', request.requestType, request.data));
+            return Promise.reject(new ErrorCanceledRequest('Scheduler has been stopped', request.requestType, 0, request.data));
         }
         if (!isRequest(request)) {
             return Promise.reject(new ErrorBadRequest('Bad Request', request));
@@ -53,7 +54,7 @@ export class Scheduler {
         this.stopped = true;
         const ret = this.stopWorker();
         for (const requestId of this.requestQueue.keys()) {
-            this.terminateRequest(requestId, 'Scheduler has been stopped');
+            catchErrors(this.terminateRequest(requestId, 'Scheduler has been stopped'));
         }
         this.pending.clear();
         this.requestQueue.clear();
@@ -62,7 +63,7 @@ export class Scheduler {
     }
 
     public terminateRequest(requestId: UniqueID, message = 'Request Terminated'): Promise<void> {
-        if (requestId === this.currentRequest) this.stopWorker();
+        if (requestId === this.currentRequest) catchErrors(this.stopWorker());
         const contract = this.pending.get(requestId);
         if (!contract) {
             this.cleanupRequest(requestId);
@@ -159,7 +160,7 @@ export class Scheduler {
     }
 }
 
-export class ErrorCanceledRequest<T> extends Error {
+export class ErrorCanceledRequest<T = unknown> extends Error {
     readonly timestamp = Date.now();
     constructor(
         message: string,
