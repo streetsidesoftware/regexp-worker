@@ -201,7 +201,7 @@ describe('Scheduler', () => {
     );
 });
 
-function sampleText() {
+function sampleText(): string {
     return `
     test('EvaluateRegExp', () => {
         const manager = new Manager(libDir);

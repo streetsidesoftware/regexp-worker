@@ -1,4 +1,4 @@
-function _getTypeOf(t: unknown) {
+function _getTypeOf(t: unknown): string {
     return typeof t;
 }
 

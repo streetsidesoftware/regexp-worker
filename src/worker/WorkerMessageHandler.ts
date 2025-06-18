@@ -33,12 +33,12 @@ export class WorkerMessageHandler {
         this.port = nullPort;
     }
 
-    private post(msg: any) {
+    private post(msg: any): void {
         this.log(LogLevel.LogLevelDebug, 'Post: ' + JSON.stringify(msg));
         this.port.postMessage(msg);
     }
 
-    private log(level: LogLevel, ...params: LogParams) {
+    private log(level: LogLevel, ...params: LogParams): void {
         if (level > this.logLevel) return;
         switch (level) {
             case LogLevel.LogLevelError:

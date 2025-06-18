@@ -49,7 +49,7 @@ export class Scheduler {
         return promise;
     }
 
-    private _dispose() {
+    private _dispose(): Promise<void> {
         if (this.stopped) return Promise.resolve();
         this.stopped = true;
         const ret = this.stopWorker();
@@ -86,7 +86,7 @@ export class Scheduler {
         return p;
     }
 
-    private listener(m: any) {
+    private listener(m: any): void {
         // istanbul ignore else
         if (isResponse(m)) {
             const contract = this.pending.get(m.id);
@@ -100,7 +100,7 @@ export class Scheduler {
         console.warn(`Unhandled Response ${JSON.stringify(m)}`);
     }
 
-    private trigger() {
+    private trigger(): void {
         if (this.stopped || this.currentRequest) return;
 
         setImmediate(() => {
@@ -120,7 +120,7 @@ export class Scheduler {
         });
     }
 
-    private cleanupRequest(id: UniqueID) {
+    private cleanupRequest(id: UniqueID): void {
         this.pending.delete(id);
         this.requestQueue.delete(id);
         // istanbul ignore else
@@ -133,7 +133,7 @@ export class Scheduler {
         this.trigger();
     }
 
-    private scheduleTimeout(fn: () => any, delayMs: number) {
+    private scheduleTimeout(fn: () => any, delayMs: number): void {
         if (this.timeoutID) clearTimeout(this.timeoutID);
         this.timeoutID = setTimeout(fn, delayMs);
     }

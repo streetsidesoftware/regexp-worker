@@ -162,21 +162,21 @@ function mockMessagePort(): AsyncMessagePort {
         resolveAsync = resolve;
     });
 
-    function postMessage(value: any) {
+    function postMessage(value: any): void {
         messages.push(value);
         resolveAsync?.(Promise.resolve({ value }));
     }
 
     const registeredCallbacks = new Map<string, Set<(value?: any) => void>>();
 
-    function on(event: string, callback: (valid?: any) => void) {
+    function on(event: string, callback: (valid?: any) => void): AsyncMessagePort {
         const callbacks = registeredCallbacks.get(event) ?? new Set();
         callbacks.add(callback);
         registeredCallbacks.set(event, callbacks);
         return port;
     }
 
-    function off(event: string, callback: (valid?: any) => void) {
+    function off(event: string, callback: (valid?: any) => void): AsyncMessagePort {
         const callbacks = registeredCallbacks.get(event);
         if (!callbacks || !callbacks.has(callback)) throw new Error(`Unknown Function "${event}"`);
 
@@ -187,7 +187,7 @@ function mockMessagePort(): AsyncMessagePort {
         return port;
     }
 
-    function sendMessage(v: any) {
+    function sendMessage(v: any): void {
         const callbacks = registeredCallbacks.get('message');
         if (!callbacks) throw new Error('No listeners on "message"');
         for (const call of callbacks) {
@@ -195,7 +195,7 @@ function mockMessagePort(): AsyncMessagePort {
         }
     }
 
-    function close() {
+    function close(): void {
         resolveAsync?.(Promise.resolve({ done: true, value: undefined }));
     }
 
@@ -203,7 +203,7 @@ function mockMessagePort(): AsyncMessagePort {
     const mockOff = vi.fn(off) as AsyncMessagePort['off'];
 
     const iterator = messagesAsync[Symbol.asyncIterator]();
-    const next = () => iterator.next();
+    const next = (): ReturnType<AsyncMessagePort['next']> => iterator.next();
 
     const port: AsyncMessagePort = {
         messages,
@@ -233,7 +233,7 @@ function callbackIterable<T>(callBack: CallbackAsync<T>): AsyncIterable<T> {
         trigger();
     });
 
-    function trigger() {
+    function trigger(): void {
         const resolve = pending;
         pending = undefined;
         if (resolve) {

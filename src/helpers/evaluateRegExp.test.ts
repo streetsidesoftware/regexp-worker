@@ -24,7 +24,7 @@ Numbers: 1, 2, 3, 4, 1000, -55.0, 1.34e2
 const x2 = 'hello';
 `;
     const code = fs.readFileSync(new URL(import.meta.url), 'utf8');
-    const w = (result: ExecRegExpResult) => resultsToTexts(result.matches);
+    const w = (result: ExecRegExpResult): string[] => resultsToTexts(result.matches);
 
     test('evaluateRegExp', () => {
         const words = w(execRegExp(/\w+/g, text));

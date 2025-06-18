@@ -33,7 +33,7 @@ export default tsEslint.config(
             // e.g. "@typescript-eslint/explicit-function-return-type": "off",
             '@typescript-eslint/consistent-type-exports': ['error', { fixMixedExportsWithInlineTypeSpecifier: false }],
             '@typescript-eslint/consistent-type-imports': ['error', { fixStyle: 'separate-type-imports', prefer: 'type-imports' }],
-            '@typescript-eslint/explicit-function-return-type': 'off',
+            '@typescript-eslint/explicit-function-return-type': ['error', { allowExpressions: true }],
             '@typescript-eslint/no-empty-function': 'off',
             '@typescript-eslint/no-empty-interface': 'off',
             '@typescript-eslint/no-explicit-any': 'off',
