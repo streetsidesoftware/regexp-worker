@@ -2,7 +2,8 @@ import { format } from 'util';
 import { isError } from '../helpers/errors.js';
 import { createErrorResponse, isRequest } from '../Procedures/procedure.js';
 import { procedures } from '../Procedures/procedures.js';
-import { MessagePort, nullPort } from './MessagePort.js';
+import type { MessagePort } from './MessagePort.js';
+import { nullPort } from './MessagePort.js';
 
 export function createHandler(port: MessagePort): WorkerMessageHandler {
     return new WorkerMessageHandler(port);

@@ -1,4 +1,4 @@
-import { UniqueID, createId, isId, NullID } from './uniqueId.js';
+import { type UniqueID, createId, isId, NullID } from './uniqueId.js';
 
 export type RequestType = string;
 export type ResponseType = RequestType;
@@ -59,19 +59,11 @@ export const responseTypeError: ErrorResponse['responseType'] = 'Error';
 
 export function createErrorResponse(request: Request | any, message: string, error?: Error): ErrorResponse {
     if (!isRequest(request)) {
-        return createResponse(request?.id || NullID, responseTypeError, {
-            requestType: request?.requestType,
-            message,
-            error,
-        });
+        return createResponse(request?.id || NullID, responseTypeError, { requestType: request?.requestType, message, error });
     }
 
     const { id, requestType } = request;
-    return createResponse(id, responseTypeError, {
-        requestType,
-        message,
-        error,
-    });
+    return createResponse(id, responseTypeError, { requestType, message, error });
 }
 
 export const isErrorResponse = genIsResponse<ErrorResponse>(responseTypeError);

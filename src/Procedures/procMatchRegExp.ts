@@ -1,15 +1,8 @@
 import { format } from 'util';
-import { matchRegExp, MatchRegExpResult, toRegExp } from '../helpers/evaluateRegExp.js';
-import {
-    createErrorResponse,
-    createRequest,
-    createResponse,
-    ErrorResponse,
-    genIsRequest,
-    genIsResponse,
-    Request,
-    Response,
-} from './procedure.js';
+import type { MatchRegExpResult } from '../helpers/evaluateRegExp.js';
+import { matchRegExp, toRegExp } from '../helpers/evaluateRegExp.js';
+import type { ErrorResponse, Request, Response } from './procedure.js';
+import { createErrorResponse, createRequest, createResponse, genIsRequest, genIsResponse } from './procedure.js';
 
 export const requestTypeMatchRegExp = 'MatchRegExp';
 export type MatchRegExpRequestType = typeof requestTypeMatchRegExp;

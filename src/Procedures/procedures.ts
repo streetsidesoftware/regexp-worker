@@ -1,4 +1,4 @@
-import { Request } from './procedure.js';
+import type { Request } from './procedure.js';
 import { procEcho } from './procEcho.js';
 import { procExecRegExp } from './procExecRegExp.js';
 import { procSleep } from './procSleep.js';

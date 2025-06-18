@@ -1,1 +1,1 @@
-export * from './workerThread.js';
+export { createWorker, type Worker } from './workerThread.js';

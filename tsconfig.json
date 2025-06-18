@@ -10,7 +10,7 @@
         "strictNullChecks": true,
         "strictFunctionTypes": false,
         "noUnusedLocals": true,
-        "outDir": "./lib",
+        "outDir": "./dist",
         "forceConsistentCasingInFileNames": true
     },
     "include": ["./src"]

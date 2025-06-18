@@ -1,8 +1,8 @@
 export {
     execRegExpMatrixOnWorker,
-    ExecRegExpMatrixResult,
+    type ExecRegExpMatrixResult,
     execRegExpOnWorker,
-    ExecRegExpResult,
+    type ExecRegExpResult,
     RegExpWorker,
     toRegExp,
 } from './RegExpWorker.js';

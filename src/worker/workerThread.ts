@@ -1,18 +1,10 @@
-import { parentPort, isMainThread, Worker } from 'worker_threads';
-import { createHandler } from './WorkerMessageHandler.js';
-import { fileURLToPath } from 'url';
+import { Worker } from 'worker_threads';
+import { workerCodeDataURL } from './workerCodeDataURL.js';
 
 export type { Worker } from 'worker_threads';
 
-const __filename = fileURLToPath(import.meta.url);
+const defaultFilename = new URL(workerCodeDataURL);
 
-const defaultFilename = __filename;
-
-export function createWorker(filename: string = defaultFilename): Worker {
+export function createWorker(filename: string | URL = defaultFilename): Worker {
     return new Worker(filename);
-}
-
-if (!isMainThread && parentPort) {
-    const handler = createHandler(parentPort);
-    parentPort.once('close', handler.dispose);
 }
