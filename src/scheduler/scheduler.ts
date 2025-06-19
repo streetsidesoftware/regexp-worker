@@ -10,8 +10,8 @@ const defaultTimeLimitMs = 1000;
 const defaultSleepAfter = 200;
 
 interface Contract {
-    resolve: (v: Response | Promise<Response>) => any;
-    reject: (err: any) => any;
+    resolve: (v: Response | Promise<Response>) => unknown;
+    reject: (err: unknown) => unknown;
 }
 
 export class Scheduler {
@@ -86,7 +86,7 @@ export class Scheduler {
         return p;
     }
 
-    private listener(m: any): void {
+    private listener(m: unknown): void {
         // istanbul ignore else
         if (isResponse(m)) {
             const contract = this.pending.get(m.id);
@@ -133,7 +133,7 @@ export class Scheduler {
         this.trigger();
     }
 
-    private scheduleTimeout(fn: () => any, delayMs: number): void {
+    private scheduleTimeout(fn: () => unknown, delayMs: number): void {
         if (this.timeoutID) clearTimeout(this.timeoutID);
         this.timeoutID = setTimeout(fn, delayMs);
     }

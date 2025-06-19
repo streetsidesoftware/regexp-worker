@@ -21,10 +21,10 @@ export type LogParams = Parameters<typeof console.log>;
 
 export class WorkerMessageHandler {
     public logLevel: LogLevel = LogLevel.LogLevelError;
-    private listener: (value: any) => void;
+    private listener: (value: unknown) => void;
 
     constructor(private port: MessagePort) {
-        this.listener = (v: any) => this.listenerMessage(v);
+        this.listener = (v: unknown) => this.listenerMessage(v);
         port.on('message', this.listener);
     }
 
@@ -33,7 +33,7 @@ export class WorkerMessageHandler {
         this.port = nullPort;
     }
 
-    private post(msg: any): void {
+    private post(msg: unknown): void {
         this.log(LogLevel.LogLevelDebug, 'Post: ' + JSON.stringify(msg));
         this.port.postMessage(msg);
     }

@@ -9,7 +9,7 @@ interface CustomMatchers<R = unknown> {
 }
 
 declare module 'vitest' {
-    // eslint-disable-next-line  @typescript-eslint/no-empty-object-type
+    // eslint-disable-next-line  @typescript-eslint/no-empty-object-type, @typescript-eslint/no-explicit-any
     interface Matchers<T = any> extends CustomMatchers<T> {}
 }
 
@@ -122,7 +122,7 @@ describe('timeoutRejection', () => {
     });
 });
 
-function run(fn: (w: RegExpWorker) => Promise<any> | void, w = new RegExpWorker()): () => Promise<void> {
+function run(fn: (w: RegExpWorker) => Promise<unknown> | void, w = new RegExpWorker()): () => Promise<void> {
     return async () => {
         try {
             await fn(w);

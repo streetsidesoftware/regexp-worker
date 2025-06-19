@@ -13,25 +13,31 @@ export interface RequestGenError extends Request {
 
 export interface ResponseGenError extends Response {
     responseType: GenErrorRequestType;
-    data: any;
+    data: unknown;
 }
-
-const undefinedResponse: any = undefined;
 
 export const isGenErrorRequest = genIsRequest<RequestGenError>(typeGenError);
 export const isGenErrorResponse = genIsResponse<ResponseGenError>(typeGenError);
 
+// @todo: this function signature is most likely wrong.
+
 export function procGenError(r: RequestGenError): ResponseGenError | ErrorResponse;
 export function procGenError(r: Request): undefined;
-export function procGenError(r: RequestGenError | Request): Promise<ResponseGenError> | ResponseGenError | ErrorResponse | undefined {
+export function procGenError(
+    r: RequestGenError | Request,
+): Promise<ResponseGenError> | Promise<undefined> | ResponseGenError | ErrorResponse | undefined;
+export function procGenError(
+    r: RequestGenError | Request,
+): Promise<ResponseGenError> | Promise<undefined> | ResponseGenError | ErrorResponse | undefined {
     if (!isGenErrorRequest(r)) return undefined;
     switch (r.data) {
         case 'Throw':
             throw new Error('Error Thrown');
         case 'undefined':
-            return Promise.resolve(undefinedResponse);
+            return Promise.resolve(undefined);
         case 'reject':
-            return Promise.reject(new Error('Reject'));
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+            return Promise.reject(new Error('Reject')) as Promise<ResponseGenError>;
     }
 }
 

@@ -23,6 +23,7 @@ describe('Validate Index', () => {
     });
 });
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function run(fn: (w: RegExpWorker) => Promise<any>, w = new RegExpWorker()): () => Promise<void> {
     return () => fn(w).finally(() => catchErrors(w.dispose()));
 }

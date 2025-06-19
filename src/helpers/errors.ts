@@ -34,7 +34,7 @@ export function toError(e: unknown): Error {
  * @param promise A promise that may reject.
  * @returns void
  */
-export function catchErrors(promise: Promise<any>, onError?: (error: unknown) => void): void {
+export function catchErrors(promise: Promise<unknown>, onError?: (error: unknown) => void): void {
     promise
         .then(() => {})
         .catch((error) => onError?.(error))

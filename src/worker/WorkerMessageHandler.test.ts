@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { beforeEach, describe, test, expect, vi } from 'vitest';
 import type { MessagePort } from './MessagePort.js';

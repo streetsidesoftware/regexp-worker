@@ -148,6 +148,7 @@ describe('Scheduler', () => {
     test(
         'Termination of single request',
         run((scheduler) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const junkRequest: any = {};
             const spinRequest = createRequestSpin(5000);
             return Promise.all([
