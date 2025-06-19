@@ -245,8 +245,9 @@ function callbackIterable<T>(callBack: CallbackAsync<T>): AsyncIterable<T> {
     async function next(): Promise<IteratorResult<T>> {
         if (done) return { done, value: undefined };
 
-        if (buffer.length) {
-            const v = await buffer.shift()!;
+        const buffered = buffer.shift();
+        if (buffered) {
+            const v = await buffered;
             done = !!v.done;
             return v;
         }

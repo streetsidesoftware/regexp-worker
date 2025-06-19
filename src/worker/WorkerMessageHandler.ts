@@ -5,10 +5,6 @@ import { procedures } from '../Procedures/procedures.js';
 import type { MessagePort } from './MessagePort.js';
 import { nullPort } from './MessagePort.js';
 
-export function createHandler(port: MessagePort): WorkerMessageHandler {
-    return new WorkerMessageHandler(port);
-}
-
 export enum LogLevel {
     LogLevelNone = 0,
     LogLevelError = 1,
@@ -82,4 +78,8 @@ export class WorkerMessageHandler {
         this.log(LogLevel.LogLevelWarn, `Unhandled Request "${value.requestType}"`);
         this.post(createErrorResponse(request, 'Unhandled Request'));
     }
+}
+
+export function createHandler(port: MessagePort): WorkerMessageHandler {
+    return new WorkerMessageHandler(port);
 }

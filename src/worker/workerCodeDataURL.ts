@@ -2,7 +2,7 @@
 // cspell: disable
 
 // eslint-disable-next-line quotes
-export const workerCodeDataURL: string = `data:application/javascript;base64,\
+export const workerCodeDataURL = `data:application/javascript;base64,\
 aW1wb3J0IHsgaXNNYWluVGhyZWFkLCBwYXJlbnRQb3J0IH0gZnJvbSAid29ya2VyX3RocmVhZHMiOwpp\
 bXBvcnQgeyBmb3JtYXQgfSBmcm9tICJ1dGlsIjsKCi8vI3JlZ2lvbiBzcmMvaGVscGVycy9lcnJvcnMu\
 dHMKY29uc3QgYWxsb3dTdHJpbmdPclVuZGVmaW5lZCA9IHsKCXN0cmluZzogdHJ1ZSwKCXVuZGVmaW5l\

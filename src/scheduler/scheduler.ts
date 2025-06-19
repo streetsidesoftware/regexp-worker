@@ -37,8 +37,9 @@ export class Scheduler {
         if (!isRequest(request)) {
             return Promise.reject(new ErrorBadRequest('Bad Request', request));
         }
-        if (this.requestQueue.has(request.id)) {
-            return this.requestQueue.get(request.id)!.promise as Promise<U>;
+        const req = this.requestQueue.get(request.id);
+        if (req) {
+            return req.promise as Promise<U>;
         }
         const promise = new Promise<U>((resolve, reject) => {
             this.pending.set(request.id, { resolve: (v) => resolve(v as U), reject });
