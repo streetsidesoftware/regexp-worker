@@ -5,15 +5,11 @@ export type EchoRequestType = 'Echo';
 export type EchoResponseType = EchoRequestType;
 export const typeEcho: EchoRequestType = 'Echo';
 
-export interface RequestEcho extends Request {
-    requestType: EchoRequestType;
-    data: string;
-}
+export type RequestEchoData = string;
+export type ResponseEchoData = RequestEchoData;
 
-export interface ResponseEcho extends Response {
-    responseType: EchoRequestType;
-    data: string;
-}
+export type RequestEcho = Request<EchoRequestType, RequestEchoData>;
+export type ResponseEcho = Response<EchoResponseType, ResponseEchoData>;
 
 export function isEchoRequest(v: unknown): v is RequestEcho {
     return isRequestType(v, typeEcho);

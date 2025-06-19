@@ -5,20 +5,17 @@ export type SpinRequestType = 'Spin';
 export type SpinResponseType = SpinRequestType;
 export const typeSpin: SpinRequestType = 'Spin';
 
-export interface RequestSpin extends Request {
-    requestType: SpinRequestType;
-    data: {
-        durationMs: number;
-    };
+export interface RequestSpinData {
+    durationMs: number;
 }
 
-export interface ResponseSpin extends Response {
-    responseType: SpinRequestType;
-    data: {
-        elapsedTimeMs: number;
-        count: number;
-    };
+export interface SpinResponseData {
+    elapsedTimeMs: number;
+    count: number;
 }
+
+export type RequestSpin = Request<SpinRequestType, RequestSpinData>;
+export type ResponseSpin = Response<SpinResponseType, SpinResponseData>;
 
 export function isSpinRequest(v: unknown): v is RequestSpin {
     return isRequestType(v, typeSpin);
