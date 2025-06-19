@@ -5,19 +5,12 @@ export type SleepRequestType = 'Sleep';
 export type SleepResponseType = SleepRequestType;
 export const typeSleep: SleepRequestType = 'Sleep';
 
-export interface RequestSleep extends Request {
-    requestType: SleepRequestType;
-    data: {
-        durationMs: number;
-    };
+export interface SleepRequestData {
+    durationMs: number;
 }
 
-export interface ResponseSleep extends Response {
-    responseType: SleepRequestType;
-    data: {
-        durationMs: number;
-    };
-}
+export type RequestSleep = Request<SleepRequestType, SleepRequestData>;
+export type ResponseSleep = Response<SleepResponseType, SleepRequestData>;
 
 export function isSleepRequest(v: unknown): v is RequestSleep {
     return isRequestType(v, typeSleep);

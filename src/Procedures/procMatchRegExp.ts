@@ -8,18 +8,13 @@ export const requestTypeMatchRegExp = 'MatchRegExp';
 export type MatchRegExpRequestType = typeof requestTypeMatchRegExp;
 export type MatchRegExpResponseType = MatchRegExpRequestType;
 
-export interface RequestMatchRegExp extends Request {
-    requestType: MatchRegExpRequestType;
-    data: {
-        text: string;
-        regexp: RegExp | string;
-    };
+export interface RequestMatchRegExpData {
+    text: string;
+    regexp: RegExp | string;
 }
 
-export interface ResponseMatchRegExp extends Response {
-    responseType: MatchRegExpRequestType;
-    data: MatchRegExpResult;
-}
+export type RequestMatchRegExp = Request<MatchRegExpRequestType, RequestMatchRegExpData>;
+export type ResponseMatchRegExp = Response<MatchRegExpResponseType, MatchRegExpResult>;
 
 export function isMatchRegExpRequest(v: unknown): v is RequestMatchRegExp {
     return isRequestType(v, requestTypeMatchRegExp);
@@ -28,8 +23,8 @@ export function isMatchRegExpResponse(v: unknown): v is ResponseMatchRegExp {
     return isResponseType(v, requestTypeMatchRegExp);
 }
 
-export function procMatchRegExp(r: RequestMatchRegExp): ResponseMatchRegExp | ErrorResponse;
-export function procMatchRegExp(r: Request): Response | undefined;
+export function procMatchRegExp(r: RequestMatchRegExp): ResponseMatchRegExp | ErrorResponse<MatchRegExpResponseType>;
+export function procMatchRegExp(r: Request): ResponseMatchRegExp | ErrorResponse<MatchRegExpResponseType> | undefined;
 export function procMatchRegExp(r: RequestMatchRegExp | Request): ResponseMatchRegExp | ErrorResponse | undefined {
     if (!isMatchRegExpRequest(r)) return undefined;
     try {

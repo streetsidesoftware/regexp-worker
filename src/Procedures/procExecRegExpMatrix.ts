@@ -7,18 +7,13 @@ export type ExecRegExpMatrixRequestType = 'ExecRegExpMatrix';
 export type ExecRegExpMatrixResponseType = ExecRegExpMatrixRequestType;
 export const requestTypeExecRegExpMatrix: ExecRegExpMatrixRequestType = 'ExecRegExpMatrix';
 
-export interface RequestExecRegExpMatrix extends Request {
-    requestType: ExecRegExpMatrixRequestType;
-    data: {
-        textArray: string[];
-        regExpArray: RegExp[];
-    };
+export interface RequestExecRegExpMatrixData {
+    textArray: string[];
+    regExpArray: RegExp[];
 }
 
-export interface ResponseExecRegExpMatrix extends Response {
-    responseType: ExecRegExpMatrixRequestType;
-    data: ExecRegExpMatrixResult;
-}
+export type RequestExecRegExpMatrix = Request<ExecRegExpMatrixRequestType, RequestExecRegExpMatrixData>;
+export type ResponseExecRegExpMatrix = Response<ExecRegExpMatrixResponseType, ExecRegExpMatrixResult>;
 
 export function isExecRegExpMatrixRequest(v: unknown): v is RequestExecRegExpMatrix {
     return isRequestType(v, requestTypeExecRegExpMatrix);
@@ -29,7 +24,7 @@ export function isExecRegExpMatrixResponse(v: unknown): v is ResponseExecRegExpM
 }
 
 export function procExecRegExpMatrix(r: RequestExecRegExpMatrix): ResponseExecRegExpMatrix | ErrorResponse;
-export function procExecRegExpMatrix(r: Request): undefined;
+export function procExecRegExpMatrix(r: Request): ResponseExecRegExpMatrix | ErrorResponse | undefined;
 export function procExecRegExpMatrix(r: RequestExecRegExpMatrix | Request): ResponseExecRegExpMatrix | ErrorResponse | undefined {
     if (!isExecRegExpMatrixRequest(r)) return undefined;
     const { regExpArray, textArray } = r.data;

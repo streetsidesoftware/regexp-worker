@@ -34,7 +34,7 @@ export function isExecRegExpResponse(v: unknown): v is ResponseExecRegExp {
 }
 
 export function procExecRegExp(r: RequestExecRegExp): ResponseExecRegExp | ErrorResponse;
-export function procExecRegExp(r: Request): undefined;
+export function procExecRegExp(r: Request): ResponseExecRegExp | ErrorResponse | undefined;
 export function procExecRegExp(r: RequestExecRegExp | Request): ResponseExecRegExp | ErrorResponse | undefined {
     if (!isExecRegExpRequest(r)) return undefined;
     try {
