@@ -1,5 +1,5 @@
-import type { Request, Response, ErrorResponse } from './procedure.js';
-import { genIsRequest, genIsResponse, createErrorResponse, createRequest, createResponse } from './procedure.js';
+import type { ErrorResponse, Request, Response } from './procedure.js';
+import { createErrorResponse, createRequest, createResponse, isRequestType, isResponseType } from './procedure.js';
 
 export type SleepRequestType = 'Sleep';
 export type SleepResponseType = SleepRequestType;
@@ -19,8 +19,12 @@ export interface ResponseSleep extends Response {
     };
 }
 
-export const isSleepRequest = genIsRequest<RequestSleep>(typeSleep);
-export const isSleepResponse = genIsResponse<ResponseSleep>(typeSleep);
+export function isSleepRequest(v: unknown): v is RequestSleep {
+    return isRequestType(v, typeSleep);
+}
+export function isSleepResponse(v: unknown): v is ResponseSleep {
+    return isResponseType(v, typeSleep);
+}
 
 export function procSleep(r: RequestSleep): Promise<ResponseSleep | ErrorResponse>;
 export function procSleep(r: Request): undefined;

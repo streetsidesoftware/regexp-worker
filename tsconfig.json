@@ -1,17 +1,18 @@
 {
     "extends": "@tsconfig/node20/tsconfig.json",
     "compilerOptions": {
-        "strict": true,
-        "sourceMap": true,
         "alwaysStrict": true,
         "declaration": true,
+        "forceConsistentCasingInFileNames": true,
+        "isolatedDeclarations": true,
         "noImplicitAny": true,
         "noImplicitThis": true,
-        "strictNullChecks": true,
-        "strictFunctionTypes": true,
         "noUnusedLocals": true,
         "outDir": "./dist",
-        "forceConsistentCasingInFileNames": true
+        "sourceMap": true,
+        "strict": true,
+        "strictFunctionTypes": true,
+        "strictNullChecks": true
     },
     "include": ["./src"]
 }

@@ -1,7 +1,7 @@
-import type { ErrorResponse, Request, Response } from './procedure.js';
-import { createRequest, createResponse, genIsRequest, genIsResponse } from './procedure.js';
 import type { ExecRegExpMatrixResult } from '../helpers/evaluateRegExp.js';
 import { execRegExpMatrix } from '../helpers/evaluateRegExp.js';
+import type { ErrorResponse, Request, Response } from './procedure.js';
+import { createRequest, createResponse, isRequestType, isResponseType } from './procedure.js';
 
 export type ExecRegExpMatrixRequestType = 'ExecRegExpMatrix';
 export type ExecRegExpMatrixResponseType = ExecRegExpMatrixRequestType;
@@ -20,8 +20,13 @@ export interface ResponseExecRegExpMatrix extends Response {
     data: ExecRegExpMatrixResult;
 }
 
-export const isExecRegExpMatrixRequest = genIsRequest<RequestExecRegExpMatrix>(requestTypeExecRegExpMatrix);
-export const isExecRegExpMatrixResponse = genIsResponse<ResponseExecRegExpMatrix>(requestTypeExecRegExpMatrix);
+export function isExecRegExpMatrixRequest(v: unknown): v is RequestExecRegExpMatrix {
+    return isRequestType(v, requestTypeExecRegExpMatrix);
+}
+
+export function isExecRegExpMatrixResponse(v: unknown): v is ResponseExecRegExpMatrix {
+    return isResponseType(v, requestTypeExecRegExpMatrix);
+}
 
 export function procExecRegExpMatrix(r: RequestExecRegExpMatrix): ResponseExecRegExpMatrix | ErrorResponse;
 export function procExecRegExpMatrix(r: Request): undefined;

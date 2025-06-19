@@ -5,10 +5,6 @@ import { procedures } from '../Procedures/procedures.js';
 import type { MessagePort } from './MessagePort.js';
 import { nullPort } from './MessagePort.js';
 
-export function createHandler(port: MessagePort): WorkerMessageHandler {
-    return new WorkerMessageHandler(port);
-}
-
 export enum LogLevel {
     LogLevelNone = 0,
     LogLevelError = 1,
@@ -21,10 +17,10 @@ export type LogParams = Parameters<typeof console.log>;
 
 export class WorkerMessageHandler {
     public logLevel: LogLevel = LogLevel.LogLevelError;
-    private listener: (value: any) => void;
+    private listener: (value: unknown) => void;
 
     constructor(private port: MessagePort) {
-        this.listener = (v: any) => this.listenerMessage(v);
+        this.listener = (v: unknown) => this.listenerMessage(v);
         port.on('message', this.listener);
     }
 
@@ -33,12 +29,12 @@ export class WorkerMessageHandler {
         this.port = nullPort;
     }
 
-    private post(msg: any) {
+    private post(msg: unknown): void {
         this.log(LogLevel.LogLevelDebug, 'Post: ' + JSON.stringify(msg));
         this.port.postMessage(msg);
     }
 
-    private log(level: LogLevel, ...params: LogParams) {
+    private log(level: LogLevel, ...params: LogParams): void {
         if (level > this.logLevel) return;
         switch (level) {
             case LogLevel.LogLevelError:
@@ -82,4 +78,8 @@ export class WorkerMessageHandler {
         this.log(LogLevel.LogLevelWarn, `Unhandled Request "${value.requestType}"`);
         this.post(createErrorResponse(request, 'Unhandled Request'));
     }
+}
+
+export function createHandler(port: MessagePort): WorkerMessageHandler {
+    return new WorkerMessageHandler(port);
 }

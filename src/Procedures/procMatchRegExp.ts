@@ -2,7 +2,7 @@ import { format } from 'util';
 import type { MatchRegExpResult } from '../helpers/evaluateRegExp.js';
 import { matchRegExp, toRegExp } from '../helpers/evaluateRegExp.js';
 import type { ErrorResponse, Request, Response } from './procedure.js';
-import { createErrorResponse, createRequest, createResponse, genIsRequest, genIsResponse } from './procedure.js';
+import { createErrorResponse, createRequest, createResponse, isRequestType, isResponseType } from './procedure.js';
 
 export const requestTypeMatchRegExp = 'MatchRegExp';
 export type MatchRegExpRequestType = typeof requestTypeMatchRegExp;
@@ -21,8 +21,12 @@ export interface ResponseMatchRegExp extends Response {
     data: MatchRegExpResult;
 }
 
-export const isMatchRegExpRequest = genIsRequest<RequestMatchRegExp>(requestTypeMatchRegExp);
-export const isMatchRegExpResponse = genIsResponse<ResponseMatchRegExp>(requestTypeMatchRegExp);
+export function isMatchRegExpRequest(v: unknown): v is RequestMatchRegExp {
+    return isRequestType(v, requestTypeMatchRegExp);
+}
+export function isMatchRegExpResponse(v: unknown): v is ResponseMatchRegExp {
+    return isResponseType(v, requestTypeMatchRegExp);
+}
 
 export function procMatchRegExp(r: RequestMatchRegExp): ResponseMatchRegExp | ErrorResponse;
 export function procMatchRegExp(r: Request): Response | undefined;

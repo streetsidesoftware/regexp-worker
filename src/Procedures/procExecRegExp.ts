@@ -5,8 +5,8 @@ import {
     createRequest,
     createResponse,
     type ErrorResponse,
-    genIsRequest,
-    genIsResponse,
+    isRequestType,
+    isResponseType,
     type Request,
     type Response,
 } from './procedure.js';
@@ -25,8 +25,13 @@ export interface ResponseExecRegExp extends Response {
     data: ExecRegExpResult;
 }
 
-export const isExecRegExpRequest = genIsRequest<RequestExecRegExp>(requestTypeExecRegExp);
-export const isExecRegExpResponse = genIsResponse<ResponseExecRegExp>(requestTypeExecRegExp);
+export function isExecRegExpRequest(v: unknown): v is RequestExecRegExp {
+    return isRequestType(v, requestTypeExecRegExp);
+}
+
+export function isExecRegExpResponse(v: unknown): v is ResponseExecRegExp {
+    return isResponseType(v, requestTypeExecRegExp);
+}
 
 export function procExecRegExp(r: RequestExecRegExp): ResponseExecRegExp | ErrorResponse;
 export function procExecRegExp(r: Request): undefined;

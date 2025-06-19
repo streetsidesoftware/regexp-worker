@@ -10,8 +10,8 @@ const defaultTimeLimitMs = 1000;
 const defaultSleepAfter = 200;
 
 interface Contract {
-    resolve: (v: Response | Promise<Response>) => any;
-    reject: (err: any) => any;
+    resolve: (v: Response | Promise<Response>) => unknown;
+    reject: (err: unknown) => unknown;
 }
 
 export class Scheduler {
@@ -23,22 +23,23 @@ export class Scheduler {
     private stopped = false;
     public dispose: () => Promise<void>;
 
-    constructor(public executionTimeLimitMs = defaultTimeLimitMs) {
+    constructor(public executionTimeLimitMs: number = defaultTimeLimitMs) {
         this.dispose = () => this._dispose();
         this.pending = new Map();
         this.requestQueue = new Map();
         this.currentRequest = undefined;
     }
 
-    public scheduleRequest<T extends Request, U extends Response>(request: T, timeLimitMs = this.executionTimeLimitMs): Promise<U> {
+    public scheduleRequest<T extends Request, U extends Response>(request: T, timeLimitMs: number = this.executionTimeLimitMs): Promise<U> {
         if (this.stopped) {
             return Promise.reject(new ErrorCanceledRequest('Scheduler has been stopped', request.requestType, 0, request.data));
         }
         if (!isRequest(request)) {
             return Promise.reject(new ErrorBadRequest('Bad Request', request));
         }
-        if (this.requestQueue.has(request.id)) {
-            return this.requestQueue.get(request.id)!.promise as Promise<U>;
+        const req = this.requestQueue.get(request.id);
+        if (req) {
+            return req.promise as Promise<U>;
         }
         const promise = new Promise<U>((resolve, reject) => {
             this.pending.set(request.id, { resolve: (v) => resolve(v as U), reject });
@@ -49,7 +50,7 @@ export class Scheduler {
         return promise;
     }
 
-    private _dispose() {
+    private _dispose(): Promise<void> {
         if (this.stopped) return Promise.resolve();
         this.stopped = true;
         const ret = this.stopWorker();
@@ -86,7 +87,7 @@ export class Scheduler {
         return p;
     }
 
-    private listener(m: any) {
+    private listener(m: unknown): void {
         // istanbul ignore else
         if (isResponse(m)) {
             const contract = this.pending.get(m.id);
@@ -100,7 +101,7 @@ export class Scheduler {
         console.warn(`Unhandled Response ${JSON.stringify(m)}`);
     }
 
-    private trigger() {
+    private trigger(): void {
         if (this.stopped || this.currentRequest) return;
 
         setImmediate(() => {
@@ -120,7 +121,7 @@ export class Scheduler {
         });
     }
 
-    private cleanupRequest(id: UniqueID) {
+    private cleanupRequest(id: UniqueID): void {
         this.pending.delete(id);
         this.requestQueue.delete(id);
         // istanbul ignore else
@@ -133,7 +134,7 @@ export class Scheduler {
         this.trigger();
     }
 
-    private scheduleTimeout(fn: () => any, delayMs: number) {
+    private scheduleTimeout(fn: () => unknown, delayMs: number): void {
         if (this.timeoutID) clearTimeout(this.timeoutID);
         this.timeoutID = setTimeout(fn, delayMs);
     }
@@ -161,12 +162,12 @@ export class Scheduler {
 }
 
 export class ErrorCanceledRequest<T = unknown> extends Error {
-    readonly timestamp = Date.now();
+    readonly timestamp: number = Date.now();
     constructor(
         message: string,
         readonly requestType: string | undefined,
         readonly elapsedTimeMs: number,
-        readonly data?: T,
+        readonly data?: T | undefined,
     ) {
         super(message);
         this.name = 'ErrorCanceledRequest';
@@ -174,11 +175,11 @@ export class ErrorCanceledRequest<T = unknown> extends Error {
 }
 
 export class ErrorFailedRequest<T> extends Error {
-    readonly timestamp = Date.now();
+    readonly timestamp: number = Date.now();
     constructor(
         message: string,
         readonly requestType: string | undefined,
-        readonly data?: T,
+        readonly data?: T | undefined,
     ) {
         super(message);
         this.name = 'ErrorFailedRequest';
@@ -186,10 +187,10 @@ export class ErrorFailedRequest<T> extends Error {
 }
 
 export class ErrorBadRequest<T> extends Error {
-    readonly timestamp = Date.now();
+    readonly timestamp: number = Date.now();
     constructor(
         message: string,
-        readonly data?: T,
+        readonly data?: T | undefined,
     ) {
         super(message);
         this.name = 'ErrorBadRequest';

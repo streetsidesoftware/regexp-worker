@@ -1,5 +1,5 @@
-import type { Request, Response, ErrorResponse } from './procedure.js';
-import { genIsRequest, genIsResponse, createRequest } from './procedure.js';
+import type { ErrorResponse, Request, Response } from './procedure.js';
+import { createRequest, isRequestType, isResponseType } from './procedure.js';
 
 export type GenErrorRequestType = 'GenError';
 export type GenErrorResponseType = GenErrorRequestType;
@@ -13,25 +13,36 @@ export interface RequestGenError extends Request {
 
 export interface ResponseGenError extends Response {
     responseType: GenErrorRequestType;
-    data: any;
+    data: unknown;
 }
 
-const undefinedResponse: any = undefined;
+export function isGenErrorRequest(v: unknown): v is RequestGenError {
+    return isRequestType(v, typeGenError);
+}
 
-export const isGenErrorRequest = genIsRequest<RequestGenError>(typeGenError);
-export const isGenErrorResponse = genIsResponse<ResponseGenError>(typeGenError);
+export function isGenErrorResponse(v: unknown): v is ResponseGenError {
+    return isResponseType(v, typeGenError);
+}
+
+// @todo: this function signature is most likely wrong.
 
 export function procGenError(r: RequestGenError): ResponseGenError | ErrorResponse;
 export function procGenError(r: Request): undefined;
-export function procGenError(r: RequestGenError | Request): Promise<ResponseGenError> | ResponseGenError | ErrorResponse | undefined {
+export function procGenError(
+    r: RequestGenError | Request,
+): Promise<ResponseGenError> | Promise<undefined> | ResponseGenError | ErrorResponse | undefined;
+export function procGenError(
+    r: RequestGenError | Request,
+): Promise<ResponseGenError> | Promise<undefined> | ResponseGenError | ErrorResponse | undefined {
     if (!isGenErrorRequest(r)) return undefined;
     switch (r.data) {
         case 'Throw':
             throw new Error('Error Thrown');
         case 'undefined':
-            return Promise.resolve(undefinedResponse);
+            return Promise.resolve(undefined);
         case 'reject':
-            return Promise.reject(new Error('Reject'));
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+            return Promise.reject(new Error('Reject')) as Promise<ResponseGenError>;
     }
 }
 

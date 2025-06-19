@@ -1,5 +1,5 @@
-import type { Request, Response, ErrorResponse } from './procedure.js';
-import { genIsRequest, genIsResponse, createErrorResponse, createRequest, createResponse } from './procedure.js';
+import type { ErrorResponse, Request, Response } from './procedure.js';
+import { createErrorResponse, createRequest, createResponse, isRequestType, isResponseType } from './procedure.js';
 
 export type EchoRequestType = 'Echo';
 export type EchoResponseType = EchoRequestType;
@@ -15,8 +15,13 @@ export interface ResponseEcho extends Response {
     data: string;
 }
 
-export const isEchoRequest = genIsRequest<RequestEcho>(typeEcho);
-export const isEchoResponse = genIsResponse<ResponseEcho>(typeEcho);
+export function isEchoRequest(v: unknown): v is RequestEcho {
+    return isRequestType(v, typeEcho);
+}
+
+export function isEchoResponse(v: unknown): v is ResponseEcho {
+    return isResponseType(v, typeEcho);
+}
 
 export function procEcho(r: RequestEcho): ResponseEcho | ErrorResponse;
 export function procEcho(r: Request): undefined;

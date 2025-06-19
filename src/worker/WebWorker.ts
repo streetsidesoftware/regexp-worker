@@ -1,5 +1,5 @@
 interface Worker {
-    postMessage(message: any): void;
+    postMessage(message: unknown): void;
     terminate(): void;
 }
 

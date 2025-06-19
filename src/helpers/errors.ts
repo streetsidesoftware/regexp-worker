@@ -1,4 +1,4 @@
-function _getTypeOf(t: unknown) {
+function _getTypeOf(t: unknown): string {
     return typeof t;
 }
 
@@ -34,11 +34,13 @@ export function toError(e: unknown): Error {
  * @param promise A promise that may reject.
  * @returns void
  */
-export function catchErrors(promise: Promise<any>, onError?: (error: unknown) => void): void {
+export function catchErrors(promise: Promise<unknown>, onError?: (error: unknown) => void): void {
     promise
         .then(() => {})
         .catch((error) => onError?.(error))
         .catch(() => {});
 }
 
-export const __testing__ = { _getTypeOf };
+export const __testing__: {
+    _getTypeOf: typeof _getTypeOf;
+} = { _getTypeOf };
