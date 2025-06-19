@@ -41,4 +41,6 @@ export function catchErrors(promise: Promise<unknown>, onError?: (error: unknown
         .catch(() => {});
 }
 
-export const __testing__ = { _getTypeOf };
+export const __testing__: {
+    _getTypeOf: typeof _getTypeOf;
+} = { _getTypeOf };

@@ -2,7 +2,7 @@ import { format } from 'util';
 import type { MatchRegExpArrayResult } from '../helpers/evaluateRegExp.js';
 import { matchRegExpArray, toRegExp } from '../helpers/evaluateRegExp.js';
 import type { ErrorResponse, Request, Response } from './procedure.js';
-import { createErrorResponse, createRequest, createResponse, genIsRequest, genIsResponse } from './procedure.js';
+import { createErrorResponse, createRequest, createResponse, isRequestType, isResponseType } from './procedure.js';
 
 export const requestTypeMatchRegExpArray = 'MatchRegExpArray';
 export type MatchRegExpArrayRequestType = typeof requestTypeMatchRegExpArray;
@@ -21,8 +21,12 @@ export interface ResponseMatchRegExpArray extends Response {
     data: MatchRegExpArrayResult;
 }
 
-export const isMatchRegExpArrayRequest = genIsRequest<RequestMatchRegExpArray>(requestTypeMatchRegExpArray);
-export const isMatchRegExpArrayResponse = genIsResponse<ResponseMatchRegExpArray>(requestTypeMatchRegExpArray);
+export function isMatchRegExpArrayRequest(v: unknown): v is RequestMatchRegExpArray {
+    return isRequestType(v, requestTypeMatchRegExpArray);
+}
+export function isMatchRegExpArrayResponse(v: unknown): v is ResponseMatchRegExpArray {
+    return isResponseType(v, requestTypeMatchRegExpArray);
+}
 
 export function procMatchRegExpArray(r: RequestMatchRegExpArray): ResponseMatchRegExpArray | ErrorResponse;
 export function procMatchRegExpArray(r: Request): undefined | ResponseMatchRegExpArray | ErrorResponse;

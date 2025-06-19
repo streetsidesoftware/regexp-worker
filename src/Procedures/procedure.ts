@@ -17,10 +17,8 @@ export interface Response<T = unknown> {
     data: T;
 }
 
-export function genIsRequest<T extends Request>(key: T['requestType']): (v: unknown) => v is T {
-    return (v: unknown): v is T => {
-        return isRequest(v) && v.requestType === key;
-    };
+export function isRequestType<T extends Request>(v: unknown, requestType: T['requestType']): v is T {
+    return isRequest(v) && v.requestType === requestType;
 }
 
 export function isRequest(v: unknown): v is Request {
@@ -29,10 +27,8 @@ export function isRequest(v: unknown): v is Request {
     return typeof r.requestType === 'string' && isId(r.id);
 }
 
-export function genIsResponse<T extends Response>(key: T['responseType']): (v: unknown) => v is T {
-    return (v: unknown): v is T => {
-        return isResponse(v) && v.responseType === key;
-    };
+export function isResponseType<T extends Response>(v: unknown, responseType: T['responseType']): v is T {
+    return isResponse(v) && v.responseType === responseType;
 }
 
 export function isResponse(v: unknown): v is Response {
@@ -77,4 +73,6 @@ export function createErrorResponse(request: Request | unknown, message: string,
     return createResponse(id, responseTypeError, { requestType, message, error: toError(error) });
 }
 
-export const isErrorResponse = genIsResponse<ErrorResponse>(responseTypeError);
+export function isErrorResponse(v: unknown): v is ErrorResponse {
+    return isResponseType(v, responseTypeError);
+}

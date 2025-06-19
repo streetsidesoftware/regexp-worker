@@ -38,7 +38,7 @@ export default tsEslint.config(
             '@typescript-eslint/no-empty-function': 'off',
             '@typescript-eslint/no-empty-interface': 'off',
             '@typescript-eslint/no-explicit-any': 'error',
-            '@typescript-eslint/no-inferrable-types': 'error',
+            '@typescript-eslint/no-inferrable-types': 'off', // We do NOT want this. It goes against `isolatedDeclarations`
             '@typescript-eslint/no-non-null-assertion': 'error',
             '@typescript-eslint/no-redundant-type-constituents': 'off', // allowed to communicate expected type in a union with `unknown`
             '@typescript-eslint/no-unused-vars': ['warn', { ignoreRestSiblings: true, argsIgnorePattern: '^_' }],

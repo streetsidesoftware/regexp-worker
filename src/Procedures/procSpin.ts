@@ -1,5 +1,5 @@
-import type { Request, Response, ErrorResponse } from './procedure.js';
-import { genIsRequest, genIsResponse, createErrorResponse, createRequest, createResponse } from './procedure.js';
+import type { ErrorResponse, Request, Response } from './procedure.js';
+import { createErrorResponse, createRequest, createResponse, isRequestType, isResponseType } from './procedure.js';
 
 export type SpinRequestType = 'Spin';
 export type SpinResponseType = SpinRequestType;
@@ -20,8 +20,12 @@ export interface ResponseSpin extends Response {
     };
 }
 
-export const isSpinRequest = genIsRequest<RequestSpin>(typeSpin);
-export const isSpinResponse = genIsResponse<ResponseSpin>(typeSpin);
+export function isSpinRequest(v: unknown): v is RequestSpin {
+    return isRequestType(v, typeSpin);
+}
+export function isSpinResponse(v: unknown): v is ResponseSpin {
+    return isResponseType(v, typeSpin);
+}
 
 export function procSpin(r: RequestSpin): Promise<ResponseSpin | ErrorResponse>;
 export function procSpin(r: Request): undefined;

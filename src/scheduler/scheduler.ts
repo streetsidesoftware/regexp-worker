@@ -23,14 +23,14 @@ export class Scheduler {
     private stopped = false;
     public dispose: () => Promise<void>;
 
-    constructor(public executionTimeLimitMs = defaultTimeLimitMs) {
+    constructor(public executionTimeLimitMs: number = defaultTimeLimitMs) {
         this.dispose = () => this._dispose();
         this.pending = new Map();
         this.requestQueue = new Map();
         this.currentRequest = undefined;
     }
 
-    public scheduleRequest<T extends Request, U extends Response>(request: T, timeLimitMs = this.executionTimeLimitMs): Promise<U> {
+    public scheduleRequest<T extends Request, U extends Response>(request: T, timeLimitMs: number = this.executionTimeLimitMs): Promise<U> {
         if (this.stopped) {
             return Promise.reject(new ErrorCanceledRequest('Scheduler has been stopped', request.requestType, 0, request.data));
         }
@@ -162,12 +162,12 @@ export class Scheduler {
 }
 
 export class ErrorCanceledRequest<T = unknown> extends Error {
-    readonly timestamp = Date.now();
+    readonly timestamp: number = Date.now();
     constructor(
         message: string,
         readonly requestType: string | undefined,
         readonly elapsedTimeMs: number,
-        readonly data?: T,
+        readonly data?: T | undefined,
     ) {
         super(message);
         this.name = 'ErrorCanceledRequest';
@@ -175,11 +175,11 @@ export class ErrorCanceledRequest<T = unknown> extends Error {
 }
 
 export class ErrorFailedRequest<T> extends Error {
-    readonly timestamp = Date.now();
+    readonly timestamp: number = Date.now();
     constructor(
         message: string,
         readonly requestType: string | undefined,
-        readonly data?: T,
+        readonly data?: T | undefined,
     ) {
         super(message);
         this.name = 'ErrorFailedRequest';
@@ -187,10 +187,10 @@ export class ErrorFailedRequest<T> extends Error {
 }
 
 export class ErrorBadRequest<T> extends Error {
-    readonly timestamp = Date.now();
+    readonly timestamp: number = Date.now();
     constructor(
         message: string,
-        readonly data?: T,
+        readonly data?: T | undefined,
     ) {
         super(message);
         this.name = 'ErrorBadRequest';

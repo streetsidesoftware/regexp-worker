@@ -1,5 +1,5 @@
-import type { Request, Response, ErrorResponse } from './procedure.js';
-import { genIsRequest, genIsResponse, createRequest } from './procedure.js';
+import type { ErrorResponse, Request, Response } from './procedure.js';
+import { createRequest, isRequestType, isResponseType } from './procedure.js';
 
 export type GenErrorRequestType = 'GenError';
 export type GenErrorResponseType = GenErrorRequestType;
@@ -16,8 +16,13 @@ export interface ResponseGenError extends Response {
     data: unknown;
 }
 
-export const isGenErrorRequest = genIsRequest<RequestGenError>(typeGenError);
-export const isGenErrorResponse = genIsResponse<ResponseGenError>(typeGenError);
+export function isGenErrorRequest(v: unknown): v is RequestGenError {
+    return isRequestType(v, typeGenError);
+}
+
+export function isGenErrorResponse(v: unknown): v is ResponseGenError {
+    return isResponseType(v, typeGenError);
+}
 
 // @todo: this function signature is most likely wrong.
 
