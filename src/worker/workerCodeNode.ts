@@ -5,6 +5,4 @@ import { procedures } from '../Procedures/procedures.js';
 if (!isMainThread && parentPort) {
     const handler = createHandler(parentPort, procedures);
     parentPort.once('close', () => handler.dispose());
-} else {
-    throw new Error('workerNode only run in a node Worker thread context. ');
 }

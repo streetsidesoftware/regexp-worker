@@ -14,4 +14,7 @@ export const nullPort: MessagePort = Object.freeze({
     off() {
         return nullPort;
     },
+    once() {
+        return nullPort;
+    },
 });
