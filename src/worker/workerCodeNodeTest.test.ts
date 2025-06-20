@@ -36,4 +36,15 @@ describe('workerCodeNodeTest', () => {
         await expect(import('./workerCodeNodeTest.js')).resolves.toEqual(expect.any(Object));
         expect(mockedCreateHandler).not.toHaveBeenCalled();
     });
+
+    test('load workerCodeNodeTest no parentPort', async () => {
+        vi.doMock('worker_threads', () => ({
+            parentPort: undefined,
+            isMainThread: false,
+        }));
+
+        expect(mockedCreateHandler).not.toHaveBeenCalled();
+        await expect(import('./workerCodeNodeTest.js')).resolves.toEqual(expect.any(Object));
+        expect(mockedCreateHandler).not.toHaveBeenCalled();
+    });
 });
