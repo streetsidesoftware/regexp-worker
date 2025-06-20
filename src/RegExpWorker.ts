@@ -18,6 +18,7 @@ import {
 import { type RequestMatchRegExp, createRequestMatchRegExp } from './Procedures/procMatchRegExp.js';
 import { type RequestMatchRegExpArray, createRequestMatchRegExpArray } from './Procedures/procMatchRegExpArray.js';
 import { isTimeoutErrorLike, TimeoutError } from './TimeoutError.js';
+import { createWorkerNode } from './worker/workerNode.js';
 
 export { type ExecRegExpResult, type ExecRegExpMatrixResult, toRegExp, type Range } from './helpers/evaluateRegExp.js';
 
@@ -26,7 +27,7 @@ export class RegExpWorker {
     public dispose: () => Promise<void> = () => this._dispose();
 
     constructor(timeoutMs?: number) {
-        this.scheduler = new Scheduler(timeoutMs);
+        this.scheduler = new Scheduler(createWorkerNode, timeoutMs);
     }
 
     public execRegExp(regExp: RegExp, text: string, timeLimitMs?: number): Promise<ExecRegExpResult> {

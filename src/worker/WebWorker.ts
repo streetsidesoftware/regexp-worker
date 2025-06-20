@@ -1,7 +1,4 @@
-interface Worker {
-    postMessage(message: unknown): void;
-    terminate(): void;
-}
+import type { Worker } from './Worker.js';
 
 declare function Worker(scriptURL: string): Worker;
 

@@ -84,3 +84,5 @@ export function createErrorResponse(request: Request | unknown, message: string,
 export function isErrorResponse(v: unknown): v is ErrorResponse {
     return isResponseType(v, responseTypeError);
 }
+
+export type Procedure = (r: Request) => unknown;

@@ -1,1 +1,1 @@
-export { createWorker, type Worker } from './workerThread.js';
+export { createWorkerNode as createWorker, type Worker } from './workerNode.js';
