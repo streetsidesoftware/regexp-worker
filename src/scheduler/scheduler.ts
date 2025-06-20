@@ -1,5 +1,4 @@
 import type { Worker } from '../worker/index.js';
-import { createWorker } from '../worker/index.js';
 import type { Request, Response, ErrorResponse } from '../Procedures/procedure.js';
 import { isResponse, createRequest, isErrorResponse, isRequest } from '../Procedures/procedure.js';
 import type { UniqueID } from '../Procedures/uniqueId.js';
@@ -23,7 +22,10 @@ export class Scheduler {
     private stopped = false;
     public dispose: () => Promise<void>;
 
-    constructor(public executionTimeLimitMs: number = defaultTimeLimitMs) {
+    constructor(
+        readonly createWorker: () => Worker,
+        public executionTimeLimitMs: number = defaultTimeLimitMs,
+    ) {
         this.dispose = () => this._dispose();
         this.pending = new Map();
         this.requestQueue = new Map();
@@ -77,14 +79,6 @@ export class Scheduler {
         contract.reject(new ErrorCanceledRequest(message, request?.request.requestType || 'Unknown', elapsedTime));
         this.cleanupRequest(requestId);
         return Promise.resolve();
-    }
-
-    private stopWorker(): Promise<void> {
-        if (!this._worker) return Promise.resolve();
-        this._worker.removeAllListeners();
-        const p = this._worker.terminate().then(() => {});
-        this._worker = undefined;
-        return p;
     }
 
     private listener(m: unknown): void {
@@ -151,10 +145,28 @@ export class Scheduler {
         return createRequest<T>(requestType, data);
     }
 
+    #onMessage: (m: unknown) => void = (m) => this.listener(m);
+
+    /**
+     * Stops and clears the worker.
+     * This method is not async on purpose. We need to clear the worker
+     * immediately to allow a new worker to be created before waiting on the promise to resolve.
+     * @returns A promise that resolves when the worker is stopped.
+     */
+    private stopWorker(): Promise<void> {
+        if (!this._worker) return Promise.resolve();
+        this._worker?.off('message', this.#onMessage);
+        this._worker.removeAllListeners?.();
+        const worker = this._worker;
+        // disconnect the worker to allow a new worker to be created
+        this._worker = undefined;
+        return Promise.resolve(worker.terminate()).then(() => {});
+    }
+
     private get worker(): Worker {
         if (!this._worker) {
-            this._worker = createWorker();
-            this._worker.on('message', (v) => this.listener(v));
+            this._worker = this.createWorker();
+            this._worker.on('message', this.#onMessage);
         }
 
         return this._worker;

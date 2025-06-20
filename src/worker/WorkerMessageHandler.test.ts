@@ -2,11 +2,13 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { beforeEach, describe, test, expect, vi } from 'vitest';
 import type { MessagePort } from './MessagePort.js';
-import { createHandler, LogLevel } from './WorkerMessageHandler.js';
+import { createHandler } from './WorkerMessageHandler.js';
+import { LogLevel } from './LogLevel.js';
 import { createRequestEcho } from '../Procedures/procEcho.js';
 import { createRequest } from '../Procedures/procedure.js';
 import { NullID } from '../Procedures/uniqueId.js';
 import { createRequestGenError } from '../Procedures/procGenError.js';
+import { procedures as proceduresAll } from '../Procedures/procedures-all.js';
 
 const consoleLog = (console.log = vi.fn());
 const consoleWarn = (console.warn = vi.fn());
@@ -19,7 +21,7 @@ describe('WorkerMessageHandler', () => {
 
     test('createHandler', () => {
         const port = mockMessagePort();
-        const handler = createHandler(port);
+        const handler = createHandler(port, proceduresAll);
         expect(port.registeredCallbacks.size).toBe(1);
         handler.dispose();
         expect(port.registeredCallbacks.size).toBe(0);
@@ -36,7 +38,7 @@ describe('WorkerMessageHandler', () => {
     test('Echo', async () => {
         const port = mockMessagePort();
         const messagesIterator = port.messagesAsync[Symbol.asyncIterator]();
-        const handler = createHandler(port);
+        const handler = createHandler(port, proceduresAll);
         port.sendMessage(createRequestEcho('Hello'));
         const response = await messagesIterator.next();
         expect(response.value).toEqual(
@@ -50,7 +52,7 @@ describe('WorkerMessageHandler', () => {
 
     test('Echo using Iterator', async () => {
         const port = mockMessagePort();
-        const handler = createHandler(port);
+        const handler = createHandler(port, proceduresAll);
         port.sendMessage(createRequestEcho('Hello'));
         const response = await port.next();
         expect(response.value).toEqual(
@@ -65,7 +67,7 @@ describe('WorkerMessageHandler', () => {
     test('Unhandled Request', async () => {
         const port = mockMessagePort();
         const messagesIterator = port.messagesAsync[Symbol.asyncIterator]();
-        const handler = createHandler(port);
+        const handler = createHandler(port, proceduresAll);
         handler.logLevel = LogLevel.LogLevelDebug;
         port.sendMessage(createRequest('Test Unknown', {}));
         const response = await messagesIterator.next();
@@ -90,7 +92,7 @@ describe('WorkerMessageHandler', () => {
     test('Bad Request', async () => {
         const port = mockMessagePort();
         const messagesIterator = port.messagesAsync[Symbol.asyncIterator]();
-        const handler = createHandler(port);
+        const handler = createHandler(port, proceduresAll);
         handler.logLevel = LogLevel.LogLevelDebug;
         port.sendMessage('Bad Request');
         const response = await messagesIterator.next();
@@ -115,7 +117,7 @@ describe('WorkerMessageHandler', () => {
 
     test('Generating Errors', async () => {
         const port = mockMessagePort();
-        const handler = createHandler(port);
+        const handler = createHandler(port, proceduresAll);
 
         const requestThrow = createRequestGenError('Throw');
         port.sendMessage(requestThrow);

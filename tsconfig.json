@@ -7,8 +7,8 @@
         "isolatedDeclarations": true,
         "noImplicitAny": true,
         "noImplicitThis": true,
-        "noUnusedLocals": true,
-        "outDir": "./dist",
+        "noUnusedLocals": false, // Caught by linter
+        "outDir": "./out",
         "sourceMap": true,
         "strict": true,
         "strictFunctionTypes": true,

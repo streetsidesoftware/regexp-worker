@@ -1,25 +1,20 @@
 import { format } from 'util';
-import { isError, toError } from '../helpers/errors.js';
+import { isErrorLike, toError } from '../helpers/errors.js';
+import type { Procedure } from '../Procedures/procedure.js';
 import { createErrorResponse, isRequest } from '../Procedures/procedure.js';
-import { procedures } from '../Procedures/procedures.js';
 import type { MessagePort } from './MessagePort.js';
 import { nullPort } from './MessagePort.js';
-
-export enum LogLevel {
-    LogLevelNone = 0,
-    LogLevelError = 1,
-    LogLevelWarn = 2,
-    LogLevelInfo = 3,
-    LogLevelDebug = 4,
-}
-
-export type LogParams = Parameters<typeof console.log>;
+import type { LogParams } from './LogLevel.js';
+import { LogLevel } from './LogLevel.js';
 
 export class WorkerMessageHandler {
     public logLevel: LogLevel = LogLevel.LogLevelError;
     private listener: (value: unknown) => void;
 
-    constructor(private port: MessagePort) {
+    constructor(
+        private port: MessagePort,
+        private procedures: Procedure[],
+    ) {
         this.listener = (v: unknown) => this.listenerMessage(v);
         port.on('message', this.listener);
     }
@@ -58,7 +53,7 @@ export class WorkerMessageHandler {
         }
         const request = value;
 
-        for (const proc of procedures) {
+        for (const proc of this.procedures) {
             try {
                 const response = proc(request);
                 if (response !== undefined) {
@@ -69,8 +64,8 @@ export class WorkerMessageHandler {
                     return;
                 }
             } catch (e) {
-                const msg = isError(e) ? e.message : format(e);
-                this.post(createErrorResponse(request, msg, isError(e) ? e : undefined));
+                const msg = isErrorLike(e) ? e.message : format(e);
+                this.post(createErrorResponse(request, msg, isErrorLike(e) ? e : undefined));
                 return;
             }
         }
@@ -80,6 +75,6 @@ export class WorkerMessageHandler {
     }
 }
 
-export function createHandler(port: MessagePort): WorkerMessageHandler {
-    return new WorkerMessageHandler(port);
+export function createHandler(port: MessagePort, procedures: Procedure[]): WorkerMessageHandler {
+    return new WorkerMessageHandler(port, procedures);
 }

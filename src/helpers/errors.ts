@@ -13,7 +13,7 @@ const allowStringOrUndefined: AllowedTypes = { string: true, undefined: true };
 //     undefined: true,
 // };
 
-export function isError(e: unknown): e is Error {
+export function isErrorLike(e: unknown): e is Error {
     if (e instanceof Error) return true;
     if (!e || typeof e !== 'object') return false;
     const ex = <Error>e;
@@ -22,7 +22,7 @@ export function isError(e: unknown): e is Error {
 
 export function toError(e: unknown): Error {
     if (e instanceof Error) return e;
-    if (isError(e)) {
+    if (isErrorLike(e)) {
         return new Error(e.message || 'Unknown error', { cause: e });
     }
     if (typeof e === 'string') return new Error(e);

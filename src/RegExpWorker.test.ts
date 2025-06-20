@@ -120,6 +120,11 @@ describe('timeoutRejection', () => {
         await expect(timeoutRejection(error)).rejects.toBeInstanceOf(TimeoutError);
         await expect(timeoutRejection(error)).rejects.toEqual(expect.objectContaining(error));
     });
+
+    test('timeoutRejection string', async () => {
+        const error = 'Test timeout';
+        await expect(timeoutRejection(error)).rejects.not.toBeInstanceOf(TimeoutError);
+    });
 });
 
 function run(fn: (w: RegExpWorker) => Promise<unknown> | void, w = new RegExpWorker()): () => Promise<void> {

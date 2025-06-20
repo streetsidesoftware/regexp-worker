@@ -9,15 +9,16 @@ import { createRequestSpin } from '../Procedures/procSpin.js';
 import type { Response } from '../Procedures/procedure.js';
 import { createRequestGenError } from '../Procedures/procGenError.js';
 import { catchErrors } from '../helpers/errors.js';
+import { createWorkerNodeTest } from '../worker/workerNodeTest.js';
 
 describe('Scheduler', () => {
     test('Create', () => {
-        const s = new Scheduler();
+        const s = new Scheduler(createWorkerNodeTest);
         return expect(s.dispose()).resolves.toBe(undefined);
     });
 
     test('Create forget to dispose', () => {
-        const s = new Scheduler();
+        const s = new Scheduler(createWorkerNodeTest);
         expect(s).toBeDefined();
     });
 
@@ -51,7 +52,7 @@ describe('Scheduler', () => {
                 scheduler.scheduleRequest(createRequestEcho('Two')),
                 scheduler
                     .scheduleRequest(createRequestSleep(50), 2)
-                    .catch((e) => (console.error(e), e instanceof ErrorCanceledRequest ? e : { timestamp: -1 })),
+                    .catch((e) => (e instanceof ErrorCanceledRequest ? e : { timestamp: -1 })),
                 scheduler.scheduleRequest(createRequestEcho('Three')),
                 scheduler.scheduleRequest(createRequestEcho('Four')),
             ]);
@@ -125,7 +126,7 @@ describe('Scheduler', () => {
     );
 
     test('Termination on shutdown', () => {
-        const scheduler = new Scheduler();
+        const scheduler = new Scheduler(createWorkerNodeTest);
         return Promise.all([
             expect(scheduler.scheduleRequest(createRequestSpin(5000))).rejects.toEqual(
                 expect.objectContaining({ message: expect.stringContaining('stopped') }),
@@ -202,6 +203,13 @@ describe('Scheduler', () => {
     );
 });
 
+// function reportError<T>(p: Promise<T>, message?: string): Promise<T> {
+//     return p.catch((e) => {
+//         console.error('Error in Scheduler Test %s:', message || '', e);
+//         throw e;
+//     });
+// }
+
 function sampleText(): string {
     return `
     test('EvaluateRegExp', () => {
@@ -222,7 +230,7 @@ function sampleText(): string {
  */
 function run<T>(fn: (scheduler: Scheduler) => Promise<T>): () => Promise<T> {
     return () => {
-        const s = new Scheduler();
+        const s = new Scheduler(createWorkerNodeTest);
         return fn(s).finally(() => catchErrors(s.dispose()));
     };
 }

@@ -14,8 +14,9 @@ export default tsEslint.config(
         ignores: [
             '**/*.d.ts',
             '**/node_modules/**',
-            'lib/**/*.js',
+            'lib',
             'dist',
+            'out',
             'eslint.*',
             'workerTerminate.mjs',
             '*.config.ts',
@@ -30,6 +31,7 @@ export default tsEslint.config(
             // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
             quotes: ['warn', 'single', { avoidEscape: true }],
             'no-use-before-define': 'off',
+            'no-unused-vars': 'off',
 
             // e.g. "@typescript-eslint/explicit-function-return-type": "off",
             '@typescript-eslint/consistent-type-exports': ['error', { fixMixedExportsWithInlineTypeSpecifier: false }],
@@ -41,7 +43,7 @@ export default tsEslint.config(
             '@typescript-eslint/no-inferrable-types': 'off', // We do NOT want this. It goes against `isolatedDeclarations`
             '@typescript-eslint/no-non-null-assertion': 'error',
             '@typescript-eslint/no-redundant-type-constituents': 'off', // allowed to communicate expected type in a union with `unknown`
-            '@typescript-eslint/no-unused-vars': ['warn', { ignoreRestSiblings: true, argsIgnorePattern: '^_' }],
+            '@typescript-eslint/no-unused-vars': ['error', { ignoreRestSiblings: true, argsIgnorePattern: '^_' }],
             '@typescript-eslint/no-use-before-define': 'off', // this is a bit too aggressive.',
         },
     },

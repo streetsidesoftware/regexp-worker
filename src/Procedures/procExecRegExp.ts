@@ -15,15 +15,13 @@ export type ExecRegExpRequestType = 'ExecRegExp';
 export type ExecRegExpResponseType = ExecRegExpRequestType;
 export const requestTypeExecRegExp: ExecRegExpRequestType = 'ExecRegExp';
 
-export interface RequestExecRegExp extends Request {
-    requestType: ExecRegExpRequestType;
-    data: { text: string; regexp: RegExp | string };
+export interface RequestExecRegExpData {
+    text: string;
+    regexp: RegExp;
 }
 
-export interface ResponseExecRegExp extends Response {
-    responseType: ExecRegExpRequestType;
-    data: ExecRegExpResult;
-}
+export type RequestExecRegExp = Request<ExecRegExpRequestType, RequestExecRegExpData>;
+export type ResponseExecRegExp = Response<ExecRegExpResponseType, ExecRegExpResult>;
 
 export function isExecRegExpRequest(v: unknown): v is RequestExecRegExp {
     return isRequestType(v, requestTypeExecRegExp);
@@ -33,8 +31,8 @@ export function isExecRegExpResponse(v: unknown): v is ResponseExecRegExp {
     return isResponseType(v, requestTypeExecRegExp);
 }
 
-export function procExecRegExp(r: RequestExecRegExp): ResponseExecRegExp | ErrorResponse;
-export function procExecRegExp(r: Request): ResponseExecRegExp | ErrorResponse | undefined;
+export function procExecRegExp(r: RequestExecRegExp): ResponseExecRegExp | ErrorResponse<ExecRegExpRequestType>;
+export function procExecRegExp(r: Request): ResponseExecRegExp | ErrorResponse<ExecRegExpRequestType> | undefined;
 export function procExecRegExp(r: RequestExecRegExp | Request): ResponseExecRegExp | ErrorResponse | undefined {
     if (!isExecRegExpRequest(r)) return undefined;
     try {
@@ -45,7 +43,7 @@ export function procExecRegExp(r: RequestExecRegExp | Request): ResponseExecRegE
     }
 }
 
-export function createRequestExecRegExp(data: RequestExecRegExp['data']): RequestExecRegExp {
+export function createRequestExecRegExp(data: RequestExecRegExpData): RequestExecRegExp {
     return createRequest(requestTypeExecRegExp, data);
 }
 
