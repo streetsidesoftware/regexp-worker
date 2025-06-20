@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest';
-import { isEchoRequest, procEcho, createRequestEcho } from './procEcho.js';
+import { isEchoRequest, procEcho, createRequestEcho, isEchoResponse } from './procEcho.js';
 import { createRequest, isErrorResponse } from './procedure.js';
 import { createId } from './uniqueId.js';
 
@@ -16,6 +16,7 @@ describe('Echo', () => {
         expect(r.id).toBe(id);
         expect(r.responseType).toBe('Echo');
         expect(r.data).toBe('hello');
+        expect(isEchoResponse(r)).toBe(true);
     });
 
     test('bad echo', () => {
