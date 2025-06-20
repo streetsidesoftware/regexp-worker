@@ -1,5 +1,5 @@
 import { format } from 'util';
-import { isError, toError } from '../helpers/errors.js';
+import { isErrorLike, toError } from '../helpers/errors.js';
 import type { Procedure } from '../Procedures/procedure.js';
 import { createErrorResponse, isRequest } from '../Procedures/procedure.js';
 import type { MessagePort } from './MessagePort.js';
@@ -64,8 +64,8 @@ export class WorkerMessageHandler {
                     return;
                 }
             } catch (e) {
-                const msg = isError(e) ? e.message : format(e);
-                this.post(createErrorResponse(request, msg, isError(e) ? e : undefined));
+                const msg = isErrorLike(e) ? e.message : format(e);
+                this.post(createErrorResponse(request, msg, isErrorLike(e) ? e : undefined));
                 return;
             }
         }
