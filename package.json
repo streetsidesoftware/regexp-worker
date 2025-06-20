@@ -3,17 +3,18 @@
   "version": "3.0.0",
   "description": "Runs regular expressions on a background thread.",
   "type": "module",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.mts",
+  "main": "./dist/index.cjs",
+  "types": "./dist/index.d.cts",
+  "module": "./dist/index.js",
   "scripts": {
-    "clean": "shx rm -rf dist coverage",
+    "clean": "shx rm -rf dist out lib coverage",
     "lint": "eslint \"src/**/*.ts\"",
     "lint:fix": "npm run lint:fix:eslint && npm run lint:fix:prettier",
     "lint:fix:eslint": "eslint . --fix",
     "lint:fix:prettier": "prettier --write .",
     "build": "npm run build:worker && npm run build:code",
-    "build:worker": "tsdown && node scripts/build-worker.js",
-    "build:code": "npm run compile",
+    "build:worker": "tsdown -c worker.tsdown.config.ts && node scripts/build-worker.js",
+    "build:code": "npm run compile && tsdown -c tsdown.config.ts",
     "clean-build": "npm run clean && npm run build",
     "coverage": "vitest run --coverage",
     "prepublish": "npm run clean-build",
@@ -24,11 +25,14 @@
     "release-alpha": "npm release -- -p alpha",
     "tsc": "tsc -p .",
     "test-watch": "vitest",
-    "test": "npm run build && vitest run"
+    "test": "npm run build && npm run test:vitest",
+    "test:attw": "attw --pack",
+    "test:vitest": "vitest run"
   },
   "exports": {
     ".": {
-      "import": "./dist/index.mjs"
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
     }
   },
   "engines": {
@@ -53,11 +57,12 @@
   },
   "files": [
     "index.js",
-    "lib",
+    "dist/index.*",
     "!**/*.test.*",
     "!**/*.map"
   ],
   "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.2",
     "@eslint/js": "^9.29.0",
     "@tsconfig/node20": "^20.1.6",
     "@types/node": "^18.19.112",

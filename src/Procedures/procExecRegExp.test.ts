@@ -24,7 +24,8 @@ describe('procExecRegExp', () => {
     });
 
     test('RequestExecRegExp bad regex', () => {
-        const req: RequestExecRegExp = createRequest(requestTypeExecRegExp, { text: 'two words', regexp: '/[/g' });
+        const req: RequestExecRegExp = createRequest(requestTypeExecRegExp, { text: 'two words', regexp: /\[/g });
+        Object.assign(req.data, { regexp: '/[/g' });
         const result = procExecRegExp(req);
         const response = isErrorResponse(result) ? result : undefined;
         expect(isExecRegExpResponse(result)).toBe(false);
@@ -35,7 +36,8 @@ describe('procExecRegExp', () => {
     });
 
     test('RequestExecRegExp missing regex', () => {
-        const req: RequestExecRegExp = createRequest(requestTypeExecRegExp, { text: 'two words', regexp: '' });
+        const req: RequestExecRegExp = createRequest(requestTypeExecRegExp, { text: 'two words', regexp: /./ });
+        Object.assign(req.data, { regexp: '' });
         delete (req.data as Partial<RequestExecRegExp['data']>).regexp;
         const result = procExecRegExp(req);
         const response = isErrorResponse(result) ? result : undefined;
@@ -44,7 +46,7 @@ describe('procExecRegExp', () => {
     });
 
     test('RequestExecRegExp missing data', () => {
-        const req: RequestExecRegExp = createRequest(requestTypeExecRegExp, { text: 'two words', regexp: '/./g' });
+        const req: RequestExecRegExp = createRequest(requestTypeExecRegExp, { text: 'two words', regexp: /./g });
         delete (req as Partial<RequestExecRegExp>).data;
         const result = procExecRegExp(req);
         const response = isErrorResponse(result) ? result : undefined;
@@ -53,7 +55,7 @@ describe('procExecRegExp', () => {
     });
 
     test('RequestExecRegExp data is a number', () => {
-        const req: RequestExecRegExp = createRequest(requestTypeExecRegExp, { text: 'two words', regexp: '/./g' });
+        const req: RequestExecRegExp = createRequest(requestTypeExecRegExp, { text: 'two words', regexp: /./g });
         Object.assign(req, { data: 42 });
         const result = procExecRegExp(req);
         const response = isErrorResponse(result) ? result : undefined;

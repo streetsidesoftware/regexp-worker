@@ -14,8 +14,9 @@ export default tsEslint.config(
         ignores: [
             '**/*.d.ts',
             '**/node_modules/**',
-            'lib/**/*.js',
+            'lib',
             'dist',
+            'out',
             'eslint.*',
             'workerTerminate.mjs',
             '*.config.ts',

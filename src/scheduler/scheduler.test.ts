@@ -51,7 +51,7 @@ describe('Scheduler', () => {
                 scheduler.scheduleRequest(createRequestEcho('Two')),
                 scheduler
                     .scheduleRequest(createRequestSleep(50), 2)
-                    .catch((e) => (console.error(e), e instanceof ErrorCanceledRequest ? e : { timestamp: -1 })),
+                    .catch((e) => (e instanceof ErrorCanceledRequest ? e : { timestamp: -1 })),
                 scheduler.scheduleRequest(createRequestEcho('Three')),
                 scheduler.scheduleRequest(createRequestEcho('Four')),
             ]);

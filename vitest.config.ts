@@ -3,8 +3,9 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
     test: {
         chaiConfig: { truncateThreshold: 80 },
-        // cspell:ignore tsup
-        exclude: ['**/temp/**', '**/node_modules/**', '**/*.ts'],
+        // test both .js and .ts files
+        include: ['out/**/*.test.{js,mjs}', 'src/**/*.test.*', 'src/**/*.spec.*'],
+        exclude: ['**/temp/**', '**/node_modules/**'],
         coverage: {
             // enabled: true,
             provider: 'istanbul',
