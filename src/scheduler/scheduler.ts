@@ -92,6 +92,7 @@ export class Scheduler {
                 return;
             }
         }
+        // istanbul ignore next
         console.warn(`Unhandled Response ${JSON.stringify(m)}`);
     }
 
