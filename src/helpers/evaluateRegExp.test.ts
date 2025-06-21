@@ -9,6 +9,8 @@ import {
     matchAllToRangesRegExp,
     matchAllToRangesRegExpArray,
     toRegExp,
+    isRegExpLike,
+    isRegExp,
 } from './evaluateRegExp.js';
 
 describe('EvaluateRegExp', () => {
@@ -54,6 +56,20 @@ const x2 = 'hello';
         const reg = toRegExp(regExp);
         expect(reg).toEqual(expected);
         expect(reg.lastIndex).toBe(expectedLastIndex);
+    });
+
+    test.each`
+        regExp                                              | expected | expectedIsRegEx
+        ${/./g}                                             | ${true}  | ${true}
+        ${/./gu}                                            | ${true}  | ${true}
+        ${'hello'}                                          | ${false} | ${false}
+        ${'hello.'}                                         | ${false} | ${false}
+        ${'hello*'}                                         | ${false} | ${false}
+        ${{ source: 'hello*', flags: 'gu' }}                | ${true}  | ${false}
+        ${{ source: 'hello*', flags: 'gu', lastIndex: 10 }} | ${true}  | ${false}
+    `('isRegExLike $regExp', ({ regExp, expected, expectedIsRegEx }) => {
+        expect(isRegExpLike(regExp)).toBe(expected);
+        expect(isRegExp(regExp)).toBe(expectedIsRegEx);
     });
 
     test.each`
