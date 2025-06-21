@@ -196,10 +196,6 @@ export class ErrorFailedRequest<T> extends Error {
         super(message);
         this.name = 'ErrorFailedRequest';
     }
-
-    toString(): string {
-        return `${this.name} (${this.requestType}): ${this.message}`;
-    }
 }
 
 export class ErrorBadRequest<T> extends Error {
