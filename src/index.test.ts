@@ -6,7 +6,7 @@ describe('Validate Index', () => {
     test(
         'quick test RegExpWorker',
         run(async (w) => {
-            const r = await w.execRegExp(/./g, 'hello', 500);
+            const r = await w.matchAll('hello', /./g, 500);
             expect(r.elapsedTimeMs).toBeGreaterThan(0);
             expect(r.elapsedTimeMs).toBeLessThan(10);
             expect(r.matches.map((m) => m[0])).toEqual('hello'.split(''));
@@ -15,7 +15,7 @@ describe('Validate Index', () => {
 
     test('Auto cleanup after delay', async () => {
         const w = new RegExpWorker();
-        const r = await w.execRegExp(/./g, 'hello', 500);
+        const r = await w.matchAll('hello', /./g, 500);
         expect(r.elapsedTimeMs).toBeGreaterThan(0);
         expect(r.elapsedTimeMs).toBeLessThan(10);
         expect(r.matches.map((m) => m[0])).toEqual('hello'.split(''));

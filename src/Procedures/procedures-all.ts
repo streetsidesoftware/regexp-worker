@@ -1,12 +1,11 @@
 import { procEcho } from './procEcho.js';
 import type { Procedure } from './procedure.js';
 import { procExecRegExp } from './procExecRegExp.js';
+import { procGenError } from './procGenError.js';
+import { procMatchAllRegExp } from './procMatchAllRegExp.js';
+import { procMatchAllRegExpArray } from './procMatchAllRegExpArray.js';
 import { procSleep } from './procSleep.js';
 import { procSpin } from './procSpin.js';
-import { procExecRegExpMatrix } from './procExecRegExpMatrix.js';
-import { procGenError } from './procGenError.js';
-import { procMatchRegExpArray } from './procMatchRegExpArray.js';
-import { procMatchRegExp } from './procMatchRegExp.js';
 
 /**
  * List of all procedures available in the worker.
@@ -14,9 +13,8 @@ import { procMatchRegExp } from './procMatchRegExp.js';
  */
 export const procedures: Procedure[] = [
     procExecRegExp,
-    procExecRegExpMatrix,
-    procMatchRegExp,
-    procMatchRegExpArray,
+    procMatchAllRegExp,
+    procMatchAllRegExpArray,
     procEcho,
     procSleep,
     procSpin,

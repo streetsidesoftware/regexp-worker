@@ -1,29 +1,33 @@
 import { describe, test, expect } from 'vitest';
-import { createRequestMatchRegExpArray, procMatchRegExpArray, isMatchRegExpArrayResponse } from './procMatchRegExpArray.js';
+import { createRequestMatchRegExpArray, procMatchAllRegExpArray, isMatchRegExpArrayResponse } from './procMatchAllRegExpArray.js';
 import type { Request } from './procedure.js';
 import { isErrorResponse } from './procedure.js';
 import { createId } from './uniqueId.js';
 
 describe('procMatchRegExpArray', () => {
     test('basic', () => {
-        const req = createRequestMatchRegExpArray({ text: 'two words', regexps: [/w\w+/g] });
-        const result = procMatchRegExpArray(req);
+        const text = 'two words';
+        const regex = /w\w+/g;
+        const regexps = [regex];
+        const req = createRequestMatchRegExpArray({ text, regexps });
+        const result = procMatchAllRegExpArray(req);
         expect(isMatchRegExpArrayResponse(result)).toBe(true);
         const response = isMatchRegExpArrayResponse(result) ? result : undefined;
         expect(response?.data.elapsedTimeMs).toBeGreaterThan(0);
-        expect(response?.data.results[0].ranges).toEqual(new Uint32Array([1, 3, 4, 9]));
+        expect(response?.data.results[0].matches).toEqual(Array.from(text.matchAll(regex)));
     });
 
     test('non-RequestMatchRegExpArray', () => {
         const req: Request = { id: createId(), requestType: 'unknown', data: { text: 'two words', regexps: [/w\w+/g] } };
-        const result = procMatchRegExpArray(req);
+        const result = procMatchAllRegExpArray(req);
         expect(isMatchRegExpArrayResponse(result)).toBe(false);
         expect(result).toBeUndefined();
     });
 
     test('RequestExecRegExp bad regex', () => {
-        const req: Request = createRequestMatchRegExpArray({ text: 'two words', regexps: ['/[/g'] });
-        const result = procMatchRegExpArray(req);
+        const req: Request = createRequestMatchRegExpArray({ text: 'two words', regexps: [/\[/g] });
+        Object.assign(req.data as string[], { regexps: ['/[/g'] }); // Intentionally malformed regex
+        const result = procMatchAllRegExpArray(req);
         const response = isErrorResponse(result) ? result : undefined;
         expect(isMatchRegExpArrayResponse(result)).toBe(false);
         expect(isErrorResponse(result)).toBe(true);

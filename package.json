@@ -24,7 +24,7 @@
     "release": "npx standard-version",
     "release-alpha": "npm release -- -p alpha",
     "tsc": "tsc -p .",
-    "test-watch": "vitest",
+    "test:watch": "vitest",
     "test": "npm run build && npm run test:vitest",
     "test:attw": "attw --pack",
     "test:vitest": "vitest run"

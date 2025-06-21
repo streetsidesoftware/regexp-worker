@@ -12,8 +12,9 @@ describe('procExecRegExp', () => {
         expect(isExecRegExpResponse(result)).toBe(true);
         const response = isExecRegExpResponse(result) ? result : undefined;
         expect(response?.data.elapsedTimeMs).toBeGreaterThan(0);
-        expect(response?.data.matches).toHaveLength(2);
-        expect(response?.data.matches.map((m) => m[0])).toEqual(['wo', 'words']);
+        expect(response?.data.match).toHaveLength(1);
+        expect(response?.data.lastIndex).toBe(3);
+        expect(response?.data.match?.[0]).toEqual('wo');
     });
 
     test('non-RequestExecRegExp', () => {

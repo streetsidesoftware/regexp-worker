@@ -1,33 +1,33 @@
 import { describe, test, expect } from 'vitest';
-import { createRequestMatchRegExp, procMatchRegExp, isMatchRegExpResponse } from './procMatchRegExp.js';
+import { createRequestMatchAllRegExp, procMatchAllRegExp, isMatchAllRegExpResponse } from './procMatchAllRegExp.js';
 import type { Request } from './procedure.js';
 import { isErrorResponse } from './procedure.js';
 import { createId } from './uniqueId.js';
 
-describe('procMatchRegExp', () => {
+describe('procMatchAllRegExp', () => {
     test('basic', () => {
         const text = 'two words';
         const regexp = /w\w+/g;
-        const req = createRequestMatchRegExp({ text, regexp });
-        const result = procMatchRegExp(req);
-        expect(isMatchRegExpResponse(result)).toBe(true);
-        const response = isMatchRegExpResponse(result) ? result : undefined;
+        const req = createRequestMatchAllRegExp({ text, regexp });
+        const result = procMatchAllRegExp(req);
+        expect(isMatchAllRegExpResponse(result)).toBe(true);
+        const response = isMatchAllRegExpResponse(result) ? result : undefined;
         expect(response?.data.elapsedTimeMs).toBeGreaterThan(0);
-        expect(response?.data.match).toEqual(text.match(regexp));
+        expect(response?.data.matches).toEqual(Array.from(text.matchAll(regexp)));
     });
 
-    test('non-RequestMatchRegExp', () => {
+    test('non-RequestMatchAllRegExp', () => {
         const req: Request = { id: createId(), requestType: 'unknown', data: { text: 'two words', regexp: /w\w+/g } };
-        const result = procMatchRegExp(req);
-        expect(isMatchRegExpResponse(result)).toBe(false);
+        const result = procMatchAllRegExp(req);
+        expect(isMatchAllRegExpResponse(result)).toBe(false);
         expect(result).toBeUndefined();
     });
 
     test('RequestExecRegExp bad regex', () => {
-        const req: Request = createRequestMatchRegExp({ text: 'two words', regexp: '/[/g' });
-        const result = procMatchRegExp(req);
+        const req: Request = createRequestMatchAllRegExp({ text: 'two words', regexp: '/[/g' });
+        const result = procMatchAllRegExp(req);
         const response = isErrorResponse(result) ? result : undefined;
-        expect(isMatchRegExpResponse(result)).toBe(false);
+        expect(isMatchAllRegExpResponse(result)).toBe(false);
         expect(isErrorResponse(result)).toBe(true);
         expect(response?.id).toBe(req.id);
         expect(response?.data.requestType).toBe(req.requestType);
