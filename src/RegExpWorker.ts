@@ -13,7 +13,8 @@ import {
 } from './Procedures/index.js';
 import { Scheduler } from './scheduler/index.js';
 import { isTimeoutErrorLike, TimeoutError } from './TimeoutError.js';
-import { createWorkerNode } from './worker/workerNode.js';
+import type { CreateWorker } from './worker/di.js';
+import { createWorker as defaultCreateWorker } from './worker/di.js';
 
 export { toRegExp } from './helpers/evaluateRegExp.js';
 export type { ExecRegExpResult, MatchAllRegExpArrayResult, MatchRegExpResult, MatchAllRegExpResult } from './helpers/evaluateRegExp.js';
@@ -22,8 +23,8 @@ export class RegExpWorker {
     private scheduler: Scheduler;
     public dispose: () => Promise<void> = () => this._dispose();
 
-    constructor(timeoutMs?: number) {
-        this.scheduler = new Scheduler(createWorkerNode, timeoutMs);
+    constructor(timeoutMs?: number, createWorker: CreateWorker = defaultCreateWorker) {
+        this.scheduler = new Scheduler(createWorker, timeoutMs);
     }
 
     /**

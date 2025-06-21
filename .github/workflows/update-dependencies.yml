@@ -19,11 +19,16 @@ jobs:
     env:
       NEW_BRANCH: 'update-dependencies-main'
     steps:
-      - name: Start
-        run: |
-          echo "${{ toJson(github.event.inputs) }}"
+      # - name: Start
+      #   run: |
+      #     echo "${{ toJson(github.event.inputs) }}"
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
 
       - name: Update Root
         run: |
