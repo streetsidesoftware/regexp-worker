@@ -1,16 +1,17 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { describe, test, expect } from 'vitest';
-import type { ExecRegExpResult, FlatRanges } from './evaluateRegExp.js';
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+import { describe, expect, test } from 'vitest';
+import type { FlatRanges, MatchAllRegExpResult } from './evaluateRegExp.js';
 import {
-    execRegExp,
-    toRegExp,
-    execRegExpMatrix,
-    execRegExpArray,
     flatRangesToRanges,
-    matchRegExp,
-    matchRegExpArray,
+    execRegExp,
+    matchAllRegExp,
+    matchAllRegExpArray,
+    matchAllToRangesRegExp,
+    matchAllToRangesRegExpArray,
+    toRegExp,
+    isRegExpLike,
+    isRegExp,
 } from './evaluateRegExp.js';
-import * as fs from 'fs';
 
 describe('EvaluateRegExp', () => {
     const text = `
@@ -23,71 +24,82 @@ Some more cool text.
 Numbers: 1, 2, 3, 4, 1000, -55.0, 1.34e2
 const x2 = 'hello';
 `;
-    const code = fs.readFileSync(new URL(import.meta.url), 'utf8');
-    const w = (result: ExecRegExpResult): string[] => resultsToTexts(result.matches);
+    // const code = fs.readFileSync(new URL(import.meta.url), 'utf8');
+    const w = (result: MatchAllRegExpResult): string[] => resultsToTexts(result.matches);
 
-    test('evaluateRegExp', () => {
-        const words = w(execRegExp(/\w+/g, text));
+    test('matchAllRegExp', () => {
+        const words = w(matchAllRegExp(text, /\w+/g));
         expect(words).toEqual(
             text
                 .split(/\b/g)
                 .map((s) => s.replace(/[^\w]/g, ''))
                 .filter(notEmpty),
         );
-        const wordBreaks = execRegExp(/\b/g, text).matches;
+        const wordBreaks = matchAllRegExp(text, /\b/g).matches;
         expect(wordBreaks.map((r) => r.index).slice(0, 5)).toEqual([1, 5, 6, 8, 9]);
-        const startOfWords = execRegExp(/\b(?=\w)/g, text).matches;
+        const startOfWords = matchAllRegExp(text, /\b(?=\w)/g).matches;
         expect(startOfWords.map((r) => r.index).slice(0, 5)).toEqual([1, 6, 9, 11, 15]);
-        const singleWord = execRegExp(/about/, text);
+        const singleWord = matchAllRegExp(text, /about/);
         expect(w(singleWord)).toEqual(['about']);
     });
 
-    test('toRegExp', () => {
-        expect(toRegExp(/./g).toString()).toBe(/./g.toString());
-        expect(toRegExp(/./g.toString())).toEqual(/./g);
-        expect(toRegExp('hello')).toEqual(/hello/);
-        expect(toRegExp('hello.')).toEqual(/hello./);
-        expect(toRegExp('hello*')).toEqual(/hello*/);
+    test.each`
+        regExp                                              | expected      | expectedLastIndex
+        ${/./g}                                             | ${/./g}       | ${0}
+        ${/./gu}                                            | ${/./gu}      | ${0}
+        ${'/hello/'}                                        | ${/hello/}    | ${0}
+        ${'hello'}                                          | ${/hello/}    | ${0}
+        ${'hello.'}                                         | ${/hello./}   | ${0}
+        ${'hello*'}                                         | ${/hello*/}   | ${0}
+        ${{ source: 'hello*', flags: 'gu' }}                | ${/hello*/gu} | ${0}
+        ${{ source: 'hello*', flags: 'gu', lastIndex: 10 }} | ${/hello*/gu} | ${10}
+        ${{ source: 'hello*', flags: '' }}                  | ${/hello*/}   | ${0}
+    `('toRegExp $regExp', ({ regExp, expected, expectedLastIndex }) => {
+        const reg = toRegExp(regExp);
+        expect(reg).toEqual(expected);
+        expect(reg.lastIndex).toBe(expectedLastIndex);
     });
 
-    test('execRegExpMatrix', () => {
-        const empty = execRegExpMatrix([], []);
-        expect(empty).toEqual(
-            expect.objectContaining({
-                elapsedTimeMs: expect.any(Number),
-                matrix: expect.arrayContaining([]),
-            }),
-        );
-        const result = execRegExpMatrix([/\bt\w+/g, /\d+/g, /execRegExpMatrix.*/], [text, code]);
-        expect(result.elapsedTimeMs).toBeGreaterThan(0);
-        expect(result.matrix).toEqual(expect.any(Array));
-        expect(result.matrix).toHaveLength(3);
-        expect(result.matrix[0].regExp).toEqual(/\bt\w+/g);
-        expect(result.matrix[2].results).toHaveLength(2);
-        expect(result.matrix[2].results[1].matches).toHaveLength(1);
+    test.each`
+        regExp                                              | expected | expectedIsRegEx
+        ${/./g}                                             | ${true}  | ${true}
+        ${/./gu}                                            | ${true}  | ${true}
+        ${'hello'}                                          | ${false} | ${false}
+        ${'hello.'}                                         | ${false} | ${false}
+        ${'hello*'}                                         | ${false} | ${false}
+        ${{ source: 'hello*', flags: 'gu' }}                | ${true}  | ${false}
+        ${{ source: 'hello*', flags: 'gu', lastIndex: 10 }} | ${true}  | ${false}
+    `('isRegExLike $regExp', ({ regExp, expected, expectedIsRegEx }) => {
+        expect(isRegExpLike(regExp)).toBe(expected);
+        expect(isRegExp(regExp)).toBe(expectedIsRegEx);
     });
 
-    test('execRegExpArray', () => {
-        const r = execRegExpArray([/\w+/g], text);
-        expect(r.results.map((r) => r.matches).map(resultsToTexts)).toEqual([w(execRegExp(/\w+/g, text))]);
+    test.each`
+        regExp                                               | expected
+        ${{ source: undefined, flags: 'gu', lastIndex: 10 }} | ${TypeError('Invalid RegExp or string.')}
+        ${{ source: '', flags: 4, lastIndex: 10 }}           | ${TypeError('Invalid RegExp or string.')}
+        ${null}                                              | ${TypeError('Invalid RegExp or string.')}
+        ${'(.'}                                              | ${SyntaxError('Invalid regular expression: /(./: Unterminated group')}
+    `('toRegExp Error $regExp', ({ regExp, expected }) => {
+        expect(() => toRegExp(regExp)).toThrowError(expected);
     });
 
-    test('matchRegExp', () => {
-        const r = matchRegExp(text, /\w+/g);
+    test('matchAllRegExpArray', () => {
+        const r = matchAllRegExpArray(text, [/\w+/g]);
+        expect(r.results.map((r) => r.matches).map(resultsToTexts)).toEqual([w(matchAllRegExp(text, /\w+/g))]);
+    });
+
+    test('matchAllToRangesRegExp', () => {
+        const r = matchAllToRangesRegExp(text, /\w+/g);
         const words = [...flatRangesToTexts(r.ranges, text)];
-        expect(words).toEqual(
-            text
-                .split(/\b/g)
-                .map((s) => s.replace(/[^\w]/g, ''))
-                .filter(notEmpty),
-        );
+        expect(words).toEqual(Array.from(text.matchAll(/\w+/g), (m) => regExpExecArrayToText(m)));
         expect(r.elapsedTimeMs).toBeGreaterThan(0);
         expect(r.elapsedTimeMs).toBeLessThan(100);
     });
 
     test('matchRegExpArray', () => {
         const regExps = [/\w+/g, /\d+/g];
-        const r = matchRegExpArray(text, regExps);
+        const r = matchAllToRangesRegExpArray(text, regExps);
         expect(r.elapsedTimeMs).toBeGreaterThan(0);
         expect(r.elapsedTimeMs).toBeLessThan(100);
         expect(r.elapsedTimeMs).toBeGreaterThan(r.results.map((a) => a.elapsedTimeMs).reduce((a, b) => a + b, 0));
@@ -96,10 +108,20 @@ const x2 = 'hello';
             const regexp = regExps[i];
             expect(result.elapsedTimeMs).toBeGreaterThan(0);
             expect(result.elapsedTimeMs).toBeLessThan(100);
-            const expectedWords = w(execRegExp(regexp, text));
+            const expectedWords = w(matchAllRegExp(text, regexp));
             const words = [...flatRangesToTexts(result.ranges, text)];
             expect(words).toEqual(expectedWords);
         }
+    });
+
+    test.each`
+        regExp       | expected             | expectedLastIndex
+        ${/\w+/g}    | ${/\w+/g.exec(text)} | ${5}
+        ${/\d{8,}/g} | ${null}              | ${0}
+    `('execRegExp $regExp', ({ regExp, expected, expectedLastIndex }) => {
+        const r = execRegExp(regExp, text);
+        expect(r.match).toEqual(expected);
+        expect(r.lastIndex).toBe(expectedLastIndex);
     });
 });
 
@@ -111,8 +133,12 @@ function regExpExecArrayToText(match: RegExpExecArray): string {
     return match[0];
 }
 
-function resultsToTexts(matches: RegExpExecArray[]): string[] {
-    return matches.map(regExpExecArrayToText);
+function regExpMatchArrayToText(match: RegExpMatchArray): string {
+    return match[0];
+}
+
+function resultsToTexts(matches: RegExpMatchArray[]): string[] {
+    return matches.map(regExpMatchArrayToText);
 }
 
 function* flatRangesToTexts(ranges: FlatRanges, text: string): IterableIterator<string> {

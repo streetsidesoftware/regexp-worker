@@ -1,5 +1,6 @@
 import { format } from 'util';
-import { execRegExp, type ExecRegExpResult, toRegExp } from '../helpers/evaluateRegExp.js';
+import type { ExecRegExpResult } from '../helpers/evaluateRegExp.js';
+import { execRegExp, toRegExp } from '../helpers/evaluateRegExp.js';
 import {
     createErrorResponse,
     createRequest,

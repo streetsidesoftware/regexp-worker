@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { describe, test, expect } from 'vitest';
-import { RegExpWorker, execRegExpOnWorker, execRegExpMatrixOnWorker, timeoutRejection } from './RegExpWorker.js';
+import { RegExpWorker, workerExec, workerMatch, workerMatchAll, workerMatchAllArray, timeoutRejection } from './RegExpWorker.js';
 import { TimeoutError } from './TimeoutError.js';
 import { catchErrors } from './helpers/errors.js';
 
@@ -28,42 +28,11 @@ expect.extend({
 
 describe('RegExpWorker', () => {
     test(
-        'execRegExp',
+        'matchAll',
         run(async (w) => {
-            const r = await w.execRegExp(/\w/g, 'hello\nthere');
+            const r = await w.matchAll('hello\nthere', /\w/g);
             expect(r.matches.map((m) => m[0])).toEqual('hellothere'.split(''));
             expect(r.elapsedTimeMs).toBeGreaterThan(0);
-        }),
-    );
-
-    test(
-        'execRegExpMatrix',
-        run(async (w) => {
-            const r = await w.execRegExpMatrix([/\w/g], ['hello\nthere']);
-            expect(r.matrix[0].results[0].matches.map((m) => m[0])).toEqual('hellothere'.split(''));
-            expect(r.elapsedTimeMs).toBeGreaterThan(0);
-        }),
-    );
-
-    test(
-        'matchRegExp',
-        run(async (w) => {
-            const text = 'hello\nthere';
-            const r = await w.matchRegExp(text, /\w/g);
-            expect([...r.ranges].map((m) => text.slice(...m))).toEqual('hellothere'.split(''));
-            expect(r.elapsedTimeMs).toBeGreaterThan(0);
-        }),
-    );
-
-    test(
-        'matchRegExpArray',
-        run(async (w) => {
-            const text = 'hello\nthere';
-            const r = await w.matchRegExpArray(text, [/\w/g]);
-            expect([...r.results[0].ranges].map((m) => text.slice(...m))).toEqual('hellothere'.split(''));
-            expect(r.elapsedTimeMs).toBeGreaterThan(0);
-            expect(r.results[0].elapsedTimeMs).toBeGreaterThan(0);
-            expect(r.elapsedTimeMs).toBeGreaterThanOrEqual(r.results[0].elapsedTimeMs);
         }),
     );
 
@@ -81,26 +50,36 @@ describe('RegExpWorker', () => {
     test(
         'very slow regexp',
         run(async (worker) => {
-            const r = worker.execRegExp(/(x+x+)+y/, 'x'.repeat(30), 5);
+            const r = worker.matchAll('x'.repeat(30), /(x+x+)+y/, 5);
             return expect(r).rejects.toEqual(
                 expect.objectContaining({ elapsedTimeMs: expect.toBeWithin(3, 50), message: expect.stringContaining('Request Timeout') }),
             );
         }),
     );
 
-    test('execRegExpOnWorker', async () => {
-        const response = await execRegExpOnWorker(/\b\w+/g, 'Good Morning');
+    test('workerMatchAll', async () => {
+        const response = await workerMatchAll('Good Morning', /\b\w+/g);
         expect(response.matches.map((m) => m[0])).toEqual(['Good', 'Morning']);
     });
 
-    test('execRegExpOnWorker on word boundaries', async () => {
-        const response = await execRegExpOnWorker(/\b/g, 'Good Morning');
+    test('workerMatchAll on word boundaries', async () => {
+        const response = await workerMatchAll('Good Morning', /\b/g);
         expect(response.matches.map((m) => m.index)).toEqual([0, 4, 5, 12]);
     });
 
-    test('execRegExpMatrixOnWorker', async () => {
-        const response = await execRegExpMatrixOnWorker([/\b\w+/g], ['Good Morning']);
-        expect(response.matrix[0].results[0].matches.map((m) => m[0])).toEqual(['Good', 'Morning']);
+    test('workerExec', async () => {
+        const response = await workerExec(/ \b\w+/g, 'Good Morning.');
+        expect(response.match?.[0]).toEqual(' Morning');
+    });
+
+    test('workerMatch', async () => {
+        const response = await workerMatch('Good Morning.', /Good/);
+        expect(response.match?.[0]).toEqual('Good');
+    });
+
+    test('workerMatchAllArray', async () => {
+        const response = await workerMatchAllArray('Good Morning', [/\b\w+/g]);
+        expect(response.results.flatMap((r) => r.matches.map((m) => m[0]))).toEqual(['Good', 'Morning']);
     });
 });
 

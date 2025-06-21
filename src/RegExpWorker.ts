@@ -1,26 +1,22 @@
+import type { ExecRegExpResult, MatchAllRegExpArrayResult, MatchRegExpResult } from './helpers/evaluateRegExp.js';
+import { type MatchAllRegExpResult } from './helpers/evaluateRegExp.js';
+import type { RequestMatchRegExp } from './Procedures/index.js';
 import {
-    type ExecRegExpMatrixResult,
-    type ExecRegExpResult,
-    type FlatRanges,
-    flatRangesToRanges,
-    type MatchRegExpArrayResult as _MatchRegExpArrayResult,
-    type MatchRegExpResult as _MatchRegExpResult,
-    type Range,
-} from './helpers/evaluateRegExp.js';
-import { Scheduler } from './scheduler/index.js';
-import {
-    createRequestExecRegExp,
-    createRequestExecRegExpMatrix,
-    type Response,
     type RequestExecRegExp,
-    type RequestExecRegExpMatrix,
+    type RequestMatchAllRegExp,
+    type RequestMatchAllRegExpArray,
+    type Response,
+    createRequestExecRegExp,
+    createRequestMatchAllRegExp,
+    createRequestMatchRegExp,
+    createRequestMatchRegExpArray,
 } from './Procedures/index.js';
-import { type RequestMatchRegExp, createRequestMatchRegExp } from './Procedures/procMatchRegExp.js';
-import { type RequestMatchRegExpArray, createRequestMatchRegExpArray } from './Procedures/procMatchRegExpArray.js';
+import { Scheduler } from './scheduler/index.js';
 import { isTimeoutErrorLike, TimeoutError } from './TimeoutError.js';
 import { createWorkerNode } from './worker/workerNode.js';
 
-export { type ExecRegExpResult, type ExecRegExpMatrixResult, toRegExp, type Range } from './helpers/evaluateRegExp.js';
+export { toRegExp } from './helpers/evaluateRegExp.js';
+export type { ExecRegExpResult, MatchAllRegExpArrayResult, MatchRegExpResult, MatchAllRegExpResult } from './helpers/evaluateRegExp.js';
 
 export class RegExpWorker {
     private scheduler: Scheduler;
@@ -30,37 +26,59 @@ export class RegExpWorker {
         this.scheduler = new Scheduler(createWorkerNode, timeoutMs);
     }
 
-    public execRegExp(regExp: RegExp, text: string, timeLimitMs?: number): Promise<ExecRegExpResult> {
+    /**
+     * Run RegExp.exec in a worker.
+     * @param regExp - The regular expression to execute.
+     * @param text - The text to search within.
+     * @param timeLimitMs - Optional time limit in milliseconds for the operation.
+     */
+    public exec(regExp: RegExp, text: string, timeLimitMs?: number): Promise<ExecRegExpResult> {
         const req = createRequestExecRegExp({ regexp: regExp, text });
         return this.makeRequest(req, timeLimitMs);
     }
 
-    public execRegExpMatrix(regExpArray: RegExp[], textArray: string[], timeLimitMs?: number): Promise<ExecRegExpMatrixResult> {
-        const req = createRequestExecRegExpMatrix({ regExpArray, textArray });
+    /**
+     * Run text.matchAll against a RegExp in a worker.
+     * @param text - The text to search within.
+     * @param regExp - The regular expression to match against the text.
+     * @param timeLimitMs - Optional time limit in milliseconds for the operation.
+     */
+    public matchAll(text: string, regExp: RegExp, timeLimitMs?: number): Promise<MatchAllRegExpResult> {
+        const req = createRequestMatchAllRegExp({ regexp: regExp, text });
         return this.makeRequest(req, timeLimitMs);
     }
 
-    public async matchRegExp(text: string, regExp: RegExp, timeLimitMs?: number): Promise<MatchRegExpResult> {
+    /**
+     * Run text.match with a RegExp in a worker.
+     * @param text - The text to search within.
+     * @param regExp - The regular expression to match against the text.
+     * @param timeLimitMs - Optional time limit in milliseconds for the operation.
+     */
+    public match(text: string, regExp: RegExp, timeLimitMs?: number): Promise<MatchRegExpResult> {
         const req = createRequestMatchRegExp({ regexp: regExp, text });
-        const res = await this.makeRequest(req, timeLimitMs);
-        return MatchRegExpResult.create(res);
+        return this.makeRequest(req, timeLimitMs);
     }
 
-    public async matchRegExpArray(text: string, regExp: RegExp[], timeLimitMs?: number): Promise<MatchRegExpArrayResult> {
+    /**
+     * Runs text.matchAll against an array of RegExps in a worker.
+     * @param text - The text to search within.
+     * @param regExps - An array of regular expressions to match against the text.
+     * @param timeLimitMs - Optional time limit in milliseconds for the operation.
+     */
+    public matchAllArray(text: string, regExp: RegExp[], timeLimitMs?: number): Promise<MatchAllRegExpArrayResult> {
         const req = createRequestMatchRegExpArray({ regexps: regExp, text });
-        const res = await this.makeRequest(req, timeLimitMs);
-        return MatchRegExpArrayResult.create(res);
+        return this.makeRequest(req, timeLimitMs);
     }
 
     private makeRequest(req: RequestExecRegExp, timeLimitMs: number | undefined): Promise<ExecRegExpResult>;
-    private makeRequest(req: RequestExecRegExpMatrix, timeLimitMs: number | undefined): Promise<ExecRegExpMatrixResult>;
-    private makeRequest(req: RequestMatchRegExp, timeLimitMs: number | undefined): Promise<_MatchRegExpResult>;
-    private makeRequest(req: RequestMatchRegExpArray, timeLimitMs: number | undefined): Promise<_MatchRegExpArrayResult>;
+    private makeRequest(req: RequestMatchRegExp, timeLimitMs: number | undefined): Promise<MatchRegExpResult>;
+    private makeRequest(req: RequestMatchAllRegExp, timeLimitMs: number | undefined): Promise<MatchAllRegExpResult>;
+    private makeRequest(req: RequestMatchAllRegExpArray, timeLimitMs: number | undefined): Promise<MatchAllRegExpArrayResult>;
     private makeRequest(
-        req: RequestExecRegExp | RequestExecRegExpMatrix | RequestMatchRegExp | RequestMatchRegExpArray,
+        req: RequestExecRegExp | RequestMatchAllRegExp | RequestMatchRegExp | RequestMatchAllRegExpArray,
         timeLimitMs: number | undefined,
-    ): Promise<ExecRegExpResult> | Promise<ExecRegExpMatrixResult> | Promise<_MatchRegExpResult> | Promise<_MatchRegExpArrayResult> {
-        return this.scheduler.scheduleRequest(req, timeLimitMs).then(extractResult, timeoutRejection) as Promise<ExecRegExpResult>;
+    ): Promise<ExecRegExpResult> | Promise<MatchRegExpResult> | Promise<MatchAllRegExpResult> | Promise<MatchAllRegExpArrayResult> {
+        return this.scheduler.scheduleRequest(req, timeLimitMs).then(extractResult, timeoutRejection) as Promise<MatchAllRegExpResult>;
     }
 
     /**
@@ -90,49 +108,46 @@ export function timeoutRejection(e: unknown): Promise<never> {
     return Promise.reject(new TimeoutError(e.message, e.elapsedTimeMs));
 }
 
-export async function execRegExpOnWorker(regExp: RegExp, text: string, timeLimitMs?: number): Promise<ExecRegExpResult> {
+/**
+ * Run text.matchAll against a RegExp in a worker.
+ * @param text - The text to search within.
+ * @param regExp - The regular expression to match against the text.
+ * @param timeLimitMs - Optional time limit in milliseconds for the operation.
+ */
+export async function workerMatchAll(text: string, regExp: RegExp, timeLimitMs?: number): Promise<MatchAllRegExpResult> {
     const worker = new RegExpWorker();
-    return await worker.execRegExp(regExp, text, timeLimitMs);
+    return await worker.matchAll(text, regExp, timeLimitMs);
 }
 
-export async function execRegExpMatrixOnWorker(
-    regExpArray: RegExp[],
-    textArray: string[],
-    timeLimitMs?: number,
-): Promise<ExecRegExpMatrixResult> {
+/**
+ * Runs text.matchAll against an array of RegExps in a worker.
+ * @param text - The text to search within.
+ * @param regExps - An array of regular expressions to match against the text.
+ * @param timeLimitMs - Optional time limit in milliseconds for the operation.
+ */
+export async function workerMatchAllArray(text: string, regExps: RegExp[], timeLimitMs?: number): Promise<MatchAllRegExpArrayResult> {
     const worker = new RegExpWorker();
-    return await worker.execRegExpMatrix(regExpArray, textArray, timeLimitMs);
+    return await worker.matchAllArray(text, regExps, timeLimitMs);
 }
 
-export class MatchRegExpResult {
-    private constructor(
-        readonly elapsedTimeMs: number,
-        readonly raw_ranges: FlatRanges,
-    ) {}
-
-    /**
-     * The range tuples that matched the full regular expression.
-     * Each tuple is: [startIndex, endIndex]
-     */
-    get ranges(): IterableIterator<Range> {
-        return flatRangesToRanges(this.raw_ranges);
-    }
-
-    static create(res: _MatchRegExpResult): MatchRegExpResult {
-        return new MatchRegExpResult(res.elapsedTimeMs, res.ranges);
-    }
+/**
+ * Run RegExp.exec in a worker.
+ * @param regExp - The regular expression to execute.
+ * @param text - The text to search within.
+ * @param timeLimitMs - Optional time limit in milliseconds for the operation.
+ */
+export async function workerExec(regExp: RegExp, text: string, timeLimitMs?: number): Promise<ExecRegExpResult> {
+    const worker = new RegExpWorker();
+    return await worker.exec(regExp, text, timeLimitMs);
 }
 
-export class MatchRegExpArrayResult {
-    constructor(
-        readonly elapsedTimeMs: number,
-        readonly results: MatchRegExpResult[],
-    ) {}
-
-    static create(res: _MatchRegExpArrayResult): MatchRegExpArrayResult {
-        return new MatchRegExpArrayResult(
-            res.elapsedTimeMs,
-            res.results.map((r) => MatchRegExpResult.create(r)),
-        );
-    }
+/**
+ * Run text.match with a RegExp in a worker.
+ * @param text - The text to search within.
+ * @param regExp - The regular expression to match against the text.
+ * @param timeLimitMs - Optional time limit in milliseconds for the operation.
+ */
+export async function workerMatch(text: string, regExp: RegExp, timeLimitMs?: number): Promise<MatchRegExpResult> {
+    const worker = new RegExpWorker();
+    return await worker.match(text, regExp, timeLimitMs);
 }

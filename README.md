@@ -24,46 +24,43 @@ For the occasional request, this is the easiest way, but the Worker startup and 
 ### Find the words in some text
 
 ```typescript
-import { execRegExpOnWorker } from 'regexp-worker';
+import { workerMatchAll } from 'regexp-worker';
 //...
-const response = await execRegExpOnWorker(/\b\w+/g, 'Good Morning');
+const response = await workerMatchAll('Good Morning', /\b\w+/g);
 console.log(response.matches.map((m) => m[0]));
 ```
 
 Result:
 
 ```
-  console.log
-    [ 'Good', 'Morning' ]
-
+[ 'Good', 'Morning' ]
 ```
 
 ### Find the word breaks in some text
 
-```typescript
-import { execRegExpOnWorker } from 'regexp-worker';
-//...
-const response = await execRegExpOnWorker(/\b/g, 'Good Morning');
+```ts
+import { workerMatchAll } from 'regexp-worker';
+
+const response = await workerMatchAll('Good Morning', /\b/g);
 console.log(response.matches.map((m) => m.index));
 ```
 
 Result:
 
 ```
-  console.log
-    [ 0, 4, 5, 12 ]
+[ 0, 4, 5, 12 ]
 ```
 
 ### Format of the response
 
-```typescript
-interface ExecRegExpResult {
+```ts
+export interface MatchAllRegExpResult {
     elapsedTimeMs: number;
-    matches: RegExpExecArray[];
+    matches: RegExpMatchArray[];
 }
 ```
 
-Where `RegExpExecArray` is [RegExp.prototype.exec() result](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/exec#Description).
+Where `RegExpMatchArray` is [`RegExp.prototype[Symbol.matchAll]()` result](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/exec#Description).
 
 ## Creating a `RegExpWorker` Instance
 
@@ -79,14 +76,14 @@ const defaultTimeOutMs = 10;
 const worker = new RegExpWorker(defaultTimeOutMs);
 
 // Find all words in some text
-let words = await worker.execRegExp(/\b\w+/g, 'Lots of text ...');
+let words = await worker.matchAll('Lots of text ...', /\b\w+/g);
 
 // Find all numbers in some text
-let numbers = await worker.execRegExp(/\b\d+/g, 'Lots of text ...');
+let numbers = await worker.matchAll('Lots of text ...', /\b\d+/g);
 
 // Find 3 letter word pairs
 let moreTimeMs = 100;
-let numbers = await worker.execRegExp(/\b\w{3}\s+\w{3}/g, 'Lots of text ...', moreTimeMs);
+let numbers = await worker.matchAll('Lots of text ...', /\b\w{3}\s+\w{3}/g, moreTimeMs);
 
 // ...
 

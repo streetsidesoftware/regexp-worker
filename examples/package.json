@@ -1,0 +1,13 @@
+{
+  "name": "@internal/examples",
+  "version": "1.0.0",
+  "description": "Example Code",
+  "type": "module",
+  "scripts": {
+    "test": "echo test"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "regexp-worker": ".."
+  }
+}
