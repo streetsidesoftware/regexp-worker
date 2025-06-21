@@ -33,6 +33,7 @@ export default defineConfig({
                 '**/test*/**',
                 '**/worker/workerCodeNode.*',
                 'coverage',
+                'examples',
                 'scripts',
                 'vitest*',
                 'workerTerminate.mjs',
