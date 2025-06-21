@@ -4,7 +4,7 @@ export default defineConfig({
     test: {
         chaiConfig: { truncateThreshold: 80 },
         // test both .js and .ts files
-        include: ['out/**/*.test.{js,mjs}', 'src/**/*.test.*', 'src/**/*.spec.*'],
+        include: ['out/**/*.test.{js,mjs}', 'src/**/*.test.*', 'src/**/*.spec.*', 'examples/**/*.test.*'],
         exclude: ['**/temp/**', '**/node_modules/**'],
         coverage: {
             // enabled: true,

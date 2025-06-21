@@ -18,6 +18,7 @@ export default tsEslint.config(
             'dist',
             'out',
             'eslint.*',
+            'examples',
             'workerTerminate.mjs',
             '*.config.ts',
             'scripts',
