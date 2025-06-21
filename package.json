@@ -17,6 +17,7 @@
     "build:code": "npm run compile && tsdown -c tsdown.config.ts",
     "clean-build": "npm run clean && npm run build",
     "coverage": "vitest run --coverage",
+    "setup-examples": "cd examples && npm install",
     "prepublish": "npm run clean-build",
     "prepublishOnly": "npm run test-all",
     "compile": "tsc -p .",
@@ -25,7 +26,7 @@
     "release-alpha": "npm release -- -p alpha",
     "tsc": "tsc -p .",
     "test:watch": "vitest",
-    "test": "npm run build && npm run test:vitest",
+    "test": "npm run build && npm run setup-examples && npm run test:vitest",
     "test:attw": "attw --pack",
     "test:vitest": "vitest run"
   },
