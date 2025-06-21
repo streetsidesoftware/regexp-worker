@@ -26,21 +26,45 @@ export class RegExpWorker {
         this.scheduler = new Scheduler(createWorkerNode, timeoutMs);
     }
 
+    /**
+     * Run RegExp.exec in a worker.
+     * @param regExp - The regular expression to execute.
+     * @param text - The text to search within.
+     * @param timeLimitMs - Optional time limit in milliseconds for the operation.
+     */
     public exec(regExp: RegExp, text: string, timeLimitMs?: number): Promise<ExecRegExpResult> {
         const req = createRequestExecRegExp({ regexp: regExp, text });
         return this.makeRequest(req, timeLimitMs);
     }
 
+    /**
+     * Run text.matchAll against a RegExp in a worker.
+     * @param text - The text to search within.
+     * @param regExp - The regular expression to match against the text.
+     * @param timeLimitMs - Optional time limit in milliseconds for the operation.
+     */
     public matchAll(text: string, regExp: RegExp, timeLimitMs?: number): Promise<MatchAllRegExpResult> {
         const req = createRequestMatchAllRegExp({ regexp: regExp, text });
         return this.makeRequest(req, timeLimitMs);
     }
 
+    /**
+     * Run text.match with a RegExp in a worker.
+     * @param text - The text to search within.
+     * @param regExp - The regular expression to match against the text.
+     * @param timeLimitMs - Optional time limit in milliseconds for the operation.
+     */
     public match(text: string, regExp: RegExp, timeLimitMs?: number): Promise<MatchRegExpResult> {
         const req = createRequestMatchRegExp({ regexp: regExp, text });
         return this.makeRequest(req, timeLimitMs);
     }
 
+    /**
+     * Runs text.matchAll against an array of RegExps in a worker.
+     * @param text - The text to search within.
+     * @param regExps - An array of regular expressions to match against the text.
+     * @param timeLimitMs - Optional time limit in milliseconds for the operation.
+     */
     public matchAllArray(text: string, regExp: RegExp[], timeLimitMs?: number): Promise<MatchAllRegExpArrayResult> {
         const req = createRequestMatchRegExpArray({ regexps: regExp, text });
         return this.makeRequest(req, timeLimitMs);
