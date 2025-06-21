@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.0](https://github.com/streetsidesoftware/regexp-worker/compare/v3.0.0...v4.0.0) (2025-06-21)
+
+
+### ⚠ BREAKING CHANGES
+
+* Change the API to match modern JavaScript ([#970](https://github.com/streetsidesoftware/regexp-worker/issues/970))
+* convert to ESM ([#958](https://github.com/streetsidesoftware/regexp-worker/issues/958))
+
+### Features
+
+* Bundle the worker ([#962](https://github.com/streetsidesoftware/regexp-worker/issues/962)) ([242c6ac](https://github.com/streetsidesoftware/regexp-worker/commit/242c6ace3f55916a4d664beae6aa8055e708b957))
+* Change the API to match modern JavaScript ([#970](https://github.com/streetsidesoftware/regexp-worker/issues/970)) ([f00328b](https://github.com/streetsidesoftware/regexp-worker/commit/f00328bf6a36c44528a34d31b1649a260c16d141))
+* convert to ESM ([#958](https://github.com/streetsidesoftware/regexp-worker/issues/958)) ([3b2ca6e](https://github.com/streetsidesoftware/regexp-worker/commit/3b2ca6edb0c2e76b1843a60a63837ef7e40f314f))
+
+
+### Bug Fixes
+
+* drop hrtime dependency ([#961](https://github.com/streetsidesoftware/regexp-worker/issues/961)) ([48d572a](https://github.com/streetsidesoftware/regexp-worker/commit/48d572a05c990d54e5b7c2cba8c6f973e360cc35))
+* support commonjs and esm ([#968](https://github.com/streetsidesoftware/regexp-worker/issues/968)) ([38ab6e9](https://github.com/streetsidesoftware/regexp-worker/commit/38ab6e925fdadb7fa73187004ac93f492846bfc9))
+
 ## [3.0.0](https://github.com/streetsidesoftware/regexp-worker/compare/v2.0.2...v3.0.0) (2024-07-03)
 
 ### ⚠ BREAKING CHANGES
