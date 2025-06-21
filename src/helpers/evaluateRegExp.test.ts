@@ -47,11 +47,13 @@ const x2 = 'hello';
         regExp                                              | expected      | expectedLastIndex
         ${/./g}                                             | ${/./g}       | ${0}
         ${/./gu}                                            | ${/./gu}      | ${0}
+        ${'/hello/'}                                        | ${/hello/}    | ${0}
         ${'hello'}                                          | ${/hello/}    | ${0}
         ${'hello.'}                                         | ${/hello./}   | ${0}
         ${'hello*'}                                         | ${/hello*/}   | ${0}
         ${{ source: 'hello*', flags: 'gu' }}                | ${/hello*/gu} | ${0}
         ${{ source: 'hello*', flags: 'gu', lastIndex: 10 }} | ${/hello*/gu} | ${10}
+        ${{ source: 'hello*', flags: '' }}                  | ${/hello*/}   | ${0}
     `('toRegExp $regExp', ({ regExp, expected, expectedLastIndex }) => {
         const reg = toRegExp(regExp);
         expect(reg).toEqual(expected);
