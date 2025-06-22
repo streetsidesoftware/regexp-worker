@@ -29,6 +29,8 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    env:
+      DRY_RUN: ${{ github.event.inputs.dry_run && github.event.inputs.dry_run != 'false' && '--dry-run' || '' }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -46,7 +48,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.PUBLISH_NPM }}
           NPM_CONFIG_PROVENANCE: true
-        run: npm publish ${{ github.event.inputs.dry_run && '--dry-run' || '' }}
+        run: npm publish ${{ env.DRY_RUN }}
 
       - name: Summary
         uses: streetsidesoftware/actions/public/summary@v1
@@ -54,3 +56,5 @@ jobs:
           text: |
             ## Published to NPM
             Tag: `${{ github.event.inputs.tag }}`
+            Dry Run: `${{ github.event.inputs.dry_run }}` ${{ env.DRY_RUN }}
+            Releases: [regexp-worker/releases](https://github.com/streetsidesoftware/regexp-worker/releases)
