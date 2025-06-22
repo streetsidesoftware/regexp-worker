@@ -1,5 +1,8 @@
 attw
+Avenir
 codecov
+coverallsapp
+dependabot
 gimsuy
 lcov
 nodenext
