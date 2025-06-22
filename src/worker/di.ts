@@ -1,6 +1,6 @@
-import type { Worker } from './Worker.js';
+import type { IWorker } from './Worker.js';
 
-export type CreateWorker = () => Worker;
+export type CreateWorker = () => IWorker;
 
 interface DI {
     createWorker: CreateWorker;
@@ -23,7 +23,7 @@ export function setCreateWorker(createWorker: CreateWorker): void {
     di.createWorker = createWorker;
 }
 
-export function createWorker(): Worker {
+export function createWorker(): IWorker {
     const createWorkerFunc = getCreateWorker();
     return createWorkerFunc();
 }

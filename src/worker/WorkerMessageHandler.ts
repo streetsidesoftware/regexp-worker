@@ -1,8 +1,7 @@
-import { format } from 'util';
-
 import { isErrorLike, toError } from '../helpers/errors.js';
 import type { Procedure } from '../Procedures/procedure.js';
 import { createErrorResponse, isRequest } from '../Procedures/procedure.js';
+import { format } from '../util/format.js';
 import type { LogParams } from './LogLevel.js';
 import { LogLevel } from './LogLevel.js';
 import type { MessagePort } from './MessagePort.js';

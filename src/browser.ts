@@ -1,4 +1,4 @@
-export type { ExecRegExpResult, MatchAllRegExpArrayResult, MatchAllRegExpResult, MatchRegExpResult } from './RegExpWorkerNode.js';
+export type { ExecRegExpResult, MatchAllRegExpArrayResult, MatchAllRegExpResult, MatchRegExpResult } from './RegExpWorkerBrowser.js';
 export {
     createRegExpWorker,
     RegExpWorker,
@@ -7,5 +7,5 @@ export {
     workerMatch,
     workerMatchAll,
     workerMatchAllArray,
-} from './RegExpWorkerNode.js';
+} from './RegExpWorkerBrowser.js';
 export { TimeoutError } from './TimeoutError.js';

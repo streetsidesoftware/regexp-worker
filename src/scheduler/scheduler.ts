@@ -99,7 +99,7 @@ export class Scheduler {
     private trigger(): void {
         if (this.stopped || this.currentRequest) return;
 
-        setImmediate(() => {
+        setTimeout(() => {
             if (this.stopped || this.currentRequest) return;
             const req = this.getNextRequest();
             if (!req) {
@@ -113,7 +113,7 @@ export class Scheduler {
             this.currentRequest = requestId;
             this.scheduleTimeout(() => this.terminateRequest(requestId, 'Request Timeout'), req.timeLimitMs);
             this.worker.postMessage(req.request);
-        });
+        }, 0);
     }
 
     private cleanupRequest(id: UniqueID): void {

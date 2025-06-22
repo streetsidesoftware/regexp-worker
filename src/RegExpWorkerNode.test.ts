@@ -2,7 +2,8 @@
 import { describe, expect, test } from 'vitest';
 
 import { catchErrors } from './helpers/errors.js';
-import { RegExpWorker, timeoutRejection, workerExec, workerMatch, workerMatchAll, workerMatchAllArray } from './RegExpWorkerNode.js';
+import { timeoutRejection } from './RegExpWorker.js';
+import { RegExpWorker, workerExec, workerMatch, workerMatchAll, workerMatchAllArray } from './RegExpWorkerNode.js';
 import { TimeoutError } from './TimeoutError.js';
 
 interface CustomMatchers<R = unknown> {

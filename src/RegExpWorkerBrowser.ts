@@ -5,15 +5,15 @@ import type {
     MatchAllRegExpResult,
     MatchRegExpResult,
 } from './RegExpWorker.js';
-import { RegExpWorkerBase as RegExpWorkerBase } from './RegExpWorker.js';
-import { createWorkerNode } from './worker/workerNode.js';
+import { RegExpWorkerBase } from './RegExpWorker.js';
+import { createWorkerBrowser } from './worker/workerBrowser.js';
 
 export { toRegExp } from './helpers/evaluateRegExp.js';
 export type { ExecRegExpResult, MatchAllRegExpArrayResult, MatchAllRegExpResult, MatchRegExpResult, RangePair } from './RegExpWorker.js';
 
 export class RegExpWorker extends RegExpWorkerBase {
     constructor(timeoutMs?: number) {
-        super(createWorkerNode, timeoutMs);
+        super(createWorkerBrowser, timeoutMs);
     }
 }
 

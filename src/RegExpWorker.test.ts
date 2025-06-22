@@ -2,20 +2,14 @@
 import { describe, expect, test } from 'vitest';
 
 import { catchErrors } from './helpers/errors.js';
-import {
-    RegExpWorker,
-    timeoutRejection,
-    workerExec,
-    workerMatch,
-    workerMatchAll,
-    workerMatchAllArray,
-    workerMatchAllAsRangePairs,
-} from './RegExpWorker.js';
+import type { RegExpWorkerBase } from './RegExpWorker.js';
+import { createRegExpWorker, timeoutRejection } from './RegExpWorker.js';
 import { TimeoutError } from './TimeoutError.js';
-import { setCreateWorker } from './worker/di.js';
 import { createWorkerNode } from './worker/workerNode.js';
 
-setCreateWorker(createWorkerNode);
+function cr(timeoutMs?: number): RegExpWorkerBase {
+    return createRegExpWorker(createWorkerNode, timeoutMs);
+}
 
 interface CustomMatchers<R = unknown> {
     toBeWithin: (floor: number, ceiling: number) => R;
@@ -71,32 +65,32 @@ describe('RegExpWorker', () => {
     );
 
     test('workerMatchAll', async () => {
-        const response = await workerMatchAll('Good Morning', /\b\w+/g);
+        const response = await cr().matchAll('Good Morning', /\b\w+/g);
         expect(response.matches.map((m) => m[0])).toEqual(['Good', 'Morning']);
     });
 
     test('workerMatchAll on word boundaries', async () => {
-        const response = await workerMatchAll('Good Morning', /\b/g);
+        const response = await cr().matchAll('Good Morning', /\b/g);
         expect(response.matches.map((m) => m.index)).toEqual([0, 4, 5, 12]);
     });
 
     test('workerExec', async () => {
-        const response = await workerExec(/ \b\w+/g, 'Good Morning.');
+        const response = await cr().exec(/ \b\w+/g, 'Good Morning.');
         expect(response.match?.[0]).toEqual(' Morning');
     });
 
     test('workerMatch', async () => {
-        const response = await workerMatch('Good Morning.', /Good/);
+        const response = await cr().match('Good Morning.', /Good/);
         expect(response.match?.[0]).toEqual('Good');
     });
 
     test('workerMatchAllArray', async () => {
-        const response = await workerMatchAllArray('Good Morning', [/\b\w+/g]);
+        const response = await cr().matchAllArray('Good Morning', [/\b\w+/g]);
         expect(response.results.flatMap((r) => r.matches.map((m) => m[0]))).toEqual(['Good', 'Morning']);
     });
 
     test('workerMatchAllAsRangePairs', async () => {
-        const response = await workerMatchAllAsRangePairs('Good Morning, sunshine.', /\b\w+/g);
+        const response = await cr().matchAllAsRangePairs('Good Morning, sunshine.', /\b\w+/g);
         expect(response.ranges).toEqual([
             [0, 4],
             [5, 12],
@@ -128,7 +122,7 @@ describe('timeoutRejection', () => {
     });
 });
 
-function run(fn: (w: RegExpWorker) => Promise<unknown> | void, w = new RegExpWorker()): () => Promise<void> {
+function run(fn: (w: RegExpWorkerBase) => Promise<unknown> | void, w = cr()): () => Promise<void> {
     return async () => {
         try {
             await fn(w);

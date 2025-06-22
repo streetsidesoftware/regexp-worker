@@ -1,7 +1,11 @@
 import fs from 'node:fs/promises';
 
-async function run() {
-    const workerURL = new URL('../lib/workerCodeNode.js', import.meta.url);
+const targetSourceDir = new URL('../lib/', import.meta.url);
+const targetOutDir = new URL('../src/worker/', import.meta.url);
+
+const targets = ['workerCodeNode.js', 'workerCodeBrowser.js'];
+
+async function process(workerURL, outputURL) {
     const workerCode = await fs.readFile(workerURL, 'base64');
     const data = splitIntoLines(workerCode);
 
@@ -13,8 +17,31 @@ async function run() {
 export const workerCodeDataURL: string = \`data:application/javascript;base64,\\\n${data.map((line) => line + '\\\n').join('')}\`;
 `;
 
-    const outputURL = new URL('../src/worker/workerCodeDataURL.ts', import.meta.url);
     await fs.writeFile(outputURL, code, 'utf8');
+}
+
+/**
+ *
+ * @param {string} target
+ * @returns {[src: URL, dst: URL]}
+ */
+function targetToSrcDst(target) {
+    const sourceURL = new URL(target, targetSourceDir);
+    const outputURL = new URL(target.replace('.js', 'DataURL.ts'), targetOutDir);
+    return [sourceURL, outputURL];
+}
+
+async function run() {
+    for (const target of targets) {
+        try {
+            const [workerURL, outputURL] = targetToSrcDst(target);
+            console.log(`Process: ${target}\n ${workerURL} -> ${outputURL}`);
+            await process(workerURL, outputURL);
+            console.log('done.');
+        } catch (error) {
+            console.error(`Error processing ${workerURL}:`, error);
+        }
+    }
 }
 
 /**

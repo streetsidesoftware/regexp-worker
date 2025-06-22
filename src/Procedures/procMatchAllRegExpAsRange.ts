@@ -1,7 +1,6 @@
-import { format } from 'util';
-
 import type { MatchAllToRangesRegExpResult } from '../helpers/evaluateRegExp.js';
 import { matchAllToRangesRegExp, toRegExp } from '../helpers/evaluateRegExp.js';
+import { format } from '../util/format.js';
 import type { ErrorResponse, Request, Response } from './procedure.js';
 import { createErrorResponse, createRequest, createResponse, isRequestType, isResponseType } from './procedure.js';
 
