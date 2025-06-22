@@ -10,7 +10,7 @@ on:
       dry_run:
         description: 'Run without publishing'
         required: false
-        default: false
+        default: true
         type: boolean
   workflow_call:
     secrets:
