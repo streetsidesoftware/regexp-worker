@@ -8,7 +8,7 @@ export default defineConfig({
                 test: {
                     // test both .js and .ts files
                     include: ['out/**/*.test.{js,mjs}', 'src/**/*.test.*', 'src/**/*.spec.*', 'examples/**/*.test.*'],
-                    exclude: ['**/temp/**', '**/node_modules/**'],
+                    exclude: ['**/temp/**', '**/node_modules/**', 'test-packages'],
                     name: 'unit',
                     environment: 'node',
                 },
