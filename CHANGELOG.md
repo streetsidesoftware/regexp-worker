@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.1](https://github.com/streetsidesoftware/regexp-worker/compare/v4.0.0...v4.0.1) (2025-06-22)
+
+
+### Bug Fixes
+
+* Add back matchAllAsRangePairs ([#972](https://github.com/streetsidesoftware/regexp-worker/issues/972)) ([4dac3dd](https://github.com/streetsidesoftware/regexp-worker/commit/4dac3ddc61422e6f6c053ef985b20989aebd8be1))
+
 ## [4.0.0](https://github.com/streetsidesoftware/regexp-worker/compare/v3.0.0...v4.0.0) (2025-06-21)
 
 
