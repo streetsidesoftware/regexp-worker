@@ -1,6 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { describe, test, expect } from 'vitest';
-import { RegExpWorker, workerExec, workerMatch, workerMatchAll, workerMatchAllArray, timeoutRejection } from './RegExpWorker.js';
+import {
+    RegExpWorker,
+    workerExec,
+    workerMatch,
+    workerMatchAll,
+    workerMatchAllArray,
+    timeoutRejection,
+    workerMatchAllAsRangePairs,
+} from './RegExpWorker.js';
 import { TimeoutError } from './TimeoutError.js';
 import { catchErrors } from './helpers/errors.js';
 
@@ -85,6 +93,15 @@ describe('RegExpWorker', () => {
     test('workerMatchAllArray', async () => {
         const response = await workerMatchAllArray('Good Morning', [/\b\w+/g]);
         expect(response.results.flatMap((r) => r.matches.map((m) => m[0]))).toEqual(['Good', 'Morning']);
+    });
+
+    test('workerMatchAllAsRangePairs', async () => {
+        const response = await workerMatchAllAsRangePairs('Good Morning, sunshine.', /\b\w+/g);
+        expect(response.ranges).toEqual([
+            [0, 4],
+            [5, 12],
+            [14, 22],
+        ]);
     });
 });
 

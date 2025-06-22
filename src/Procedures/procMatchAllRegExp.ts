@@ -10,7 +10,7 @@ export type MatchAllRegExpResponseType = MatchAllRegExpRequestType;
 
 export interface RequestMatchAllRegExpData {
     text: string;
-    regexp: RegExp | string;
+    regexp: RegExp;
 }
 
 export type RequestMatchAllRegExp = Request<MatchAllRegExpRequestType, RequestMatchAllRegExpData>;

@@ -3,3 +3,4 @@ export { type RequestExecRegExp, type ResponseExecRegExp, createRequestExecRegEx
 export { type RequestMatchAllRegExpArray, createRequestMatchRegExpArray } from './procMatchAllRegExpArray.js';
 export { createRequestMatchRegExp, type RequestMatchRegExp } from './procMatchRegExp.js';
 export { type RequestMatchAllRegExp, createRequestMatchAllRegExp } from './procMatchAllRegExp.js';
+export { type RequestMatchAllRegExpAsRange, createRequestMatchAllRegExpAsRange } from './procMatchAllRegExpAsRange.js';

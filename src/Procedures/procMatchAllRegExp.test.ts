@@ -1,4 +1,5 @@
 import { describe, test, expect } from 'vitest';
+import type { RequestMatchAllRegExp } from './procMatchAllRegExp.js';
 import { createRequestMatchAllRegExp, procMatchAllRegExp, isMatchAllRegExpResponse } from './procMatchAllRegExp.js';
 import type { Request } from './procedure.js';
 import { isErrorResponse } from './procedure.js';
@@ -24,7 +25,8 @@ describe('procMatchAllRegExp', () => {
     });
 
     test('RequestExecRegExp bad regex', () => {
-        const req: Request = createRequestMatchAllRegExp({ text: 'two words', regexp: '/[/g' });
+        const req: RequestMatchAllRegExp = createRequestMatchAllRegExp({ text: 'two words', regexp: /\[/g });
+        Object.assign(req.data, { regexp: '/[/g' });
         const result = procMatchAllRegExp(req);
         const response = isErrorResponse(result) ? result : undefined;
         expect(isMatchAllRegExpResponse(result)).toBe(false);
