@@ -2,6 +2,10 @@
   "name": "regexp-worker",
   "version": "4.0.0",
   "description": "Runs regular expressions on a background thread.",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "type": "module",
   "main": "./dist/index.cjs",
   "types": "./dist/index.d.cts",
@@ -19,7 +23,6 @@
     "coverage": "vitest run --coverage",
     "setup-examples": "cd examples && npm install",
     "prepublish": "npm run clean-build",
-    "prepublishOnly": "npm run test-all",
     "compile": "tsc -p .",
     "watch": "tsc --watch -p .",
     "release": "npx standard-version",

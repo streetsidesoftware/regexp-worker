@@ -1,0 +1,56 @@
+name: ' 🚀 Publish to NPM'
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to publish'
+        required: true
+        type: string
+      dry_run:
+        description: 'Run without publishing'
+        required: false
+        default: false
+        type: boolean
+  workflow_call:
+    secrets:
+      PUBLISH_NPM:
+        required: true
+    inputs:
+      tag:
+        description: 'Tag to publish'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.inputs.tag }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          registry-url: 'https://registry.npmjs.org'
+
+      - run: npm ci
+
+      - name: Publish to NPM
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.PUBLISH_NPM }}
+          NPM_CONFIG_PROVENANCE: true
+        run: npm publish ${{ github.event.inputs.dry_run && '--dry-run' || '' }}
+
+      - name: Summary
+        uses: streetsidesoftware/actions/public/summary@v1
+        with:
+          text: |
+            ## Published to NPM
+            Tag: `${{ github.event.inputs.tag }}`
