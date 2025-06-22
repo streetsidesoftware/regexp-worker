@@ -1,15 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { describe, test, expect } from 'vitest';
-import { Scheduler, ErrorFailedRequest, ErrorCanceledRequest } from './scheduler.js';
+import { describe, expect, test } from 'vitest';
+
+import { catchErrors } from '../helpers/errors.js';
 import type { RequestEcho } from '../Procedures/procEcho.js';
 import { createRequestEcho } from '../Procedures/procEcho.js';
-import { createRequestSleep } from '../Procedures/procSleep.js';
-import { createRequestSpin } from '../Procedures/procSpin.js';
 import type { Response } from '../Procedures/procedure.js';
 import { createRequestGenError } from '../Procedures/procGenError.js';
-import { catchErrors } from '../helpers/errors.js';
+import { createRequestSleep } from '../Procedures/procSleep.js';
+import { createRequestSpin } from '../Procedures/procSpin.js';
 import { createWorkerNodeTest } from '../worker/workerNodeTest.js';
+import { ErrorCanceledRequest, ErrorFailedRequest, Scheduler } from './scheduler.js';
 
 describe('Scheduler', () => {
     test('Create', () => {

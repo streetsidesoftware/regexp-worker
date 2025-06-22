@@ -1,9 +1,9 @@
-import type { Worker } from '../worker/index.js';
-import type { Request, Response, ErrorResponse } from '../Procedures/procedure.js';
-import { isResponse, createRequest, isErrorResponse, isRequest } from '../Procedures/procedure.js';
+import { catchErrors } from '../helpers/errors.js';
+import type { ErrorResponse, Request, Response } from '../Procedures/procedure.js';
+import { createRequest, isErrorResponse, isRequest, isResponse } from '../Procedures/procedure.js';
 import type { UniqueID } from '../Procedures/uniqueId.js';
 import { elapsedTimeMsFrom } from '../timer.js';
-import { catchErrors } from '../helpers/errors.js';
+import type { Worker } from '../worker/index.js';
 
 const defaultTimeLimitMs = 1000;
 const defaultSleepAfter = 200;

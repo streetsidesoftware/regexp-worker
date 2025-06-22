@@ -1,6 +1,6 @@
-import { describe, test, expect } from 'vitest';
+import { describe, expect, test } from 'vitest';
 
-import { TimeoutError, isTimeoutErrorLike } from './TimeoutError.js';
+import { isTimeoutErrorLike, TimeoutError } from './TimeoutError.js';
 
 describe('TimeoutError', () => {
     test('should create a TimeoutError with a message', () => {

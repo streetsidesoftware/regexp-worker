@@ -1,6 +1,6 @@
-export type { Request, Response, Procedure } from './procedure.js';
-export { type RequestExecRegExp, type ResponseExecRegExp, createRequestExecRegExp } from './procExecRegExp.js';
-export { type RequestMatchAllRegExpArray, createRequestMatchRegExpArray } from './procMatchAllRegExpArray.js';
+export type { Procedure, Request, Response } from './procedure.js';
+export { createRequestExecRegExp, type RequestExecRegExp, type ResponseExecRegExp } from './procExecRegExp.js';
+export { createRequestMatchAllRegExp, type RequestMatchAllRegExp } from './procMatchAllRegExp.js';
+export { createRequestMatchRegExpArray, type RequestMatchAllRegExpArray } from './procMatchAllRegExpArray.js';
+export { createRequestMatchAllRegExpAsRange, type RequestMatchAllRegExpAsRange } from './procMatchAllRegExpAsRange.js';
 export { createRequestMatchRegExp, type RequestMatchRegExp } from './procMatchRegExp.js';
-export { type RequestMatchAllRegExp, createRequestMatchAllRegExp } from './procMatchAllRegExp.js';
-export { type RequestMatchAllRegExpAsRange, createRequestMatchAllRegExpAsRange } from './procMatchAllRegExpAsRange.js';

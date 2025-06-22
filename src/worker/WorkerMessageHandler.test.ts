@@ -1,14 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { beforeEach, describe, test, expect, vi } from 'vitest';
-import type { MessagePort } from './MessagePort.js';
-import { createHandler } from './WorkerMessageHandler.js';
-import { LogLevel } from './LogLevel.js';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
+
 import { createRequestEcho } from '../Procedures/procEcho.js';
 import { createRequest } from '../Procedures/procedure.js';
-import { NullID } from '../Procedures/uniqueId.js';
-import { createRequestGenError } from '../Procedures/procGenError.js';
 import { procedures as proceduresAll } from '../Procedures/procedures-all.js';
+import { createRequestGenError } from '../Procedures/procGenError.js';
+import { NullID } from '../Procedures/uniqueId.js';
+import { LogLevel } from './LogLevel.js';
+import type { MessagePort } from './MessagePort.js';
+import { createHandler } from './WorkerMessageHandler.js';
 
 const consoleLog = (console.log = vi.fn());
 const consoleWarn = (console.warn = vi.fn());

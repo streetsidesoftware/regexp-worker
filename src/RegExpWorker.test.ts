@@ -1,19 +1,19 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { describe, test, expect } from 'vitest';
+import { describe, expect, test } from 'vitest';
+
+import { catchErrors } from './helpers/errors.js';
 import {
     RegExpWorker,
+    timeoutRejection,
     workerExec,
     workerMatch,
     workerMatchAll,
     workerMatchAllArray,
-    timeoutRejection,
     workerMatchAllAsRangePairs,
 } from './RegExpWorker.js';
 import { TimeoutError } from './TimeoutError.js';
-import { catchErrors } from './helpers/errors.js';
-
-import { createWorkerNode } from './worker/workerNode.js';
 import { setCreateWorker } from './worker/di.js';
+import { createWorkerNode } from './worker/workerNode.js';
 
 setCreateWorker(createWorkerNode);
 

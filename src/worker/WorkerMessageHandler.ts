@@ -1,11 +1,12 @@
 import { format } from 'util';
+
 import { isErrorLike, toError } from '../helpers/errors.js';
 import type { Procedure } from '../Procedures/procedure.js';
 import { createErrorResponse, isRequest } from '../Procedures/procedure.js';
-import type { MessagePort } from './MessagePort.js';
-import { nullPort } from './MessagePort.js';
 import type { LogParams } from './LogLevel.js';
 import { LogLevel } from './LogLevel.js';
+import type { MessagePort } from './MessagePort.js';
+import { nullPort } from './MessagePort.js';
 
 export class WorkerMessageHandler {
     public logLevel: LogLevel = LogLevel.LogLevelError;

@@ -1,0 +1,34 @@
+name: autofix.ci
+on:
+  pull_request:
+  push:
+    branches: ['main']
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  autofix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: Setup
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Fix Lint
+        run: npm run lint:fix
+
+      - uses: autofix-ci/action@635ffb0c9798bd160680f18fd73371e355b85f27

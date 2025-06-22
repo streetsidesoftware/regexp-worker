@@ -1,4 +1,5 @@
 import { format } from 'node:util';
+
 import type { MatchAllRegExpArrayResult } from '../helpers/evaluateRegExp.js';
 import { matchAllRegExpArray, toRegExp } from '../helpers/evaluateRegExp.js';
 import type { ErrorResponse, Request, Response } from './procedure.js';

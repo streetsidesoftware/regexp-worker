@@ -1,8 +1,9 @@
-import { describe, test, expect } from 'vitest';
-import type { RequestExecRegExp } from './procExecRegExp.js';
-import { createRequestExecRegExp, procExecRegExp, isExecRegExpResponse, requestTypeExecRegExp } from './procExecRegExp.js';
+import { describe, expect, test } from 'vitest';
+
 import type { Request } from './procedure.js';
 import { createRequest, isErrorResponse } from './procedure.js';
+import type { RequestExecRegExp } from './procExecRegExp.js';
+import { createRequestExecRegExp, isExecRegExpResponse, procExecRegExp, requestTypeExecRegExp } from './procExecRegExp.js';
 import { createId } from './uniqueId.js';
 
 describe('procExecRegExp', () => {

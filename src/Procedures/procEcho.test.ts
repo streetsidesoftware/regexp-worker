@@ -1,5 +1,6 @@
-import { describe, test, expect } from 'vitest';
-import { isEchoRequest, procEcho, createRequestEcho, isEchoResponse } from './procEcho.js';
+import { describe, expect, test } from 'vitest';
+
+import { createRequestEcho, isEchoRequest, isEchoResponse, procEcho } from './procEcho.js';
 import { createRequest, isErrorResponse } from './procedure.js';
 import { createId } from './uniqueId.js';
 

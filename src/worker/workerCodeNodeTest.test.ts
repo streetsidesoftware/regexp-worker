@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { nullPort } from './MessagePort.js';
 
+import { nullPort } from './MessagePort.js';
 import * as wmh from './WorkerMessageHandler.js';
 
 vi.mock('./WorkerMessageHandler.js', () => ({

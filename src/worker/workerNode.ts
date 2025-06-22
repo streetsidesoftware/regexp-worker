@@ -1,6 +1,7 @@
 import { Worker as NodeWorker } from 'worker_threads';
-import { workerCodeDataURL } from './workerCodeDataURL.js';
+
 import type { Worker } from './Worker.js';
+import { workerCodeDataURL } from './workerCodeDataURL.js';
 
 export type { Worker } from './Worker.js';
 

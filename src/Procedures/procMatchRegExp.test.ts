@@ -1,7 +1,8 @@
-import { describe, test, expect } from 'vitest';
-import { createRequestMatchRegExp, procMatchRegExp, isMatchRegExpResponse } from './procMatchRegExp.js';
+import { describe, expect, test } from 'vitest';
+
 import type { Request } from './procedure.js';
 import { isErrorResponse } from './procedure.js';
+import { createRequestMatchRegExp, isMatchRegExpResponse, procMatchRegExp } from './procMatchRegExp.js';
 import { createId } from './uniqueId.js';
 
 describe('procMatchRegExp', () => {
