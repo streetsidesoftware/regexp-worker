@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { describe, test, expect } from 'vitest';
-import { RegExpWorker, workerExec, workerMatch, workerMatchAll, workerMatchAllArray, timeoutRejection } from './RegExpWorkerNode.js';
-import { TimeoutError } from './TimeoutError.js';
+import { describe, expect, test } from 'vitest';
+
 import { catchErrors } from './helpers/errors.js';
+import { RegExpWorker, timeoutRejection, workerExec, workerMatch, workerMatchAll, workerMatchAllArray } from './RegExpWorkerNode.js';
+import { TimeoutError } from './TimeoutError.js';
 
 interface CustomMatchers<R = unknown> {
     toBeWithin: (floor: number, ceiling: number) => R;

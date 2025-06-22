@@ -73,6 +73,7 @@
     "@vitest/coverage-istanbul": "^3.2.4",
     "cross-env": "^7.0.3",
     "eslint": "^9.29.0",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
     "globals": "^16.2.0",
     "lorem-ipsum": "^2.0.8",
     "prettier": "^3.5.3",

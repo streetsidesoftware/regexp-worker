@@ -1,5 +1,5 @@
 import { toError } from '../helpers/errors.js';
-import { type UniqueID, createId, isId, NullID } from './uniqueId.js';
+import { createId, isId, NullID, type UniqueID } from './uniqueId.js';
 
 export type RequestType = string;
 export type ResponseType = RequestType;

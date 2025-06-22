@@ -1,6 +1,7 @@
-import { describe, test, expect } from 'vitest';
-import { RegExpWorker } from './index.mjs';
+import { describe, expect, test } from 'vitest';
+
 import { catchErrors } from './helpers/errors.js';
+import { RegExpWorker } from './index.mjs';
 
 describe('Validate Index', () => {
     test(

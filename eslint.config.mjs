@@ -2,6 +2,7 @@
 
 import eslint from '@eslint/js';
 import tsEslint from 'typescript-eslint';
+import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import globals from 'globals';
 
 const __dirname = new URL('.', import.meta.url).href;
@@ -9,6 +10,15 @@ const __dirname = new URL('.', import.meta.url).href;
 export default tsEslint.config(
     eslint.configs.recommended,
     tsEslint.configs.recommendedTypeChecked,
+    {
+        plugins: {
+            'simple-import-sort': simpleImportSort,
+        },
+        rules: {
+            'simple-import-sort/imports': 'warn',
+            'simple-import-sort/exports': 'warn',
+        },
+    },
     { languageOptions: { parserOptions: { projectService: true, tsconfigRootDir: __dirname } } },
     {
         ignores: [

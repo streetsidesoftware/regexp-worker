@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { describe, test, expect } from 'vitest';
-import type { RequestSpin } from './procSpin.js';
-import { isSpinRequest, procSpin, createRequestSpin } from './procSpin.js';
-import { createId } from './uniqueId.js';
+import { describe, expect, test } from 'vitest';
+
 import { measurePromise } from '../timer.js';
+import type { RequestSpin } from './procSpin.js';
+import { createRequestSpin, isSpinRequest, procSpin } from './procSpin.js';
+import { createId } from './uniqueId.js';
 
 describe('Spin', () => {
     test('isA', () => {

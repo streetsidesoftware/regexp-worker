@@ -1,16 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { describe, expect, test } from 'vitest';
+
 import type { FlatRanges, MatchAllRegExpResult } from './evaluateRegExp.js';
 import {
-    flatRangesToRanges,
     execRegExp,
+    flatRangesToRanges,
+    isRegExp,
+    isRegExpLike,
     matchAllRegExp,
     matchAllRegExpArray,
     matchAllToRangesRegExp,
     matchAllToRangesRegExpArray,
     toRegExp,
-    isRegExpLike,
-    isRegExp,
 } from './evaluateRegExp.js';
 
 describe('EvaluateRegExp', () => {

@@ -1,7 +1,8 @@
-import { describe, test, expect } from 'vitest';
-import { createRequestMatchRegExpArray, procMatchAllRegExpArray, isMatchRegExpArrayResponse } from './procMatchAllRegExpArray.js';
+import { describe, expect, test } from 'vitest';
+
 import type { Request } from './procedure.js';
 import { isErrorResponse } from './procedure.js';
+import { createRequestMatchRegExpArray, isMatchRegExpArrayResponse, procMatchAllRegExpArray } from './procMatchAllRegExpArray.js';
 import { createId } from './uniqueId.js';
 
 describe('procMatchRegExpArray', () => {

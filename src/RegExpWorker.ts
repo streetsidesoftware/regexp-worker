@@ -7,15 +7,15 @@ import type {
 import { type MatchAllRegExpResult } from './helpers/evaluateRegExp.js';
 import type { RequestMatchRegExp } from './Procedures/index.js';
 import {
+    createRequestExecRegExp,
+    createRequestMatchAllRegExp,
+    createRequestMatchRegExp,
+    createRequestMatchRegExpArray,
     type RequestExecRegExp,
     type RequestMatchAllRegExp,
     type RequestMatchAllRegExpArray,
     type RequestMatchAllRegExpAsRange,
     type Response,
-    createRequestExecRegExp,
-    createRequestMatchAllRegExp,
-    createRequestMatchRegExp,
-    createRequestMatchRegExpArray,
 } from './Procedures/index.js';
 import { createRequestMatchAllRegExpAsRange } from './Procedures/procMatchAllRegExpAsRange.js';
 import { Scheduler } from './scheduler/index.js';
@@ -23,8 +23,8 @@ import { isTimeoutErrorLike, TimeoutError } from './TimeoutError.js';
 import type { CreateWorker } from './worker/di.js';
 import { createWorker as defaultCreateWorker } from './worker/di.js';
 
-export { toRegExp } from './helpers/evaluateRegExp.js';
 export type { ExecRegExpResult, MatchAllRegExpArrayResult, MatchAllRegExpResult, MatchRegExpResult } from './helpers/evaluateRegExp.js';
+export { toRegExp } from './helpers/evaluateRegExp.js';
 
 export class RegExpWorker {
     private scheduler: Scheduler;

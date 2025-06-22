@@ -1,4 +1,5 @@
-import { describe, test, expect } from 'vitest';
+import { describe, expect, test } from 'vitest';
+
 import { elapsedTimeMsFrom, measureExecution, measurePromise } from './timer.js';
 
 describe('Validate timer', () => {
