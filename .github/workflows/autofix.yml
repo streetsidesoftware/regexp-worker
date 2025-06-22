@@ -22,7 +22,11 @@ jobs:
         with:
           node-version: 20.x
 
-      - run: npm ci
+      - name: Setup
+        run: npm ci
+
+      - name: Build
+        run: npm run build
 
       - name: Fix Lint
         run: npm run lint:fix
