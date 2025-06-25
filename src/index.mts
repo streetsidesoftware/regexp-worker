@@ -1,4 +1,10 @@
-export type { ExecRegExpResult, MatchAllRegExpArrayResult, MatchAllRegExpResult, MatchRegExpResult } from './RegExpWorkerNode.js';
+export type {
+    ExecRegExpResult,
+    MatchAllAsRangePairsResult,
+    MatchAllRegExpArrayResult,
+    MatchAllRegExpResult,
+    MatchRegExpResult,
+} from './RegExpWorkerNode.js';
 export {
     createRegExpWorker,
     RegExpWorker,

@@ -9,7 +9,14 @@ import { RegExpWorkerBase as RegExpWorkerBase } from './RegExpWorker.js';
 import { createWorkerNode } from './worker/workerNode.js';
 
 export { toRegExp } from './helpers/evaluateRegExp.js';
-export type { ExecRegExpResult, MatchAllRegExpArrayResult, MatchAllRegExpResult, MatchRegExpResult, RangePair } from './RegExpWorker.js';
+export type {
+    ExecRegExpResult,
+    MatchAllAsRangePairsResult,
+    MatchAllRegExpArrayResult,
+    MatchAllRegExpResult,
+    MatchRegExpResult,
+    RangePair,
+} from './RegExpWorker.js';
 
 export class RegExpWorker extends RegExpWorkerBase {
     constructor(timeoutMs?: number) {
