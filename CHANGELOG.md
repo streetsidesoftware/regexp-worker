@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.1.0](https://github.com/streetsidesoftware/regexp-worker/compare/v4.0.1...v4.1.0) (2025-06-25)
+
+
+### Features
+
+* Add browser support ([#975](https://github.com/streetsidesoftware/regexp-worker/issues/975)) ([6d92122](https://github.com/streetsidesoftware/regexp-worker/commit/6d9212220807246b01899f438edd7e2e4284871a))
+
 ## [4.0.1](https://github.com/streetsidesoftware/regexp-worker/compare/v4.0.0...v4.0.1) (2025-06-22)
 
 
