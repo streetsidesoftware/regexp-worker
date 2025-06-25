@@ -6,5 +6,5 @@ import { defineConfig } from 'tsdown';
 
 export default defineConfig([
     { entry: ['./src/worker/workerCodeNode.ts'], platform: 'node', outDir: './lib/', sourcemap: false, dts: false },
-    // todo: add browser build
+    { entry: ['./src/worker/workerCodeBrowser.ts'], platform: 'browser', outDir: './lib/', sourcemap: false, dts: false },
 ]);

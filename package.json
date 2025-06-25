@@ -10,6 +10,7 @@
   "main": "./dist/index.cjs",
   "types": "./dist/index.d.cts",
   "module": "./dist/index.js",
+  "sideEffects": false,
   "scripts": {
     "clean": "shx rm -rf dist out lib coverage",
     "lint": "eslint \"src/**/*.ts\"",
@@ -35,6 +36,7 @@
   },
   "exports": {
     ".": {
+      "browser": "./dist/browser.js",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     }
@@ -61,6 +63,7 @@
   },
   "files": [
     "index.js",
+    "browser.js",
     "dist/index.*",
     "!**/*.test.*",
     "!**/*.map"

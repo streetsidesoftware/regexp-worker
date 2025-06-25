@@ -6,14 +6,14 @@ interface MeasureResult<T> {
 export function measureExecution<T>(fn: () => T): MeasureResult<T> {
     const start = performance.now();
     const r = fn();
-    const elapsedTimeMs = performance.now() - start;
     return {
-        elapsedTimeMs,
+        elapsedTimeMs: performance.now() - start,
         r,
     };
 }
 
-export function elapsedTimeMsFrom(relativeTo: number): number {
+export function elapsedTimeMsFrom(relativeTo: number | undefined): number {
+    if (!relativeTo) return 0;
     return performance.now() - relativeTo;
 }
 

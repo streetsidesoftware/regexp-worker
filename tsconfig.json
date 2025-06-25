@@ -12,7 +12,8 @@
         "sourceMap": true,
         "strict": true,
         "strictFunctionTypes": true,
-        "strictNullChecks": true
+        "strictNullChecks": true,
+        "lib": ["es2023", "DOM", "WebWorker"]
     },
     "include": ["./src"]
 }

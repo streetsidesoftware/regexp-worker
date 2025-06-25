@@ -2,6 +2,7 @@ import { catchErrors } from '../helpers/errors.js';
 import type { ErrorResponse, Request, Response } from '../Procedures/procedure.js';
 import { createRequest, isErrorResponse, isRequest, isResponse } from '../Procedures/procedure.js';
 import type { UniqueID } from '../Procedures/uniqueId.js';
+import { TimeoutError } from '../TimeoutError.js';
 import { elapsedTimeMsFrom } from '../timer.js';
 import type { Worker } from '../worker/index.js';
 
@@ -22,9 +23,16 @@ export class Scheduler {
     private stopped = false;
     public dispose: () => Promise<void>;
 
+    /**
+     *
+     * @param createWorker - Function to create a new worker instance.
+     * @param executionTimeLimitMs - Time limit in milliseconds for each request execution. Default is 1000ms.
+     * @param stopIdleWorkerAfterMs - Time in milliseconds to wait after processing the last request before stopping the worker. Default is 200ms.
+     */
     constructor(
         readonly createWorker: () => Worker,
         public executionTimeLimitMs: number = defaultTimeLimitMs,
+        public stopIdleWorkerAfterMs: number = defaultSleepAfter,
     ) {
         this.dispose = () => this._dispose();
         this.pending = new Map();
@@ -99,13 +107,13 @@ export class Scheduler {
     private trigger(): void {
         if (this.stopped || this.currentRequest) return;
 
-        setImmediate(() => {
+        setTimeout(() => {
             if (this.stopped || this.currentRequest) return;
             const req = this.getNextRequest();
             if (!req) {
                 // Nothing to do, stop the worker
                 // This helps prevent shutdown issues if the app forgets to call dispose()
-                this.scheduleTimeout(() => this.stopWorker(), defaultSleepAfter);
+                this.scheduleTimeout(() => this.stopWorker(), this.stopIdleWorkerAfterMs);
                 return;
             }
             req.startTime = performance.now();
@@ -113,7 +121,7 @@ export class Scheduler {
             this.currentRequest = requestId;
             this.scheduleTimeout(() => this.terminateRequest(requestId, 'Request Timeout'), req.timeLimitMs);
             this.worker.postMessage(req.request);
-        });
+        }, 0);
     }
 
     private cleanupRequest(id: UniqueID): void {
@@ -174,15 +182,15 @@ export class Scheduler {
     }
 }
 
-export class ErrorCanceledRequest<T = unknown> extends Error {
+export class ErrorCanceledRequest<T = unknown> extends TimeoutError {
     readonly timestamp: number = Date.now();
     constructor(
         message: string,
         readonly requestType: string | undefined,
-        readonly elapsedTimeMs: number,
+        elapsedTimeMs: number,
         readonly data?: T | undefined,
     ) {
-        super(message);
+        super(message, elapsedTimeMs);
         this.name = 'ErrorCanceledRequest';
     }
 }

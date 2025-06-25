@@ -1,18 +1,17 @@
 {
-    "version": "0.1",
+    "ignorePaths": ["*.svg"],
+    "useGitignore": true,
     "dictionaryDefinitions": [
         {
-            "name": "cspell-words",
+            "name": "project-words",
             "path": "./cspell-words.txt"
         }
     ],
-    "dictionaries": ["cspell-words"],
+    "dictionaries": ["project-words"],
     "overrides": [
         {
             "filename": "**/lorem*.*",
             "enabled": false
         }
-    ],
-    "customWorkspaceDictionaries": ["cspell-words"],
-    "words": ["coverallsapp", "Dependabot"]
+    ]
 }

@@ -1,12 +1,12 @@
-import { Worker as NodeWorker } from 'worker_threads';
+import { Worker as NodeWorker } from 'node:worker_threads';
 
-import type { Worker } from './Worker.js';
-import { workerCodeDataURL } from './workerCodeDataURL.js';
+import type { IWorker } from './Worker.js';
+import { workerCodeDataURL } from './workerCodeNodeDataURL.js';
 
-export type { Worker } from './Worker.js';
+export type { IWorker as Worker } from './Worker.js';
 
 const defaultFilename = new URL(workerCodeDataURL);
 
-export function createWorkerNode(filename: string | URL = defaultFilename): Worker {
+export function createWorkerNode(filename: string | URL = defaultFilename): IWorker {
     return new NodeWorker(filename);
 }
