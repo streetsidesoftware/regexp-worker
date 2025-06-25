@@ -7,7 +7,7 @@
     const defaultRegexp = /\w+/g;
     const sampleText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
 
-    let worker = $state(createRegExpWorker());
+    let worker = $state(createRegExpWorker(1000, 20000));
     let regexpSource = $state(defaultRegexp.source);
     let regexpFlags = $state(defaultRegexp.flags);
     let text = $state(sampleText);
@@ -138,18 +138,25 @@
                     <dd><input bind:value={regexpFlags} /></dd>
                     <dt>Count:</dt>
                     <dd><span class="fixed_width">{count}/{requests}</span></dd>
-                    <dt>Elapsed Time:</dt>
+                    <dt>
+                        Elapsed Time:
+                        {#if busy}
+                            <i>'working...'</i>
+                        {:else if result}
+                            <i>{result.ranges.length} matches</i>
+                        {/if}
+                    </dt>
                     <dd>
                         {#if lastError}
-                            <span class="warning fixed_width">{lastError.elapsedTimeMs.toFixed(4)}ms timeout</span>
+                            <pre class="warning">{lastError.elapsedTimeMs.toFixed(4)}ms timeout</pre>
                         {:else if result}
-                            <span class="fixed_width">{result.elapsedTimeMs.toFixed(4)}ms</span>
+                            <pre>{result.elapsedTimeMs.toFixed(4).padStart(lastRequestTime.toFixed(4).length, ' ')}ms in Worker</pre>
                         {:else}
                             <span class="fixed_width">N/A</span>
                         {/if}
                     </dd>
                     <dd>
-                        <span class="fixed_width">{lastRequestTime.toFixed(4)}ms</span>
+                        <pre>{lastRequestTime.toFixed(4)}ms Roundtrip</pre>
                     </dd>
                     <dt>Last Error:</dt>
                     <dd>

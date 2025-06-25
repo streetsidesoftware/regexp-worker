@@ -23,9 +23,16 @@ export class Scheduler {
     private stopped = false;
     public dispose: () => Promise<void>;
 
+    /**
+     *
+     * @param createWorker - Function to create a new worker instance.
+     * @param executionTimeLimitMs - Time limit in milliseconds for each request execution. Default is 1000ms.
+     * @param stopIdleWorkerAfterMs - Time in milliseconds to wait after processing the last request before stopping the worker. Default is 200ms.
+     */
     constructor(
         readonly createWorker: () => Worker,
         public executionTimeLimitMs: number = defaultTimeLimitMs,
+        public stopIdleWorkerAfterMs: number = defaultSleepAfter,
     ) {
         this.dispose = () => this._dispose();
         this.pending = new Map();
@@ -106,7 +113,7 @@ export class Scheduler {
             if (!req) {
                 // Nothing to do, stop the worker
                 // This helps prevent shutdown issues if the app forgets to call dispose()
-                this.scheduleTimeout(() => this.stopWorker(), defaultSleepAfter);
+                this.scheduleTimeout(() => this.stopWorker(), this.stopIdleWorkerAfterMs);
                 return;
             }
             req.startTime = performance.now();

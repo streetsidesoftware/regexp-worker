@@ -28,8 +28,14 @@ export class RegExpWorkerBase {
     private scheduler: Scheduler;
     public dispose: () => Promise<void> = () => this._dispose();
 
-    constructor(createWorker: CreateWorker, timeoutMs?: number) {
-        this.scheduler = new Scheduler(createWorker, timeoutMs);
+    /**
+     *
+     * @param createWorker Function to create a new worker instance.
+     * @param timeoutMs - Optional time limit in milliseconds for each request execution. Default is 1000ms.
+     * @param stopIdleWorkerAfterMs - Optional time in milliseconds to wait after processing the
+     */
+    constructor(createWorker: CreateWorker, timeoutMs?: number, stopIdleWorkerAfterMs?: number) {
+        this.scheduler = new Scheduler(createWorker, timeoutMs, stopIdleWorkerAfterMs);
     }
 
     /**
@@ -160,6 +166,13 @@ function mapToRanges(flatRange: Uint32Array): RangePair[] {
     return result;
 }
 
-export function createRegExpWorker(createWorker: CreateWorker, timeoutMs?: number): RegExpWorkerBase {
-    return new RegExpWorkerBase(createWorker, timeoutMs);
+/**
+ * Create a new instance of RegExpWorkerBase.
+ * @param createWorker Function to create a new worker instance.
+ * @param timeoutMs - Optional time limit in milliseconds for each request execution. Default is 1000ms.
+ * @param stopIdleWorkerAfterMs - Optional time in milliseconds to wait after processing the last
+ * @returns
+ */
+export function createRegExpWorker(createWorker: CreateWorker, timeoutMs?: number, stopIdleWorkerAfterMs?: number): RegExpWorkerBase {
+    return new RegExpWorkerBase(createWorker, timeoutMs, stopIdleWorkerAfterMs);
 }

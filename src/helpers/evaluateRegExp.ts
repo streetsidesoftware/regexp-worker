@@ -12,8 +12,8 @@ export interface MatchAllRegExpResult {
  * @returns
  */
 export function matchAllRegExp(text: string, regExp: RegExp): MatchAllRegExpResult {
-    const { elapsedTimeMs, r } = measureExecution(() => doMatchAllRegExp(regExp, text));
-    return { elapsedTimeMs, matches: Array.from(r) };
+    const { elapsedTimeMs, r } = measureExecution(() => Array.from(doMatchAllRegExp(regExp, text)));
+    return { elapsedTimeMs, matches: r };
 }
 
 export interface ExecRegExpResult {

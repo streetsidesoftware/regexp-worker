@@ -19,13 +19,18 @@ export type {
 } from './RegExpWorker.js';
 
 export class RegExpWorker extends RegExpWorkerBase {
-    constructor(timeoutMs?: number) {
-        super(createWorkerNode, timeoutMs);
+    /**
+     * Create a new RegExpWorker instance.
+     * @param timeoutMs - Optional time limit in milliseconds for each request execution. Default is 1000ms.
+     * @param stopIdleWorkerAfterMs - Optional time in milliseconds to wait after processing the last request before stopping the worker. Default is 200ms.
+     */
+    constructor(timeoutMs?: number, stopIdleWorkerAfterMs?: number) {
+        super(createWorkerNode, timeoutMs, stopIdleWorkerAfterMs);
     }
 }
 
-export function createRegExpWorker(timeoutMs?: number): RegExpWorker {
-    return new RegExpWorker(timeoutMs);
+export function createRegExpWorker(timeoutMs?: number, stopIdleWorkerAfterMs?: number): RegExpWorker {
+    return new RegExpWorker(timeoutMs, stopIdleWorkerAfterMs);
 }
 
 /**
