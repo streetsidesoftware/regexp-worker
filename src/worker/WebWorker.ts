@@ -15,9 +15,11 @@ export function createWebWorker(scriptURL: string | URL): WebWorker {
 type Listener = ((err: Error) => void) | ((p?: unknown) => void);
 type WebEventListener = EventListener;
 
+export type BaseWebWorker = Pick<Worker, 'postMessage' | 'terminate' | 'addEventListener' | 'removeEventListener'>;
+
 export class WebWorker implements IWorker {
     #eventListeners: Map<string, Map<Listener, WebEventListener>> = new Map();
-    constructor(private worker: Worker) {}
+    constructor(private worker: BaseWebWorker) {}
 
     postMessage(message: unknown): void {
         this.worker.postMessage(message);
@@ -26,7 +28,7 @@ export class WebWorker implements IWorker {
         try {
             this.worker.terminate();
         } catch {
-            console.error('Failed to terminate the worker.');
+            // console.error('Failed to terminate the worker.');
         }
     }
 

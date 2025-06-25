@@ -3,7 +3,14 @@ import { describe, expect, test } from 'vitest';
 
 import { catchErrors } from './helpers/errors.js';
 import { timeoutRejection } from './RegExpWorker.js';
-import { RegExpWorker, workerExec, workerMatch, workerMatchAll, workerMatchAllArray } from './RegExpWorkerNode.js';
+import {
+    RegExpWorker,
+    workerExec,
+    workerMatch,
+    workerMatchAll,
+    workerMatchAllArray,
+    workerMatchAllAsRangePairs,
+} from './RegExpWorkerNode.js';
 import { TimeoutError } from './TimeoutError.js';
 
 interface CustomMatchers<R = unknown> {
@@ -64,6 +71,11 @@ describe('RegExpWorker', () => {
         expect(response.matches.map((m) => m[0])).toEqual(['Good', 'Morning']);
     });
 
+    test('workerMatchAll non-global', async () => {
+        const response = await workerMatchAll('Good Morning', /\b\w+/);
+        expect(response.matches.map((m) => m[0])).toEqual(['Good']);
+    });
+
     test('workerMatchAll on word boundaries', async () => {
         const response = await workerMatchAll('Good Morning', /\b/g);
         expect(response.matches.map((m) => m.index)).toEqual([0, 4, 5, 12]);
@@ -79,9 +91,24 @@ describe('RegExpWorker', () => {
         expect(response.match?.[0]).toEqual('Good');
     });
 
+    test('workerMatch', async () => {
+        const response = await workerMatch('Good Morning.', /\w/g);
+        const m = response.match ? [...response.match] : [];
+        expect(m).toEqual([...'GoodMorning']);
+    });
+
     test('workerMatchAllArray', async () => {
         const response = await workerMatchAllArray('Good Morning', [/\b\w+/g]);
         expect(response.results.flatMap((r) => r.matches.map((m) => m[0]))).toEqual(['Good', 'Morning']);
+    });
+
+    test('workerMatchAllAsRangePairs', async () => {
+        const response = await workerMatchAllAsRangePairs('Good Morning', /\b\w+/g);
+        expect(response.ranges).toEqual([
+            [0, 4],
+            [5, 12],
+        ]);
+        expect((await workerMatchAllAsRangePairs('Good Morning', /no match/g)).ranges).toEqual([]);
     });
 });
 

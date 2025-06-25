@@ -3,7 +3,14 @@ import { describe, expect, test, vi } from 'vitest';
 
 import { catchErrors } from './helpers/errors.js';
 import { timeoutRejection } from './RegExpWorker.js';
-import { RegExpWorker, workerExec, workerMatch, workerMatchAll, workerMatchAllArray } from './RegExpWorkerBrowser.js';
+import {
+    RegExpWorker,
+    workerExec,
+    workerMatch,
+    workerMatchAll,
+    workerMatchAllArray,
+    workerMatchAllAsRangePairs,
+} from './RegExpWorkerBrowser.js';
 import { TimeoutError } from './TimeoutError.js';
 import { createWorkerNode } from './worker/workerNode.js';
 
@@ -91,6 +98,15 @@ describe('RegExpWorker', () => {
     test('workerMatchAllArray', async () => {
         const response = await workerMatchAllArray('Good Morning', [/\b\w+/g]);
         expect(response.results.flatMap((r) => r.matches.map((m) => m[0]))).toEqual(['Good', 'Morning']);
+    });
+
+    test('workerMatchAllAsRangePairs', async () => {
+        const response = await workerMatchAllAsRangePairs('Good Morning', /\b\w+/g);
+        expect(response.ranges).toEqual([
+            [0, 4],
+            [5, 12],
+        ]);
+        expect((await workerMatchAllAsRangePairs('Good Morning', /no match/g)).ranges).toEqual([]);
     });
 });
 

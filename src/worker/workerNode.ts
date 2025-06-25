@@ -1,4 +1,4 @@
-import { Worker as NodeWorker } from 'worker_threads';
+import { Worker as NodeWorker } from 'node:worker_threads';
 
 import type { IWorker } from './Worker.js';
 import { workerCodeDataURL } from './workerCodeNodeDataURL.js';

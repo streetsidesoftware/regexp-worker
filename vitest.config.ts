@@ -20,6 +20,7 @@ export default defineConfig({
             clean: true,
             all: true,
             reportsDirectory: 'coverage',
+            extension: ['.js', '.mjs'],
             reporter: ['html', 'json', ['lcov', { projectRoot: __dirname }], 'text'],
             exclude: [
                 '_snapshots_',
@@ -39,7 +40,10 @@ export default defineConfig({
                 '**/samples/**',
                 '**/test.*',
                 '**/test*/**',
+                // '**/worker/workerCode*DataURL.*',
+                '**/worker/workerCodeBrowser.*',
                 '**/worker/workerCodeNode.*',
+                '**/worker/workerCodeNodeTest.*',
                 'coverage',
                 'examples',
                 'scripts',
