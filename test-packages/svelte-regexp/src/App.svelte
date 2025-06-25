@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { MatchAllAsRangePairsResult } from 'regexp-worker';
-    import { createRegExpWorker } from 'regexp-worker';
+    import { createRegExpWorker, TimeoutError } from 'regexp-worker';
 
     //cspell:dictionaries lorem-ipsum
 
@@ -12,6 +12,8 @@
     let regexpFlags = $state(defaultRegexp.flags);
     let text = $state(sampleText);
     let result: MatchAllAsRangePairsResult | undefined = $state(undefined);
+    let lastError: TimeoutError | undefined = $state(undefined);
+    let lastRequestTime = $state(0);
     let fragments = $derived.by(() => calcFragments(text, result));
     let innerText = $state(sampleText);
     let regexp = $derived.by(() => toRegExpOrError(regexpSource, regexpFlags));
@@ -30,15 +32,21 @@
         lastText = text;
         busy = true;
         requests++;
+        const startTime = performance.now();
         matchAllWords(regexp, text)
-            .then((matches) => {
+            .then((res) => {
                 count++;
-                if (matches) {
-                    result = matches;
+                if (res instanceof TimeoutError) {
+                    lastError = res;
+                    result = undefined;
+                    return;
                 }
+                lastError = undefined;
+                result = res;
             })
             .finally(() => {
                 busy = false;
+                lastRequestTime = performance.now() - startTime;
             });
     });
 
@@ -110,27 +118,10 @@
         try {
             const result = await worker.matchAllAsRangePairs(text, regexp);
             return result;
-        } catch (error) {}
-        return null;
-    }
-
-    function simpleDiff(a: string, b: string): [string, string] {
-        let start = 0;
-        for (; start < a.length && start < b.length; start++) {
-            if (a[start] !== b[start]) break;
+        } catch (error) {
+            if (error instanceof TimeoutError) return error;
+            throw error;
         }
-        let endA = a.length - 1;
-        let endB = b.length - 1;
-        for (; endA >= start && endB >= start; endA--, endB--) {
-            if (a[endA] !== b[endB]) break;
-        }
-        return [a.slice(start, endA + 1), b.slice(start, endB + 1)];
-    }
-
-    // const h: FormEventHandler<HTMLDivElement>
-
-    function oninput(_event: Event & { currentTarget: EventTarget & HTMLDivElement }) {
-        // textContent = _event.currentTarget.textContent || '';
     }
 </script>
 
@@ -148,7 +139,26 @@
                     <dt>Count:</dt>
                     <dd><span class="fixed_width">{count}/{requests}</span></dd>
                     <dt>Elapsed Time:</dt>
-                    <dd><span class="fixed_width">{result?.elapsedTimeMs.toFixed(4)}ms</span></dd>
+                    <dd>
+                        {#if lastError}
+                            <span class="warning fixed_width">{lastError.elapsedTimeMs.toFixed(4)}ms timeout</span>
+                        {:else if result}
+                            <span class="fixed_width">{result.elapsedTimeMs.toFixed(4)}ms</span>
+                        {:else}
+                            <span class="fixed_width">N/A</span>
+                        {/if}
+                    </dd>
+                    <dd>
+                        <span class="fixed_width">{lastRequestTime.toFixed(4)}ms</span>
+                    </dd>
+                    <dt>Last Error:</dt>
+                    <dd>
+                        {#if lastError}
+                            <span class="warning">{lastError.message}</span>
+                        {:else}
+                            <span class="fixed_width">None</span>
+                        {/if}
+                    </dd>
                 </dl>
                 {#if regexp instanceof Error}<span class="warning">{regexp.message}</span>{:else}<code>{regexp}</code>{/if}
             </div>

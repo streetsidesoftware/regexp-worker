@@ -91,7 +91,7 @@ h1 {
 
 .footer {
     grid-area: footer;
-    min-height: 200px;
+    min-height: 20px;
 }
 
 .header,

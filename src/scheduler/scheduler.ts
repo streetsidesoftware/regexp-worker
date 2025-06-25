@@ -2,6 +2,7 @@ import { catchErrors } from '../helpers/errors.js';
 import type { ErrorResponse, Request, Response } from '../Procedures/procedure.js';
 import { createRequest, isErrorResponse, isRequest, isResponse } from '../Procedures/procedure.js';
 import type { UniqueID } from '../Procedures/uniqueId.js';
+import { TimeoutError } from '../TimeoutError.js';
 import { elapsedTimeMsFrom } from '../timer.js';
 import type { Worker } from '../worker/index.js';
 
@@ -174,15 +175,15 @@ export class Scheduler {
     }
 }
 
-export class ErrorCanceledRequest<T = unknown> extends Error {
+export class ErrorCanceledRequest<T = unknown> extends TimeoutError {
     readonly timestamp: number = Date.now();
     constructor(
         message: string,
         readonly requestType: string | undefined,
-        readonly elapsedTimeMs: number,
+        elapsedTimeMs: number,
         readonly data?: T | undefined,
     ) {
-        super(message);
+        super(message, elapsedTimeMs);
         this.name = 'ErrorCanceledRequest';
     }
 }
