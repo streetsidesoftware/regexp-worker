@@ -1,5 +1,5 @@
 package-lock.json
-lib
+lib/*.js
 out
 dist
 coverage
