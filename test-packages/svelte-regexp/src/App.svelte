@@ -1,11 +1,12 @@
 <script lang="ts">
     import type { MatchAllAsRangePairsResult } from 'regexp-worker';
     import { createRegExpWorker, TimeoutError } from 'regexp-worker';
+    import { usageText } from './lib/usage-text';
+    import RegExpFlags from './lib/RegExpFlags.svelte';
+    import ErrorMsg from './lib/ErrorMsg.svelte';
 
-    //cspell:dictionaries lorem-ipsum
-
-    const defaultRegexp = /\w+/g;
-    const sampleText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
+    const defaultRegexp = /(?<=(^|\s)`).*?(?=`(\s|$))/gm;
+    const sampleText = usageText;
 
     let worker = $state(createRegExpWorker(1000, 20000));
     let regexpSource = $state(defaultRegexp.source);
@@ -60,6 +61,7 @@
         id: string; // Unique ID for each fragment
         type: FragmentType;
         content: string;
+        text: string; // the adjusted text for spacing
     }
 
     function getTextId(text: string): number {
@@ -101,16 +103,19 @@
             const n = (idMap.get(key) || 0) + 1;
             idMap.set(key, n);
             f.id = `frag-${key}-${n}`;
-            return f as Fragment;
+            const frag = f as Fragment;
+            frag.text = content; // .replaceAll('  ', ' .'); // Adjust text for spacing
+            return frag;
         }
 
         function addFrag(type: FragmentType, content: string) {
-            const lines = content.split('\n');
-            fragments.push(addId({ type, content: lines[0] }));
-            for (let j = 1; j < lines.length; j++) {
-                fragments.push(addId({ type: 'br', content: '' })); // Add a break for each line
-                fragments.push(addId({ type, content: lines[j] }));
-            }
+            fragments.push(addId({ type, content }));
+            // const lines = content.split('\n');
+            // fragments.push(addId({ type, content: lines[0] }));
+            // for (let j = 1; j < lines.length; j++) {
+            //     fragments.push(addId({ type: 'br', content: '' })); // Add a break for each line
+            //     fragments.push(addId({ type, content: lines[j] }));
+            // }
         }
     }
 
@@ -129,12 +134,11 @@
     <div class="wrapper">
         <div class="box header"><h1>RegExp Worker</h1></div>
         <div class="box sidebar">
-            RegExp: <br />
             <div>
                 <dl>
                     <dt>RegExp:</dt>
                     <dd><input bind:value={regexpSource} /></dd>
-                    <dt>Flags:</dt>
+                    <dt>Flags: <RegExpFlags /></dt>
                     <dd><input bind:value={regexpFlags} /></dd>
                     <dt>Count:</dt>
                     <dd><span class="fixed_width">{count}/{requests}</span></dd>
@@ -160,21 +164,22 @@
                     </dd>
                     <dt>Last Error:</dt>
                     <dd>
-                        {#if lastError}
-                            <span class="warning">{lastError.message}</span>
+                        {#if regexp instanceof Error}
+                            <ErrorMsg error={regexp} />
+                        {:else if lastError}
+                            <ErrorMsg error={lastError} />
                         {:else}
                             <span class="fixed_width">None</span>
                         {/if}
                     </dd>
                 </dl>
-                {#if regexp instanceof Error}<span class="warning">{regexp.message}</span>{:else}<code>{regexp}</code>{/if}
             </div>
         </div>
         <div class="box content">
             <div class="edit_container">
-                <div class="beneath">
-                    {#each fragments as frag (frag.id)}{#if frag.type === 'mark'}<mark>{frag.content.replaceAll(' ', '.')}</mark
-                            >{:else if frag.type === 'br'}<br />{:else}{frag.content.replaceAll(' ', '.')}{/if}{/each}
+                <div class="beneath" contenteditable="plaintext-only">
+                    {#each fragments as frag (frag.id)}{#if frag.type === 'mark'}<mark>{frag.text}</mark>{:else if frag.type === 'br'}<br
+                            />{:else}{frag.text}{/if}{/each}
                 </div>
                 <div class="edit_box" bind:innerText contenteditable="plaintext-only"></div>
             </div>
@@ -188,6 +193,14 @@
         text-align: left;
         word-wrap: break-word;
     }
+
+    dd > input {
+        width: 80%;
+        /* box-sizing: border-box; */
+        padding: 4px;
+        margin: 4px 0;
+    }
+
     mark {
         background-color: #cf4;
         color: #0000;
@@ -200,11 +213,13 @@
         padding: 10px;
         left: 0;
         top: 0;
-        min-height: 300px;
+        min-height: 500px;
         width: 100%;
         margin: 0;
     }
     .edit_box {
+        color: black;
+        font-family: monospace;
         box-sizing: border-box;
         position: relative;
         text-align: left;
@@ -229,7 +244,6 @@
         caret-color: green;
         background-color: #f0f0f044;
         text-wrap: wrap;
-        z-index: 100;
     }
 
     .beneath {
@@ -238,14 +252,13 @@
         padding: 10px;
         top: 15px;
         left: 15px;
-        z-index: 1;
+        right: 15px;
         text-align: left;
-        min-height: 200px;
-        width: 100%;
-        overflow: auto;
+        /* width: 100%; */
         text-wrap: wrap;
-        color: #00000000;
+        color: #00000040;
         background-color: #f9f9f900;
         box-sizing: border-box;
+        overflow-wrap: break-word;
     }
 </style>
