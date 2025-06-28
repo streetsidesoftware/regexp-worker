@@ -1,6 +1,6 @@
 # Regular Expression Worker
 
-Execute Regular Expression Matches on a Node [Worker Thread](https://nodejs.org/api/worker_threads.html).
+Execute Regular Expression Matches on a Node [Worker Thread](https://nodejs.org/api/worker_threads.html) or in a [Web Worker](https://developer.mozilla.org/en-US/docs/Web/API/Worker).
 
 Regular Expressions can suffer from [Catastrophic Backtracking](https://www.regular-expressions.info/catastrophic.html). A very simple expression like `/(x+x+)+y/` can cause your JavaScript application to freeze. This library allows you to run these expressions on another thread. If they take to long to complete, they are terminated, protecting your application from locking up.
 

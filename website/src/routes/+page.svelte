@@ -1,32 +1,30 @@
 <script lang="ts">
-    import welcomeFallback from '$lib/images/svelte-welcome.png';
-    import welcome from '$lib/images/svelte-welcome.webp';
-
-    import Counter from './Counter.svelte';
+    import Playground from '$lib/Playground.svelte';
 </script>
 
 <svelte:head>
     <title>Home</title>
-    <meta name="description" content="Svelte demo app" />
+    <meta name="description" content="RegExp Worker" />
 </svelte:head>
 
 <section>
-    <h1>
-        <span class="welcome">
-            <picture>
-                <source srcset={welcome} type="image/webp" />
-                <img src={welcomeFallback} alt="Welcome" />
-            </picture>
-        </span>
+    <h1>Regular Expression Worker</h1>
+    <br />
+    <br />
+    <p>
+        Execute Regular Expression Matches on a Node <a href="https://nodejs.org/api/worker_threads.html">Worker Thread</a> or in a
+        <a href="https://developer.mozilla.org/en-US/docs/Web/API/Worker">Web Worker</a>.
+    </p>
+    <br />
+    <p>
+        Regular Expressions can suffer from <a href="https://www.regular-expressions.info/catastrophic.html">Catastrophic Backtracking</a> .
+        A very simple expression like <code>/(x+x+)+y/</code> can cause your JavaScript application to freeze. This library allows you to run
+        these expressions on another thread. If they take to long to complete, they are terminated, protecting your application from locking
+        up.
+    </p>
+    <br />
 
-        to your new<br />SvelteKit app home page
-    </h1>
-
-    <h2>
-        try editing <strong>src/routes/+page.svelte</strong>
-    </h2>
-
-    <Counter />
+    <Playground />
 </section>
 
 <style>
@@ -34,27 +32,15 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
-        align-items: center;
+        align-items: left;
         flex: 0.6;
+    }
+
+    p {
+        text-align: left;
     }
 
     h1 {
         width: 100%;
-    }
-
-    .welcome {
-        display: block;
-        position: relative;
-        width: 100%;
-        height: 0;
-        padding: 0 0 calc(100% * 495 / 2048) 0;
-    }
-
-    .welcome img {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        display: block;
     }
 </style>

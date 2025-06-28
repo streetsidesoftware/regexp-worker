@@ -4,21 +4,18 @@
 </svelte:head>
 
 <div class="text-column">
-    <h1>About this app</h1>
-
+    <h1>Regular Expression Worker</h1>
+    <br />
+    <br />
     <p>
-        This is a <a href="https://svelte.dev/docs/kit">SvelteKit</a> app. You can make your own by typing the following into your command line
-        and following the prompts:
+        Execute Regular Expression Matches on a Node <a href="https://nodejs.org/api/worker_threads.html">Worker Thread</a> or in a
+        <a href="https://developer.mozilla.org/en-US/docs/Web/API/Worker">Web Worker</a>.
     </p>
-
-    <pre>npx sv create</pre>
-
+    <br />
     <p>
-        The page you're looking at is purely static HTML, with no client-side interactivity needed. Because of that, we don't need to load
-        any JavaScript. Try viewing the page's source, or opening the devtools network panel and reloading.
-    </p>
-
-    <p>
-        The <a href="/sverdle">Sverdle</a> page illustrates SvelteKit's data loading and form handling. Try using it with JavaScript disabled!
+        Regular Expressions can suffer from <a href="https://www.regular-expressions.info/catastrophic.html">Catastrophic Backtracking</a> .
+        A very simple expression like <code>/(x+x+)+y/</code> can cause your JavaScript application to freeze. This library allows you to run
+        these expressions on another thread. If they take to long to complete, they are terminated, protecting your application from locking
+        up.
     </p>
 </div>
