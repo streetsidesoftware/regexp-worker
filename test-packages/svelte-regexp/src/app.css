@@ -66,11 +66,11 @@ h1 {
     display: grid;
     box-sizing: border-box;
     grid-gap: 10px;
-    grid-template-columns: 25% 25% 25% auto;
+    grid-template-columns: 260px 33% auto;
     grid-template-areas:
-        'header  header  header header'
-        'sidebar content content content'
-        'footer  footer  footer footer';
+        'header  header header'
+        'sidebar content content'
+        'footer  footer footer';
     background-color: #fff;
     color: #444;
 }

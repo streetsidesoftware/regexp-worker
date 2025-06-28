@@ -1,5 +1,6 @@
 import type { MatchRegExpResult } from '../helpers/evaluateRegExp.js';
 import { matchRegExp, toRegExp } from '../helpers/evaluateRegExp.js';
+import type { RegExpLike } from '../helpers/regexp.js';
 import { format } from '../util/format.js';
 import type { ErrorResponse, Request, Response } from './procedure.js';
 import { createErrorResponse, createRequest, createResponse, isRequestType, isResponseType } from './procedure.js';
@@ -10,7 +11,7 @@ export type MatchRegExpResponseType = MatchRegExpRequestType;
 
 export interface RequestMatchRegExpData {
     text: string;
-    regexp: RegExp | string;
+    regexp: RegExpLike;
 }
 
 export type RequestMatchRegExp = Request<MatchRegExpRequestType, RequestMatchRegExpData>;

@@ -27,7 +27,7 @@ describe('procMatchAllRegExp', () => {
 
     test('RequestExecRegExp bad regex', () => {
         const req: RequestMatchAllRegExp = createRequestMatchAllRegExp({ text: 'two words', regexp: /\[/g });
-        Object.assign(req.data, { regexp: '/[/g' });
+        Object.assign(req.data, { regexp: { source: '[', flags: 'g' } });
         const result = procMatchAllRegExp(req);
         const response = isErrorResponse(result) ? result : undefined;
         expect(isMatchAllRegExpResponse(result)).toBe(false);

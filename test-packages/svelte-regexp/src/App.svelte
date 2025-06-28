@@ -1,11 +1,10 @@
 <script lang="ts">
     import type { MatchAllAsRangePairsResult } from 'regexp-worker';
-    import { createRegExpWorker, TimeoutError } from 'regexp-worker';
-    import { usageText } from './lib/usage-text';
+    import { createRegExpWorker, TimeoutError, toRegExp } from 'regexp-worker';
+    import { defaultRegexp, usageText } from './lib/usage-text';
     import RegExpFlags from './lib/RegExpFlags.svelte';
     import ErrorMsg from './lib/ErrorMsg.svelte';
 
-    const defaultRegexp = /(?<=(^|\s)`).*?(?=`(\s|$))/gm;
     const sampleText = usageText;
 
     let worker = $state(createRegExpWorker(1000, 20000));
@@ -23,7 +22,6 @@
     let busy = $state(false);
     let lastText = '';
     let lastRegexp: RegExp | undefined = undefined;
-    const textIds = new Map<string, number>();
 
     $effect(() => {
         if (regexp instanceof Error) return;
@@ -56,29 +54,29 @@
         text = innerText;
     });
 
-    type FragmentType = 'text' | 'mark' | 'br';
+    type FragmentType = 'text' | 'mark';
     interface Fragment {
         id: string; // Unique ID for each fragment
         type: FragmentType;
         content: string;
-        text: string; // the adjusted text for spacing
-    }
-
-    function getTextId(text: string): number {
-        const id = textIds.get(text) || textIds.size + 1;
-        textIds.set(text, id);
-        return id;
     }
 
     function toRegExpOrError(source: string, flags: string): RegExp | Error {
         try {
-            return new RegExp(source, flags);
+            return toRegExp({ source, flags });
         } catch (error) {
             return error instanceof Error ? error : new Error(`Invalid RegExp: ${error}`);
         }
     }
 
     function calcFragments(text: string, result: MatchAllAsRangePairsResult | undefined): Fragment[] {
+        const textIds = new Map<string, number>();
+        function getTextId(text: string): number {
+            const id = textIds.get(text) || textIds.size + 1;
+            textIds.set(text, id);
+            return id;
+        }
+
         const idMap = new Map<string, number>();
         const fragments: Fragment[] = [];
         const matches = result?.ranges || [];
@@ -104,18 +102,11 @@
             idMap.set(key, n);
             f.id = `frag-${key}-${n}`;
             const frag = f as Fragment;
-            frag.text = content; // .replaceAll('  ', ' .'); // Adjust text for spacing
             return frag;
         }
 
         function addFrag(type: FragmentType, content: string) {
             fragments.push(addId({ type, content }));
-            // const lines = content.split('\n');
-            // fragments.push(addId({ type, content: lines[0] }));
-            // for (let j = 1; j < lines.length; j++) {
-            //     fragments.push(addId({ type: 'br', content: '' })); // Add a break for each line
-            //     fragments.push(addId({ type, content: lines[j] }));
-            // }
         }
     }
 
@@ -130,16 +121,18 @@
     }
 </script>
 
+{#snippet snipFragments()}{#each fragments as frag (frag.id)}{#if frag.type === 'mark'}<mark>{frag.content}</mark
+            >{:else}{frag.content}{/if}{/each}{/snippet}
+
+{#snippet fixedWidth(value: number, fixed: number = 4, width: number = 9)}
+    {value.toFixed(fixed).padStart(width, ' ')}{/snippet}
+
 <main>
     <div class="wrapper">
         <div class="box header"><h1>RegExp Worker</h1></div>
         <div class="box sidebar">
             <div>
                 <dl>
-                    <dt>RegExp:</dt>
-                    <dd><input bind:value={regexpSource} /></dd>
-                    <dt>Flags: <RegExpFlags /></dt>
-                    <dd><input bind:value={regexpFlags} /></dd>
                     <dt>Count:</dt>
                     <dd><span class="fixed_width">{count}/{requests}</span></dd>
                     <dt>
@@ -154,13 +147,13 @@
                         {#if lastError}
                             <pre class="warning">{lastError.elapsedTimeMs.toFixed(4)}ms timeout</pre>
                         {:else if result}
-                            <pre>{result.elapsedTimeMs.toFixed(4).padStart(lastRequestTime.toFixed(4).length, ' ')}ms in Worker</pre>
+                            <pre>{@render fixedWidth(result.elapsedTimeMs)}ms in Worker</pre>
                         {:else}
                             <span class="fixed_width">N/A</span>
                         {/if}
                     </dd>
                     <dd>
-                        <pre>{lastRequestTime.toFixed(4)}ms Roundtrip</pre>
+                        <pre>{@render fixedWidth(lastRequestTime)}ms Roundtrip</pre>
                     </dd>
                     <dt>Last Error:</dt>
                     <dd>
@@ -175,13 +168,22 @@
                 </dl>
             </div>
         </div>
-        <div class="box content">
-            <div class="edit_container">
-                <div class="beneath" contenteditable="plaintext-only">
-                    {#each fragments as frag (frag.id)}{#if frag.type === 'mark'}<mark>{frag.text}</mark>{:else if frag.type === 'br'}<br
-                            />{:else}{frag.text}{/if}{/each}
+        <div class="box content nested-wrapper">
+            <div class="box grid-regexp">
+                <strong>RegExp:</strong>
+                <textarea name="regexp" class="fixed_width regexp-input" bind:value={regexpSource}></textarea>
+            </div>
+            <div class="box grid-flags">
+                <strong>Flags:</strong>
+                <div>
+                    <RegExpFlags bind:value={regexpFlags} />
                 </div>
-                <div class="edit_box" bind:innerText contenteditable="plaintext-only"></div>
+            </div>
+            <div class="box grid-editor">
+                <div class="edit_container">
+                    <div class="beneath" contenteditable="plaintext-only">{@render snipFragments()}</div>
+                    <div class="edit_box" bind:innerText contenteditable="plaintext-only"></div>
+                </div>
             </div>
         </div>
         <div class="box footer"></div>
@@ -192,13 +194,6 @@
     dl {
         text-align: left;
         word-wrap: break-word;
-    }
-
-    dd > input {
-        width: 80%;
-        /* box-sizing: border-box; */
-        padding: 4px;
-        margin: 4px 0;
     }
 
     mark {
@@ -260,5 +255,53 @@
         background-color: #f9f9f900;
         box-sizing: border-box;
         overflow-wrap: break-word;
+    }
+
+    .nested-wrapper {
+        width: 100%;
+        display: grid;
+        box-sizing: border-box;
+        grid-gap: 0px;
+        grid-template-columns: 33% 33% auto;
+        grid-template-areas:
+            'regexp  regexp  flags'
+            'editor  editor  editor';
+        background-color: #fff;
+        color: #444;
+    }
+
+    .nested-wrapper.box {
+        box-sizing: border-box;
+        background-color: #444;
+        color: #fff;
+        border-radius: 0px;
+        padding: 5px;
+        font-size: 100%;
+    }
+
+    .regexp-input {
+        /* display: inline-block; */
+        width: 98%;
+        /* box-sizing: border-box; */
+        min-height: 2em;
+        height: 4em;
+        field-sizing: content;
+        padding: 4px;
+        resize: vertical;
+        font-family: monospace;
+    }
+
+    .grid-regexp {
+        grid-area: regexp;
+        /* position: relative; */
+        padding-top: 0.5em;
+    }
+
+    .grid-flags {
+        position: relative;
+    }
+    .grid-editor {
+        grid-area: editor;
+        position: relative;
     }
 </style>

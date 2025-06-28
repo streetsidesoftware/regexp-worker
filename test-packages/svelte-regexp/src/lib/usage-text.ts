@@ -1,3 +1,5 @@
+import type { RegExpLike } from 'regexp-worker';
+
 export const usageText = `\
 The \`regexp-worker\` worker will run regular expressions in a web worker.
 
@@ -10,6 +12,22 @@ The example regular expression \`(?<=(^|\s)\`).*?(?=\`(\s|$))\` matches everythi
 
 Example Regular Expression with Catastrophic Backtracking: \`(x+x+)+y\` <-- use this expression.
 Sample text: \`xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxy\` <-- remove the \`y\` to cause it to time out.
+
+\`\`\`javascript
+import { createRegExpWorker } from 'regexp-worker';
+
+const worker = createRegExpWorker();
+\`\`\`
+
+
 `;
 
 // cspell:ignore xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxy
+
+export const defaultRegexp: RegExpLike = {
+    source: `(^\`{3,}).*$[\\s\\S]*?\\1$ # Match against code blocks
+|
+(?<=(^|\\s)\`).*?(?=\`(\\s|$)) # Match against back tick quotes
+`,
+    flags: 'gmx',
+};

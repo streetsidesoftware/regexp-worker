@@ -5,10 +5,18 @@ import type {
     MatchAllRegExpResult,
     MatchRegExpResult,
 } from './RegExpWorker.js';
-import { RegExpWorkerBase } from './RegExpWorker.js';
+import {
+    crWorkerExec,
+    crWorkerMatch,
+    crWorkerMatchAll,
+    crWorkerMatchAllArray,
+    crWorkerMatchAllAsRangePairs,
+    RegExpWorkerBase,
+} from './RegExpWorker.js';
 import { createWorkerBrowser } from './worker/workerBrowser.js';
 
-export { toRegExp } from './helpers/evaluateRegExp.js';
+export type { RegExpLike } from './helpers/regexp.js';
+export { toRegExp } from './helpers/regexp.js';
 export type {
     ExecRegExpResult,
     MatchAllAsRangePairsResult,
@@ -39,9 +47,8 @@ export function createRegExpWorker(timeoutMs?: number, stopIdleWorkerAfterMs?: n
  * @param regExp - The regular expression to match against the text.
  * @param timeLimitMs - Optional time limit in milliseconds for the operation.
  */
-export async function workerMatchAll(text: string, regExp: RegExp, timeLimitMs?: number): Promise<MatchAllRegExpResult> {
-    const worker = createRegExpWorker();
-    return await worker.matchAll(text, regExp, timeLimitMs);
+export function workerMatchAll(text: string, regExp: RegExp, timeLimitMs?: number): Promise<MatchAllRegExpResult> {
+    return crWorkerMatchAll(createRegExpWorker, text, regExp, timeLimitMs);
 }
 
 /**
@@ -50,9 +57,8 @@ export async function workerMatchAll(text: string, regExp: RegExp, timeLimitMs?:
  * @param regExp - The regular expression to match against the text.
  * @param timeLimitMs - Optional time limit in milliseconds for the operation.
  */
-export async function workerMatchAllAsRangePairs(text: string, regExp: RegExp, timeLimitMs?: number): Promise<MatchAllAsRangePairsResult> {
-    const worker = createRegExpWorker();
-    return await worker.matchAllAsRangePairs(text, regExp, timeLimitMs);
+export function workerMatchAllAsRangePairs(text: string, regExp: RegExp, timeLimitMs?: number): Promise<MatchAllAsRangePairsResult> {
+    return crWorkerMatchAllAsRangePairs(createRegExpWorker, text, regExp, timeLimitMs);
 }
 
 /**
@@ -61,9 +67,8 @@ export async function workerMatchAllAsRangePairs(text: string, regExp: RegExp, t
  * @param regExps - An array of regular expressions to match against the text.
  * @param timeLimitMs - Optional time limit in milliseconds for the operation.
  */
-export async function workerMatchAllArray(text: string, regExps: RegExp[], timeLimitMs?: number): Promise<MatchAllRegExpArrayResult> {
-    const worker = createRegExpWorker();
-    return await worker.matchAllArray(text, regExps, timeLimitMs);
+export function workerMatchAllArray(text: string, regExps: RegExp[], timeLimitMs?: number): Promise<MatchAllRegExpArrayResult> {
+    return crWorkerMatchAllArray(createRegExpWorker, text, regExps, timeLimitMs);
 }
 
 /**
@@ -72,9 +77,8 @@ export async function workerMatchAllArray(text: string, regExps: RegExp[], timeL
  * @param text - The text to search within.
  * @param timeLimitMs - Optional time limit in milliseconds for the operation.
  */
-export async function workerExec(regExp: RegExp, text: string, timeLimitMs?: number): Promise<ExecRegExpResult> {
-    const worker = createRegExpWorker();
-    return await worker.exec(regExp, text, timeLimitMs);
+export function workerExec(regExp: RegExp, text: string, timeLimitMs?: number): Promise<ExecRegExpResult> {
+    return crWorkerExec(createRegExpWorker, regExp, text, timeLimitMs);
 }
 
 /**
@@ -83,7 +87,6 @@ export async function workerExec(regExp: RegExp, text: string, timeLimitMs?: num
  * @param regExp - The regular expression to match against the text.
  * @param timeLimitMs - Optional time limit in milliseconds for the operation.
  */
-export async function workerMatch(text: string, regExp: RegExp, timeLimitMs?: number): Promise<MatchRegExpResult> {
-    const worker = createRegExpWorker();
-    return await worker.match(text, regExp, timeLimitMs);
+export function workerMatch(text: string, regExp: RegExp, timeLimitMs?: number): Promise<MatchRegExpResult> {
+    return crWorkerMatch(createRegExpWorker, text, regExp, timeLimitMs);
 }

@@ -4,6 +4,7 @@ export type {
     MatchAllRegExpArrayResult,
     MatchAllRegExpResult,
     MatchRegExpResult,
+    RegExpLike,
 } from './RegExpWorkerBrowser.js';
 export {
     createRegExpWorker,

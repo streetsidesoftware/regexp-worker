@@ -4,6 +4,7 @@ export type {
     MatchAllRegExpArrayResult,
     MatchAllRegExpResult,
     MatchRegExpResult,
+    RegExpLike,
 } from './RegExpWorkerNode.js';
 export {
     createRegExpWorker,

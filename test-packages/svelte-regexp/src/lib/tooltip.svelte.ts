@@ -11,31 +11,30 @@ export function tooltip(node: HTMLElement) {
 function _tooltip(element: HTMLElement) {
     let div: HTMLDivElement | undefined;
     let title: string | null = '';
+
     function mouseOver(event: MouseEvent) {
         // NOTE: remove the `title` attribute, to prevent showing the default browser tooltip
         // remember to set it back on `mouseleave`
         title = element.getAttribute('title');
         element.removeAttribute('title');
+        const rect = element.getBoundingClientRect();
 
         div = document.createElement('div');
         div.textContent = title;
         div.style = `
+            color: #333;
 			border: 1px solid #ccc;
 			box-shadow: 1px 1px 3px #ccc;
-			background: #f0f0f0;
+			background: #e0e0e0;
 			border-radius: 4px;
 			padding: 4px;
 			position: absolute;
-			top: ${event.pageX + 5}px;
-			left: ${event.pageY + 5}px;
+			top: ${rect.top + 70}px;
+			left: ${rect.left + 5}px;
 		`;
         document.body.appendChild(div);
     }
-    function mouseMove(event: MouseEvent) {
-        if (!div) return;
-        div.style.left = `${event.pageX + 5}px`;
-        div.style.top = `${event.pageY + 5}px`;
-    }
+
     function mouseLeave() {
         if (div) {
             document.body.removeChild(div);
@@ -49,13 +48,11 @@ function _tooltip(element: HTMLElement) {
 
     element.addEventListener('mouseover', mouseOver);
     element.addEventListener('mouseleave', mouseLeave);
-    element.addEventListener('mousemove', mouseMove);
 
     return {
         destroy() {
             element.removeEventListener('mouseover', mouseOver);
             element.removeEventListener('mouseleave', mouseLeave);
-            element.removeEventListener('mousemove', mouseMove);
         },
     };
 }

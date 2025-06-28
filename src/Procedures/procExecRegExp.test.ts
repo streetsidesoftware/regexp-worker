@@ -27,7 +27,7 @@ describe('procExecRegExp', () => {
 
     test('RequestExecRegExp bad regex', () => {
         const req: RequestExecRegExp = createRequest(requestTypeExecRegExp, { text: 'two words', regexp: /\[/g });
-        Object.assign(req.data, { regexp: '/[/g' });
+        Object.assign(req.data, { regexp: { source: '/[/g' } });
         const result = procExecRegExp(req);
         const response = isErrorResponse(result) ? result : undefined;
         expect(isExecRegExpResponse(result)).toBe(false);
