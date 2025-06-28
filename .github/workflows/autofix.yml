@@ -31,6 +31,11 @@ jobs:
       - name: Fix Lint
         run: npm run lint:fix
 
+      - name: Lint Website
+        run: cd website
+          npm i
+          npm run lint
+
       - name: Build Again
         run: npm run build
 
