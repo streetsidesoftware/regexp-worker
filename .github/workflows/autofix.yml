@@ -23,7 +23,7 @@ jobs:
           node-version: 20.x
 
       - name: Setup
-        run: npm ci
+        run: npm i
 
       - name: Build
         run: npm run build
