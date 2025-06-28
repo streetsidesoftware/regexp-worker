@@ -36,6 +36,7 @@ export default tsEslint.config(
             'browser.js',
             'index.js',
             'coverage',
+            'website',
         ],
     },
     {

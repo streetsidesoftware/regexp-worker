@@ -1,0 +1,9 @@
+import:
+  - ../cspell.json
+
+dictionaryDefinitions:
+  - name: website
+    path: ./.cspell/website-terms.txt
+
+dictionaries:
+  - website

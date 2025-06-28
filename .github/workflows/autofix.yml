@@ -23,13 +23,19 @@ jobs:
           node-version: 20.x
 
       - name: Setup
-        run: npm ci
+        run: npm i
 
       - name: Build
         run: npm run build
 
       - name: Fix Lint
         run: npm run lint:fix
+
+      - name: Lint Website
+        run: |
+          cd website
+          npm i
+          npm run lint:fix
 
       - name: Build Again
         run: npm run build
