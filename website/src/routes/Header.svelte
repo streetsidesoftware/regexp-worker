@@ -1,11 +1,11 @@
 <script lang="ts">
-    import { page } from '$app/state';
-    import github from '$lib/images/github.svg';
-    import logo from '$lib/images/logo.png';
+    // import { page } from '$app/state';
+    // import github from '$lib/images/github.svg';
+    // import logo from '$lib/images/logo.png';
 </script>
 
 <header>
-    <div class="corner">
+    <!-- <div class="corner">
         <a href="https://github.com/streetsidesoftware/">
             <img src={logo} alt="SvelteKit" />
         </a>
@@ -15,7 +15,7 @@
         <a href="https://github.com/streetsidesoftware/regexp-worker">
             <img src={github} alt="GitHub" />
         </a>
-    </div>
+    </div> -->
 </header>
 
 <style>
@@ -24,7 +24,7 @@
         justify-content: space-between;
     }
 
-    .corner {
+    /* .corner {
         width: 3em;
         height: 3em;
     }
@@ -45,5 +45,5 @@
 
     a:hover {
         color: var(--color-theme-1);
-    }
+    } */
 </style>

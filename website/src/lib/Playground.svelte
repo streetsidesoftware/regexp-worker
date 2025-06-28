@@ -132,8 +132,7 @@
     <div class="box sidebar">
         <div>
             <dl>
-                <dt>Count:</dt>
-                <dd><span class="fixed_width">{count}/{requests}</span></dd>
+                <dt>Count: <span class="fixed_width">{count}/{requests}</span></dt>
                 <dt>
                     Elapsed Time:
                     {#if busy}
@@ -195,7 +194,8 @@
     }
 
     dd {
-        margin-left: 0;
+        font-size: 13px;
+        margin-left: 0.5em;
     }
 
     mark {
@@ -203,7 +203,7 @@
         color: #0000;
     }
     .edit_container {
-        font-family: monospace;
+        font-family: var(--font-mono);
         box-sizing: border-box;
         background-color: #f9f9f9;
         color: white;
@@ -216,7 +216,7 @@
     }
     .edit_box {
         color: black;
-        font-family: monospace;
+        font-family: var(--font-mono);
         box-sizing: border-box;
         position: relative;
         text-align: left;
@@ -232,7 +232,7 @@
     }
 
     .fixed_width {
-        font-family: monospace;
+        font-family: var(--font-mono);
     }
 
     [contenteditable] {
@@ -291,7 +291,7 @@
         field-sizing: content;
         padding: 4px;
         resize: vertical;
-        font-family: monospace;
+        font-family: var(--font-mono);
         background-color: #f9f9f9f9;
         color: #000;
     }
@@ -360,7 +360,7 @@
     }
 
     pre {
-        font-size: 1em;
+        font-size: 13px;
         font-family: var(--font-mono);
         background-color: inherit;
         border-radius: 0;
@@ -370,7 +370,7 @@
         color: white;
     }
 
-    .topleft {
+    /* .topleft {
         position: absolute;
         top: 0;
         left: 0;
@@ -392,5 +392,5 @@
         position: absolute;
         bottom: 0;
         right: 0;
-    }
+    } */
 </style>
