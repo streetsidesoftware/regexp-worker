@@ -39,6 +39,14 @@ jobs:
       - name: Install
         run: npm install
 
+      - name: Update Website
+        run: |
+          cd website
+          npm i
+          npx npm-check-updates -t semver -u
+          rm -rf node_modules package-lock.json
+          npm install
+
       - name: PR Body
         id: body
         uses: streetsidesoftware/actions/public/pr-body@v1
