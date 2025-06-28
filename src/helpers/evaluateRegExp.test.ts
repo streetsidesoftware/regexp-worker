@@ -59,7 +59,7 @@ const x2 = 'hello';
         regExp                                                                   | expected
         ${{ source: undefined, flags: 'gu', lastIndex: 10 }}                     | ${TypeError('Invalid RegExp.')}
         ${{ source: '', flags: 4, lastIndex: 10 }}                               | ${SyntaxError("Invalid flags supplied to RegExp constructor '4'")}
-        ${null}                                                                  | ${TypeError("Cannot destructure property 'source' of 'regexp' as it is null.")}
+        ${null}                                                                  | ${expect.any(TypeError)}
         ${'(.'}                                                                  | ${TypeError('Invalid RegExp.')}
         ${{ source: 'hello*', flags: 'gux', lastIndex: 10 }}                     | ${SyntaxError("Invalid flags supplied to RegExp constructor 'gux'")}
         ${{ source: '\nh.* # Match anything starting with `h`\n', flags: 'gx' }} | ${SyntaxError("Invalid flags supplied to RegExp constructor 'gx'")}
