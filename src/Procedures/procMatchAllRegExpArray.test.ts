@@ -27,7 +27,7 @@ describe('procMatchRegExpArray', () => {
 
     test('RequestExecRegExp bad regex', () => {
         const req: Request = createRequestMatchRegExpArray({ text: 'two words', regexps: [/\[/g] });
-        Object.assign(req.data as string[], { regexps: ['/[/g'] }); // Intentionally malformed regex
+        Object.assign(req.data as string[], { regexps: [{ source: '[', flags: 'g' }] }); // Intentionally malformed regex
         const result = procMatchAllRegExpArray(req);
         const response = isErrorResponse(result) ? result : undefined;
         expect(isMatchRegExpArrayResponse(result)).toBe(false);

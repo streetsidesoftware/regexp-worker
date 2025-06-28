@@ -25,7 +25,7 @@ describe('procMatchRegExp', () => {
     });
 
     test('RequestExecRegExp bad regex', () => {
-        const req: Request = createRequestMatchRegExp({ text: 'two words', regexp: '/[/g' });
+        const req: Request = createRequestMatchRegExp({ text: 'two words', regexp: { source: '[', flags: 'g' } });
         const result = procMatchRegExp(req);
         const response = isErrorResponse(result) ? result : undefined;
         expect(isMatchRegExpResponse(result)).toBe(false);

@@ -1,5 +1,6 @@
 import type { ExecRegExpResult } from '../helpers/evaluateRegExp.js';
 import { execRegExp, toRegExp } from '../helpers/evaluateRegExp.js';
+import type { RegExpLike } from '../helpers/regexp.js';
 import { format } from '../util/format.js';
 import {
     createErrorResponse,
@@ -18,7 +19,7 @@ export const requestTypeExecRegExp: ExecRegExpRequestType = 'ExecRegExp';
 
 export interface RequestExecRegExpData {
     text: string;
-    regexp: RegExp;
+    regexp: RegExpLike;
 }
 
 export type RequestExecRegExp = Request<ExecRegExpRequestType, RequestExecRegExpData>;

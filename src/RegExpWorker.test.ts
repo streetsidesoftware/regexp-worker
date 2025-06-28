@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { describe, expect, test } from 'vitest';
 
@@ -34,14 +35,18 @@ expect.extend({
 // cspell:ignore hellothere
 
 describe('RegExpWorker', () => {
-    test(
-        'matchAll',
-        run(async (w) => {
-            const r = await w.matchAll('hello\nthere', /\w/g);
-            expect(r.matches.map((m) => m[0])).toEqual('hellothere'.split(''));
-            expect(r.elapsedTimeMs).toBeGreaterThan(0);
-        }),
-    );
+    test.each`
+        text               | regexp      | expected
+        ${'hello\nthere'}  | ${/\w/g}    | ${'hellothere'.split('')}
+        ${'Good Morning'}  | ${/\b\w+/g} | ${['Good', 'Morning']}
+        ${'Good Morning.'} | ${/Good/}   | ${['Good']}
+        ${'Good Morning.'} | ${/\b\w+/g} | ${['Good', 'Morning']}
+    `('matchAll $test $regexp', async ({ text, regexp, expected }) => {
+        await using worker = cr();
+        const r = await worker.matchAll(text, regexp);
+        expect(r.matches.map((m) => m[0])).toEqual(expected);
+        expect(r.elapsedTimeMs).toBeGreaterThan(0);
+    });
 
     test(
         'set timeout',

@@ -1,4 +1,5 @@
 import { measureExecution } from '../timer.js';
+import type { RegExpLike } from './regexp.js';
 
 export interface MatchAllRegExpResult {
     elapsedTimeMs: number;
@@ -68,50 +69,27 @@ export function matchAllRegExpArray(text: string, regExpArray: RegExp[]): MatchA
     return { elapsedTimeMs, results };
 }
 
-export type RegExpOrString = RegExp | string;
-
-export interface RegExpLike {
-    source: string;
-    flags: string;
-    lastIndex?: number;
-}
-
 /**
- *
- * @param r
+ * Converts a RegExp or RegExpLike object to a RegExp object.
+ * If the input is a RegExp, it is returned as is.
+ * If the input is a RegExpLike object, it should have `source` and `flags` properties.
+ * The `x` flag is NOT supported and will throw an error if present.
+ * @param regexp
  * @param defaultFlags
  * @returns
  */
-export function toRegExp(r: RegExp | RegExpLike | string, defaultFlags?: string): RegExp {
-    if (r instanceof RegExp) return r;
+export function toRegExp(regexp: RegExp | RegExpLike): RegExp {
+    if (regexp instanceof RegExp) return regexp;
 
-    if (typeof r === 'string') {
-        const match = r.match(/^\/(.*)\/([gimsuy]*)$/);
-        if (match) {
-            return new RegExp(match[1], match[2] || defaultFlags);
-        }
-        return new RegExp(r, defaultFlags);
+    const { source, flags } = regexp;
+    if (typeof source !== 'string') {
+        throw new TypeError('Invalid RegExp.');
     }
-
-    if (isRegExpLike(r)) {
-        const reg = new RegExp(r.source, r.flags || defaultFlags);
-        if (r.lastIndex !== undefined) {
-            reg.lastIndex = r.lastIndex;
-        }
-        return reg;
+    const reg = new RegExp(source, flags);
+    if (regexp.lastIndex !== undefined) {
+        reg.lastIndex = regexp.lastIndex;
     }
-    throw new TypeError('Invalid RegExp or string.');
-}
-
-export function isRegExp(r: unknown): r is RegExp {
-    return r instanceof RegExp;
-}
-
-export function isRegExpLike(r: unknown): r is RegExpLike {
-    if (r instanceof RegExp) return true;
-    if (r && typeof r === 'object' && 'source' in r && 'flags' in r && typeof r.source === 'string' && typeof r.flags === 'string')
-        return true;
-    return false;
+    return reg;
 }
 
 function doExecRegExp(regExp: RegExp, text: string): RegExpExecArray | null {
