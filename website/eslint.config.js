@@ -64,6 +64,7 @@ export default ts.config(
             '**/node_modules/**',
             'dist',
             'out',
+            'build',
             'eslint.*',
             'examples',
             'test-packages',
@@ -71,5 +72,10 @@ export default ts.config(
             'scripts',
             'coverage'
         ]
+    },
+    {
+        rules: {
+            '@typescript-eslint/no-unused-vars': ['error', { ignoreRestSiblings: true, argsIgnorePattern: '^_' }]
+        }
     }
 );

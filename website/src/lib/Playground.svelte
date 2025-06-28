@@ -1,9 +1,10 @@
 <script lang="ts">
     import type { MatchAllAsRangePairsResult } from 'regexp-worker';
     import { createRegExpWorker, TimeoutError, toRegExp } from 'regexp-worker';
-    import { defaultRegexp, usageText } from './usage-text';
-    import RegExpFlags from './RegExpFlags.svelte';
+
     import ErrorMsg from './ErrorMsg.svelte';
+    import RegExpFlags from './RegExpFlags.svelte';
+    import { defaultRegexp, usageText } from './usage-text';
 
     const sampleText = usageText;
 

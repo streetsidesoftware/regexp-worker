@@ -5,7 +5,7 @@
 
 <dl>
     <dt><code class="warning">{error.name || 'Error'}:</code></dt>
-    {#each messageLines as line}
+    {#each messageLines as line, index (index)}
         <dd><code class="warning">{line}</code></dd>
     {/each}
 </dl>

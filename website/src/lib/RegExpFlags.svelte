@@ -1,6 +1,4 @@
 <script lang="ts">
-    import { tooltip } from './tooltip.svelte.js';
-
     interface FlagInfo {
         flag: string;
         description: string;
@@ -71,7 +69,7 @@
 {/snippet}
 
 <div class="regexp-flags">
-    {#each flagInfo as { flag, description }}
+    {#each flagInfo as { flag, description } (flag)}
         {@render Flag(flag, description, flagSet.has(flag))}
     {/each}
     <div class="tool-tip-wrapper">

@@ -12,7 +12,7 @@ function _tooltip(element: HTMLElement) {
     let div: HTMLDivElement | undefined;
     let title: string | null = '';
 
-    function mouseOver(event: MouseEvent) {
+    function mouseOver(_event: MouseEvent) {
         // NOTE: remove the `title` attribute, to prevent showing the default browser tooltip
         // remember to set it back on `mouseleave`
         title = element.getAttribute('title');
@@ -53,6 +53,6 @@ function _tooltip(element: HTMLElement) {
         destroy() {
             element.removeEventListener('mouseover', mouseOver);
             element.removeEventListener('mouseleave', mouseLeave);
-        },
+        }
     };
 }

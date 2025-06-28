@@ -1,6 +1,7 @@
 <script lang="ts">
-    import github from '$lib/images/github.svg';
     import '../app.css';
+
+    import github from '$lib/images/github.svg';
 
     import Header from './Header.svelte';
 
