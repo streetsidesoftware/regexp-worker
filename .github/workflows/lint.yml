@@ -19,6 +19,7 @@ jobs:
       - run: npm i
       - run: npm run lint
       - name: Lint Website
-        run: cd website
+        run: |
+          cd website
           npm i
           npm run lint

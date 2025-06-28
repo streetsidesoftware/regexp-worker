@@ -32,7 +32,8 @@ jobs:
         run: npm run lint:fix
 
       - name: Lint Website
-        run: cd website
+        run: |
+          cd website
           npm i
           npm run lint
 
