@@ -1,6 +1,7 @@
 <script lang="ts">
     import type { MatchAllAsRangePairsResult } from 'regexp-worker';
     import { createRegExpWorker, TimeoutError, toRegExp } from 'regexp-worker';
+    import RegExpEditor  from './RegExpEditor.svelte';
 
     import ErrorMsg from './ErrorMsg.svelte';
     import RegExpFlags from './RegExpFlags.svelte';
@@ -185,7 +186,11 @@
             </div>
         </div>
     </div>
-    <div class="box footer"></div>
+    <div class="box footer">
+        <RegExpEditor
+            bind:source={regexpSource}
+            bind:flags={regexpFlags} ></RegExpEditor>
+    </div>
 </div>
 
 <style>

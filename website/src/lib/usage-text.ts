@@ -25,9 +25,9 @@ const worker = createRegExpWorker();
 
 export const defaultRegexp: RegExpLike = {
     source: `\
-(^\`{3,}).*$[\\s\\S]*?\\1$ # Match against code blocks
-|
-(?<=(^|\\s)\`).*?(?=\`(\\s|$)) # Match against back tick quotes\
+(^\`{3,}).*$[\\s\\S]*?\\1$       # Match against code blocks
+| (hello(?<postfix>[a-z_-])) |   # Match against the word "hello"
+(?<=(^|\\s)\`).*?(?=\`(\\s|$))   # Match against back tick quotes\
 `,
     flags: 'gmx'
 };
