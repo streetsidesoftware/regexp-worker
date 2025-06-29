@@ -50,7 +50,12 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.PUBLISH_NPM }}
           NPM_CONFIG_PROVENANCE: true
-        run: npm publish ${{ env.DRY_RUN }}
+        run: npm publish --include-workspace-root ${{ env.DRY_RUN }}
+
+      - name: Publish to JSR
+        run: |
+          npm run build
+          npx jsr publish ${{ env.DRY_RUN }}
 
       - name: Summary
         uses: streetsidesoftware/actions/public/summary@v1

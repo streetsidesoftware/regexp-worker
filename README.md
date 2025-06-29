@@ -4,6 +4,8 @@ Execute Regular Expression Matches on a Node [Worker Thread](https://nodejs.org/
 
 Regular Expressions can suffer from [Catastrophic Backtracking](https://www.regular-expressions.info/catastrophic.html). A very simple expression like `/(x+x+)+y/` can cause your JavaScript application to freeze. This library allows you to run these expressions on another thread. If they take to long to complete, they are terminated, protecting your application from locking up.
 
+Try it out: [`regexp-worker` Playground](https://streetsidesoftware.com/regexp-worker/)
+
 ## Installation
 
 ```
