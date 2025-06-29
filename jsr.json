@@ -8,6 +8,7 @@
         "./node": "./src/index.mts"
     },
     "publish": {
-        "include": ["LICENSE", "README.md", "src"]
+        "include": ["LICENSE", "README.md", "src"],
+        "exclude": ["**/*.test.ts", "**/*.test.mts"]
     }
 }
