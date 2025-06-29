@@ -39,7 +39,6 @@
       "browser": "./dist/browser.js",
       "deno": "./dist/browser.js",
       "bun": "./dist/browser.js",
-      "node": "./dist/index.js",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     }
