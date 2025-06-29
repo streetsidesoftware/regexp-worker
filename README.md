@@ -89,7 +89,20 @@ let numbers = await worker.matchAll('Lots of text ...', /\b\w{3}\s+\w{3}/g, more
 
 // It is a good idea to dispose of the worker before shutdown.
 // The worker thread will stop on its own if left idle for more than 200ms.
-worker.dispose();
+await worker.dispose();
+```
+
+**Note:** The worker supports the proposed [`using`](https://github.com/tc39/proposal-explicit-resource-management) keyword. See also: [TypeScript: `using`](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-2.html).
+
+```ts
+import { RegExpWorker } from 'regexp-worker';
+
+async function run() {
+    await using worker = new RegExpWorker();
+    // ... do some work.
+    let numbers = await worker.matchAll('Lots of text 123 ...', /\b\d+\b/g);
+    // The worker is auto cleaned up when when the function exits.
+}
 ```
 
 ## Handling Timeouts
