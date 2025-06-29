@@ -172,12 +172,7 @@
     <div class="box content nested-wrapper">
         <div class="v-box grid-regexp">
             <strong>RegExp:</strong>
-            <RegExpEditor
-                bind:source={regexpSource}
-                bind:flags={regexpFlags}
-                --color-bg="#f5f5f5"
-                --color-text="#333"
-                --color-caret="#333"
+            <RegExpEditor bind:source={regexpSource} bind:flags={regexpFlags} --color-bg="#f5f5f5" --color-text="#333" --color-caret="#333"
             ></RegExpEditor>
         </div>
         <div class="h-box grid-flags">
