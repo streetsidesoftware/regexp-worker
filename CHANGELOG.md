@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.1.7](https://github.com/streetsidesoftware/regexp-worker/compare/v4.1.6...v4.1.7) (2025-06-29)
+
+
+### Bug Fixes
+
+* Add `deno` to the `package.json` export conditions. ([#1004](https://github.com/streetsidesoftware/regexp-worker/issues/1004)) ([c23cca2](https://github.com/streetsidesoftware/regexp-worker/commit/c23cca2f3d4debada4d0e35e756d7b8d47e91941))
+
 ## [4.1.6](https://github.com/streetsidesoftware/regexp-worker/compare/v4.1.5...v4.1.6) (2025-06-29)
 
 
