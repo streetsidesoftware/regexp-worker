@@ -3,7 +3,7 @@
 </script>
 
 <svelte:head>
-    <title>Home</title>
+    <title>RegExp Worker Playground</title>
     <meta name="description" content="RegExp Worker" />
 </svelte:head>
 

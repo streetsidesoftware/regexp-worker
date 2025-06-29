@@ -27,6 +27,9 @@ jobs:
       - name: Build
         run: pnpm run build
 
+      - name: Build Readme
+        run: pnpm run build:readme
+
       - name: Fix Lint
         run: |
           pnpm run lint:fix
