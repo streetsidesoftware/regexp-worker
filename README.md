@@ -185,3 +185,7 @@ if (import.meta.main) {
 ````
 
 <!--- @@inject-end: ./examples/example.deno.ts --->
+
+## Bun
+
+Bun does not currently work. It does not fully support `node:worker_threads` and the Web Worker API fails to communicate. Further investigation would be needed.
