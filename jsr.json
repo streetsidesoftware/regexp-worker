@@ -1,6 +1,6 @@
 {
     "name": "@streetsidesoftware/regexp-worker",
-    "version": "4.1.4",
+    "version": "4.1.5",
     "license": "MIT",
     "exports": {
         ".": "./src/browser.ts",
@@ -8,7 +8,16 @@
         "./node": "./dist/index.js"
     },
     "publish": {
-        "include": ["LICENSE", "README.md", "src", "dist/*.d.ts", "dist/browser.*", "dist/index.js"],
-        "exclude": ["!dist"]
+        "include": [
+            "LICENSE",
+            "README.md",
+            "src",
+            "dist/*.d.ts",
+            "dist/browser.*",
+            "dist/index.js"
+        ],
+        "exclude": [
+            "!dist"
+        ]
     }
 }
