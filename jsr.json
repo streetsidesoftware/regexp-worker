@@ -8,16 +8,7 @@
         "./node": "./dist/index.js"
     },
     "publish": {
-        "include": [
-            "LICENSE",
-            "README.md",
-            "src",
-            "dist/*.d.ts",
-            "dist/browser.*",
-            "dist/index.js"
-        ],
-        "exclude": [
-            "!dist"
-        ]
+        "include": ["LICENSE", "README.md", "src", "dist/*.d.ts", "dist/browser.*", "dist/index.js"],
+        "exclude": ["!dist"]
     }
 }
