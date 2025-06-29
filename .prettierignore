@@ -5,3 +5,4 @@ dist
 coverage
 CHANGELOG.md
 website
+*-lock.*
