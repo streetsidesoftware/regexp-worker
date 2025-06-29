@@ -3,19 +3,12 @@
     "version": "4.1.4",
     "license": "MIT",
     "exports": {
-        ".": "./dist/browser.js",
+        ".": "./src/browser.ts",
+        "./browser": "./dist/browser.js",
         "./node": "./dist/index.js"
     },
     "publish": {
-        "include": [
-            "LICENSE",
-            "README.md",
-            "dist/*.d.ts",
-            "dist/browser.*",
-            "dist/index.js"
-        ],
-        "exclude": [
-            "!dist"
-        ]
+        "include": ["LICENSE", "README.md", "src", "dist/*.d.ts", "dist/browser.*", "dist/index.js"],
+        "exclude": ["!dist"]
     }
 }
