@@ -1,8 +1,6 @@
 name: autofix.ci
 on:
   pull_request:
-  push:
-    branches: ['main']
 permissions:
   contents: read
 
@@ -27,12 +25,15 @@ jobs:
         run: npm run build
 
       - name: Fix Lint
-        run: npm run lint:fix
+        run: |
+          npm run lint:fix
 
       - name: Lint Website
+        # We run the list twice to ensure that autofix works correctly
         run: |
           cd website
           npm ci
+          npm run lint:fix
           npm run lint:fix
 
       - name: Build Again
