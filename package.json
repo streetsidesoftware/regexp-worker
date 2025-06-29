@@ -1,6 +1,6 @@
 {
   "name": "regexp-worker",
-  "version": "4.1.5",
+  "version": "4.1.6",
   "description": "Runs regular expressions on a background thread.",
   "publishConfig": {
     "access": "public",
