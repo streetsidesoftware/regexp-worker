@@ -25,33 +25,49 @@ For the occasional request, this is the easiest way, but the Worker startup and 
 
 ### Find the words in some text
 
-```typescript
+<!--- @@inject: ./examples/example-words.js --->
+
+```js
 import { workerMatchAll } from 'regexp-worker';
 //...
 const response = await workerMatchAll('Good Morning', /\b\w+/g);
 console.log(response.matches.map((m) => m[0]));
 ```
 
+<!--- @@inject-end: ./examples/example-words.js --->
+
 Result:
+
+<!--- @@inject: ./examples/output/example-words.js.out.txt --->
 
 ```
 [ 'Good', 'Morning' ]
 ```
 
+<!--- @@inject-end: ./examples/output/example-words.js.out.txt --->
+
 ### Find the word breaks in some text
 
-```ts
+<!--- @@inject: ./examples/example-indexes.js --->
+
+```js
 import { workerMatchAll } from 'regexp-worker';
 
 const response = await workerMatchAll('Good Morning', /\b/g);
 console.log(response.matches.map((m) => m.index));
 ```
 
+<!--- @@inject-end: ./examples/example-indexes.js --->
+
 Result:
+
+<!--- @@inject-code: examples/output/example-indexes.js.out.txt --->
 
 ```
 [ 0, 4, 5, 12 ]
 ```
+
+<!--- @@inject-end: examples/output/example-indexes.js.out.txt --->
 
 ### Format of the response
 
@@ -117,3 +133,52 @@ class TimeoutError extends Error {
     elapsedTimeMs: number;
 }
 ```
+
+## Deno
+
+Example Using Deno:
+
+<!--- @@inject: ./examples/example.deno.ts --->
+
+````ts
+/**
+ * @file example.deno.ts
+ * @description Example of using the `@streetsidesoftware/regexp-worker` package in Deno
+ * to extract email addresses from a sample text using a Worker.
+ *
+ * Install:
+ * ```sh
+ * deno add jsr:@streetsidesoftware/regexp-worker
+ * deno example.deno.ts # run this file.
+ * ```
+ */
+
+import { createRegExpWorker } from '@streetsidesoftware/regexp-worker';
+
+const sampleText = `
+This is a sample text with some email addresses:
+- tim@ge.com
+- bill@microsoft.com
+`;
+
+const regexpEmail = /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g;
+
+export async function getEmails(text: string): Promise<string[]> {
+    await using worker = await createRegExpWorker();
+
+    const result = await worker.matchAll(text, regexpEmail);
+    return result.matches.map((match) => match[0]);
+}
+
+export async function run() {
+    const emails = await getEmails(sampleText);
+    console.log('Extracted emails:', emails);
+}
+
+// Learn more at https://docs.deno.com/runtime/manual/examples/module_metadata#concepts
+if (import.meta.main) {
+    run();
+}
+````
+
+<!--- @@inject-end: ./examples/example.deno.ts --->

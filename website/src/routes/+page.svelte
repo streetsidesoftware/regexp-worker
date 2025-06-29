@@ -3,11 +3,12 @@
 </script>
 
 <svelte:head>
-    <title>Home</title>
+    <title>RegExp Worker Playground</title>
     <meta name="description" content="RegExp Worker" />
 </svelte:head>
 
 <section>
+
     <h1>Regular Expression Worker</h1>
     <br />
     <br />
