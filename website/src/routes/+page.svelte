@@ -8,7 +8,6 @@
 </svelte:head>
 
 <section>
-
     <h1>Regular Expression Worker</h1>
     <br />
     <br />
