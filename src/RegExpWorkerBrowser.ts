@@ -26,6 +26,9 @@ export type {
     RangePair,
 } from './RegExpWorker.js';
 
+/**
+ * A Regular Expression Worker for browser and Deno environments. It use the Web Worker API to run RegExp operations in a separate thread.
+ */
 export class RegExpWorker extends RegExpWorkerBase {
     /**
      * Create a new RegExpWorker instance.
@@ -37,6 +40,12 @@ export class RegExpWorker extends RegExpWorkerBase {
     }
 }
 
+/**
+ * Create a new RegExpWorker instance.
+ * @param timeoutMs - Optional time limit in milliseconds for each request execution. Default is 1000ms.
+ * @param stopIdleWorkerAfterMs - Optional time in milliseconds to wait after processing the last request before stopping the worker. Default is 200ms.
+ * @returns a new instance of RegExpWorker.
+ */
 export function createRegExpWorker(timeoutMs?: number, stopIdleWorkerAfterMs?: number): RegExpWorker {
     return new RegExpWorker(timeoutMs, stopIdleWorkerAfterMs);
 }
