@@ -136,7 +136,11 @@ class TimeoutError extends Error {
 
 ## Deno
 
-Example Using Deno:
+Deno uses the Web Worker interface instead of `node:worker_threads`.
+To make things easier, this library has been published to [jsr.io](https://jsr.io/@streetsidesoftware/regexp-worker) in addition to
+adding a deno export to `package.json`.
+
+**Example Using Deno:**
 
 <!--- @@inject: ./examples/example.deno.ts --->
 
