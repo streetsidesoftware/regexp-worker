@@ -127,7 +127,7 @@
 {#snippet snipFragments()}{#each fragments as frag (frag.id)}{#if frag.type === 'mark'}<mark>{frag.content}</mark
             >{:else}{frag.content}{/if}{/each}{/snippet}
 
-{#snippet fixedWidth(value: number, fixed: number = 4, width: number = 9)}
+{#snippet fixedWidth(value: number, fixed: number = 2, width: number = 9)}
     {value.toFixed(fixed).padStart(width, ' ')}{/snippet}
 
 <div class="wrapper">
@@ -304,6 +304,7 @@
     .header {
         grid-area: header;
         text-align: center;
+        border-radius: 5px 5px 0px 0px;
     }
 
     .header {
@@ -316,6 +317,7 @@
         box-sizing: border-box;
         padding: 10px;
         grid-area: footer;
+        border-radius: 0px 0px 5px 5px;
         /* min-height: 20px; */
     }
 
