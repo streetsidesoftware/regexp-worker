@@ -1,6 +1,7 @@
 {
   "name": "@internal/examples",
   "version": "1.0.0",
+  "private": true,
   "description": "Example Code",
   "type": "module",
   "scripts": {
@@ -8,6 +9,6 @@
   },
   "license": "MIT",
   "dependencies": {
-    "regexp-worker": ".."
+    "regexp-worker": "file:../"
   }
 }

@@ -25,6 +25,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: node -v
       - run: npm install
+      - run: npm run build
       - run: npm run test
 
   test-browser-versions: # make sure build/ci work properly
