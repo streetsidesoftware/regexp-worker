@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.1.5](https://github.com/streetsidesoftware/regexp-worker/compare/v4.1.4...v4.1.5) (2025-06-29)
+
+
+### Bug Fixes
+
+* Give jsr the source ([#1000](https://github.com/streetsidesoftware/regexp-worker/issues/1000)) ([cab4e06](https://github.com/streetsidesoftware/regexp-worker/commit/cab4e06a7746bbe66b113acd5f1018f07c5c1f99))
+
 ## [4.1.4](https://github.com/streetsidesoftware/regexp-worker/compare/v4.1.3...v4.1.4) (2025-06-29)
 
 
