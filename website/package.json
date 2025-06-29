@@ -39,7 +39,7 @@
     "prettier-plugin-tailwindcss": "^0.6.13",
     "regexp-tree": "^0.1.27",
     "regexp-worker": "file:../",
-    "svelte": "^5.34.9",
+    "svelte": "^5.34.0",
     "svelte-check": "^4.2.2",
     "tailwindcss": "^4.1.11",
     "typescript": "^5.8.3",
