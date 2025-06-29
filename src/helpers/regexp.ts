@@ -1,5 +1,8 @@
 export type RegExpOrString = RegExp | string;
 
+/**
+ * Represents a regular expression-like object that has `source` and `flags` properties.
+ */
 export interface RegExpLike {
     source: string;
     flags: string;

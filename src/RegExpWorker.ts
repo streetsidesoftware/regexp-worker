@@ -175,6 +175,9 @@ export function timeoutRejection(e: unknown): Promise<never> {
  */
 export type RangePair = [start: number, end: number];
 
+/**
+ * Represents the result of RegExpWorker.matchAllAsRangePairs
+ */
 export interface MatchAllAsRangePairsResult {
     elapsedTimeMs: number;
     /**

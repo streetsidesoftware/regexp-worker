@@ -1,6 +1,9 @@
 import { measureExecution } from '../timer.js';
 import type { RegExpLike } from './regexp.js';
 
+/**
+ * Represents the result of RegExpWorker.matchAll
+ */
 export interface MatchAllRegExpResult {
     elapsedTimeMs: number;
     matches: RegExpMatchArray[];
@@ -17,6 +20,9 @@ export function matchAllRegExp(text: string, regExp: RegExp): MatchAllRegExpResu
     return { elapsedTimeMs, matches: r };
 }
 
+/**
+ * Represents the result of RegExpWorker.exec
+ */
 export interface ExecRegExpResult {
     elapsedTimeMs: number;
     lastIndex: number;
@@ -34,6 +40,9 @@ export function execRegExp(regExp: RegExp, text: string): ExecRegExpResult {
     return { elapsedTimeMs, lastIndex: regExp.lastIndex, match };
 }
 
+/**
+ * Represents the result of RegExpWorker.match
+ */
 export interface MatchRegExpResult {
     elapsedTimeMs: number;
     lastIndex: number;
@@ -51,6 +60,9 @@ export function matchRegExp(text: string, regExp: RegExp): MatchRegExpResult {
     return { elapsedTimeMs, lastIndex: regExp.lastIndex, match };
 }
 
+/**
+ * Represents the result of RegExpWorker.matchAllArray
+ */
 export interface MatchAllRegExpArrayResult {
     elapsedTimeMs: number;
     results: MatchAllRegExpResult[];
