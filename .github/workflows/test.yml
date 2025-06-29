@@ -19,14 +19,15 @@ jobs:
           #   node-version: 24.x
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
       - run: node -v
-      - run: npm install
-      - run: npm run build
-      - run: npm run test
+      - run: pnpm install
+      - run: pnpm run build
+      - run: pnpm run test
 
   test-browser-versions: # make sure build/ci work properly
     runs-on: ubuntu-latest
@@ -37,10 +38,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 24.x
-      - run: npm install
-      - run: npm run build
-      - run: npm run test:attw #cspell:ignore attw
+      - run: pnpm install
+      - run: pnpm run build
+      - run: pnpm run test:attw #cspell:ignore attw

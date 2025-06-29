@@ -16,12 +16,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
       - run: |
-          npm i
-          npm run build
-      - run: npm run lint
+          pnpm i
+          pnpm run build
+      - run: pnpm run lint
       - name: Lint Website
         run: |
           cd website
-          npm i
-          npm run lint
+          pnpm i
+          pnpm run lint

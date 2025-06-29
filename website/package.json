@@ -14,7 +14,7 @@
     "lint": "prettier --check . && eslint .",
     "lint:fix": "eslint . --fix && prettier --write .",
     "test:unit": "vitest",
-    "test": "npm run test:unit -- --run && npm run test:e2e",
+    "test": "pnpm run test:unit -- --run && pnpm run test:e2e",
     "test:e2e": "playwright test"
   },
   "devDependencies": {
@@ -38,7 +38,7 @@
     "prettier-plugin-svelte": "^3.4.0",
     "prettier-plugin-tailwindcss": "^0.6.13",
     "regexp-tree": "^0.1.27",
-    "regexp-worker": "file:../",
+    "regexp-worker": "workspace:*",
     "svelte": "^5.34.9",
     "svelte-check": "^4.2.2",
     "tailwindcss": "^4.1.11",
@@ -48,6 +48,5 @@
     "vite-plugin-devtools-json": "^0.2.0",
     "vitest": "^3.2.4",
     "vitest-browser-svelte": "^0.1.0"
-  },
-  "packageManager": "npm@10.8.2"
+  }
 }

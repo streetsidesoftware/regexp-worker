@@ -1,0 +1,12 @@
+{
+    "name": "@streetsidesoftware/regexp-worker",
+    "version": "4.1.1",
+    "license": "MIT",
+    "exports": {
+        ".": "dist/browser.js",
+        "./node": "dist/index.js"
+    },
+    "publish": {
+        "include": ["LICENSE", "README.md", "dist/*.d.ts", "dist/browser.*", "dist/index.js"]
+    }
+}

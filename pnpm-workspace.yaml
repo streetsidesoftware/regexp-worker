@@ -1,0 +1,8 @@
+packages:
+  - .
+  - website
+  - examples
+
+onlyBuiltDependencies:
+  - '@tailwindcss/oxide'
+  - esbuild

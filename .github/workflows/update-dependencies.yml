@@ -24,6 +24,7 @@ jobs:
       #     echo "${{ toJson(github.event.inputs) }}"
       - name: Checkout code
         uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
 
       - name: Use Node.js
         uses: actions/setup-node@v4
@@ -32,12 +33,12 @@ jobs:
 
       - name: Update Root
         run: |
-          npm i
-          npx npm-check-updates --workspaces --root -t semver -u
-          rm -rf node_modules package-lock.json
+          pnpm i
+          pnpm up --recursive --workspace-root --dev
+          pnpm up --recursive --workspace-root
 
       - name: Install
-        run: npm install
+        run: pnpm install
 
       - name: PR Body
         id: body
