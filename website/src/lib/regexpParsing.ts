@@ -111,7 +111,7 @@ export function parseRegExp(source: string, flags: string): ParsedEntry[] {
                 collection.push(e);
                 collection.push([idCounter++, commentStart, commentEnd, 'Comment', match[0], entry[iDepth]]);
 
-                const r = /(?:\r?\n)+/y
+                const r = /(?:\r?\n)+/y;
                 r.lastIndex = commentEnd - iOffset;
                 const newLineMatch = text.match(r);
                 if (newLineMatch) {
