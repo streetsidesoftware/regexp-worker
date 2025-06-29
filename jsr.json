@@ -4,20 +4,10 @@
     "license": "MIT",
     "exports": {
         ".": "./src/browser.ts",
-        "./browser": "./dist/browser.js",
-        "./node": "./dist/index.js"
+        "./browser": "./src/browser.ts",
+        "./node": "./src/index.mts"
     },
     "publish": {
-        "include": [
-            "LICENSE",
-            "README.md",
-            "src",
-            "dist/*.d.ts",
-            "dist/browser.*",
-            "dist/index.js"
-        ],
-        "exclude": [
-            "!dist"
-        ]
+        "include": ["LICENSE", "README.md", "src"]
     }
 }
