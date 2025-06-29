@@ -33,19 +33,11 @@ jobs:
       - name: Update Root
         run: |
           npm i
-          npx npm-check-updates -t semver -u
+          npx npm-check-updates --workspaces --root -t semver -u
           rm -rf node_modules package-lock.json
 
       - name: Install
         run: npm install
-
-      - name: Update Website
-        run: |
-          cd website
-          npm i
-          npx npm-check-updates -t semver -u
-          rm -rf node_modules package-lock.json
-          npm install
 
       - name: PR Body
         id: body

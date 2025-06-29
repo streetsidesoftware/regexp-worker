@@ -9,6 +9,6 @@
   },
   "license": "MIT",
   "dependencies": {
-    "regexp-worker": ".."
+    "regexp-worker": "file:../"
   }
 }
