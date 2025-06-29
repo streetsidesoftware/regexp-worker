@@ -1,17 +1,17 @@
 <script lang="ts">
+    import Editor from './Editor.svelte';
     import type { ParsedEntry } from './regexpParsing.js';
     import { parseRegExp } from './regexpParsing.js';
+
     let { source = $bindable(), flags = $bindable() } = $props<{ source: string; flags: string }>();
 
-    let astEntries: ParsedEntry[] | undefined = $derived.by(() => {
+    function contentToEntries(source: string): ParsedEntry[] | undefined {
         try {
             return parseRegExp(source, flags);
         } catch {
             return undefined;
         }
-    });
-
-    let fragments = $derived.by(() => entriesToFragments(source, astEntries));
+    }
 
     function entriesToFragments(source: string, entries: ParsedEntry[] | undefined): Fragment[] {
         if (!entries) {
@@ -49,53 +49,13 @@
 
 {#snippet rFragments(frags: Fragment[])}{#each frags as f, index (index)}{@render rFragment(f)}{/each}{/snippet}
 
-<div class="container">
-    <div class="regexp-edit behind" contenteditable="plaintext-only">{@render rFragments(fragments)}</div>
-    <div class="regexp-edit in-front" bind:textContent={source} contenteditable="plaintext-only"></div>
-</div>
+<Editor bind:content={source}>
+    {#snippet format(content: string | undefined)}
+        {@render rFragments(entriesToFragments(content || '', contentToEntries(content || '')))}
+    {/snippet}
+</Editor>
 
 <style>
-    .container {
-        position: relative;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-    }
-    .regexp-edit {
-        width: 100%;
-        height: 100%;
-        font-family: monospace;
-        font-size: 1rem;
-        line-height: 1.5;
-        padding: 0.5rem;
-        box-sizing: border-box;
-        overflow-y: auto;
-        white-space: pre-wrap; /* Preserve whitespace and line breaks */
-        border-radius: 5px;
-        border: 1px solid var(--color-border, #ccc);
-        color: var(--color-text, #333);
-        background-color: var(--color-bg-1, #f5f5f5);
-    }
-
-    .behind {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: var(--color-bg-1, #f5f5f5);
-        z-index: 1;
-    }
-
-    .in-front {
-        position: relative;
-        z-index: 10;
-        color: #33333310;
-        background-color: #00000000;
-        caret-color: var(--color-caret, #000);
-    }
-
     .expression {
         color: #bb9900;
     }
