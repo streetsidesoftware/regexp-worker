@@ -136,11 +136,29 @@ class TimeoutError extends Error {
 
 ## Deno
 
+### NPM
+
+Installation:
+
+```sh
+deno add npm:regexp-worker
+```
+
+Usage:
+
+```ts
+import { createRegExpWorker } from 'regexp-worker';
+
+// See JSR Example for the rest of the code.
+```
+
+### JSR
+
 Deno uses the Web Worker interface instead of `node:worker_threads`.
 To make things easier, this library has been published to [jsr.io](https://jsr.io/@streetsidesoftware/regexp-worker) in addition to
 adding a deno export to `package.json`.
 
-**Example Using Deno:**
+**Example Using Deno and JSR:**
 
 <!--- @@inject: ./examples/example.deno.ts --->
 
