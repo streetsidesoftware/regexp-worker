@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { fade } from 'svelte/transition';
     import { cubicIn } from 'svelte/easing';
+    import { fade } from 'svelte/transition';
 
     interface FlagInfo {
         flag: string;

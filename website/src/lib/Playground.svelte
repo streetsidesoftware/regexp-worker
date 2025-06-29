@@ -1,8 +1,8 @@
 <script lang="ts">
-    import Editor from './Editor.svelte';
     import type { MatchAllAsRangePairsResult } from 'regexp-worker';
     import { createRegExpWorker, TimeoutError, toRegExp } from 'regexp-worker';
 
+    import Editor from './Editor.svelte';
     import ErrorMsg from './ErrorMsg.svelte';
     import RegExpEditor from './RegExpEditor.svelte';
     import RegExpFlags from './RegExpFlags.svelte';
@@ -172,8 +172,13 @@
     <div class="box content nested-wrapper">
         <div class="v-box grid-regexp">
             <strong>RegExp:</strong>
-            <RegExpEditor bind:source={regexpSource} bind:flags={regexpFlags} --color-bg="#f5f5f5" --color-text="#333" --color-caret="#333">
-            </RegExpEditor>
+            <RegExpEditor
+                bind:source={regexpSource}
+                bind:flags={regexpFlags}
+                --color-bg="#f5f5f5"
+                --color-text="#333"
+                --color-caret="#333"
+            ></RegExpEditor>
         </div>
         <div class="h-box grid-flags">
             <div>
@@ -191,8 +196,7 @@
             </Editor>
         </div>
     </div>
-    <div class="box footer">
-    </div>
+    <div class="box footer"></div>
 </div>
 
 <style>
@@ -278,7 +282,9 @@
         color: #444;
     }
 
-    .box,.v-box,.h-box {
+    .box,
+    .v-box,
+    .h-box {
         box-sizing: border-box;
         background-color: #444;
         color: #fff;
