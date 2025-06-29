@@ -38,18 +38,8 @@
     ".": {
       "browser": "./dist/browser.js",
       "deno": "./dist/browser.js",
+      "bun": "./dist/browser.js",
       "node": "./dist/index.js",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    },
-    "./deno": {
-      "import": "./dist/browser.js"
-    },
-    "./browser": {
-      "browser": "./dist/browser.js",
-      "import": "./dist/browser.js"
-    },
-    "./node": {
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     }
