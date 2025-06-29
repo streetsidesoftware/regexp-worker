@@ -66,6 +66,7 @@
     "index.js",
     "browser.js",
     "dist/index.*",
+    "dist/browser.*",
     "!**/*.test.*",
     "!**/*.map"
   ],
