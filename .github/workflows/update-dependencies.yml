@@ -32,12 +32,12 @@ jobs:
 
       - name: Update Root
         run: |
-          npm i
-          npx npm-check-updates --workspaces --root -t semver -u
-          rm -rf node_modules package-lock.json
+          pnpm i
+          pnpm up --recursive --workspace-root --dev
+          pnpm up --recursive --workspace-root
 
       - name: Install
-        run: npm install
+        run: pnpm install
 
       - name: PR Body
         id: body

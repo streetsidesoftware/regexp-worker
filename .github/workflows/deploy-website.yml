@@ -31,11 +31,11 @@ jobs:
 
       - name: Build website
         run: |
-          npm i
-          npm run build
+          pnpm i
+          pnpm run build
           cd website
-          npm i
-          npm run build:site
+          pnpm i
+          pnpm run build:site
 
       - name: Upload Build Artifact
         uses: actions/upload-pages-artifact@v3

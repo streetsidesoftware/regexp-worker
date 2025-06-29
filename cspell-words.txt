@@ -3,6 +3,7 @@ Avenir
 codecov
 coverallsapp
 dependabot
+esbuild
 gimsuy
 lcov
 nodenext

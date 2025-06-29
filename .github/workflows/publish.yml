@@ -43,18 +43,18 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - run: |
-          npm ci
-          npm run build
+          pnpm i
+          pnpm run build
 
       - name: Publish to NPM
         env:
           NODE_AUTH_TOKEN: ${{ secrets.PUBLISH_NPM }}
           NPM_CONFIG_PROVENANCE: true
-        run: npm publish --include-workspace-root ${{ env.DRY_RUN }}
+        run: pnpm publish ${{ env.DRY_RUN }}
 
       - name: Publish to JSR
         run: |
-          npm run build
+          pnpm run build
           npx jsr publish ${{ env.DRY_RUN }}
 
       - name: Summary

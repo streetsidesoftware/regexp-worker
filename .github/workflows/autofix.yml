@@ -19,24 +19,24 @@ jobs:
           node-version: 20.x
 
       - name: Setup
-        run: npm ci
+        run: pnpm i
 
       - name: Build
-        run: npm run build
+        run: pnpm run build
 
       - name: Fix Lint
         run: |
-          npm run lint:fix
+          pnpm run lint:fix
 
       - name: Lint Website
         # We run the list twice to ensure that autofix works correctly
         run: |
           cd website
-          npm ci
-          npm run lint:fix
-          npm run lint:fix
+          pnpm i
+          pnpm run lint:fix
+          pnpm run lint:fix
 
       - name: Build Again
-        run: npm run build
+        run: pnpm run build
 
       - uses: autofix-ci/action@635ffb0c9798bd160680f18fd73371e355b85f27

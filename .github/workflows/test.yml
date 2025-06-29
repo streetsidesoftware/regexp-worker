@@ -24,9 +24,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: node -v
-      - run: npm install
-      - run: npm run build
-      - run: npm run test
+      - run: pnpm install
+      - run: pnpm run build
+      - run: pnpm run test
 
   test-browser-versions: # make sure build/ci work properly
     runs-on: ubuntu-latest
@@ -41,6 +41,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24.x
-      - run: npm install
-      - run: npm run build
-      - run: npm run test:attw #cspell:ignore attw
+      - run: pnpm install
+      - run: pnpm run build
+      - run: pnpm run test:attw #cspell:ignore attw

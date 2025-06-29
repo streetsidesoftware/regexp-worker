@@ -16,10 +16,10 @@ jobs:
           node-version: 24.x
       - name: Setup
         run: |
-          npm install
-          npm run build
+          pnpm install
+          pnpm run build
       - name: Run Coverage
-        run: npm run coverage
+        run: pnpm run coverage
       - name: Publish Coveralls
         uses: coverallsapp/github-action@master
         with:
