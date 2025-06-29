@@ -24,6 +24,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
       - run: node -v
       - run: pnpm install
       - run: pnpm run build
@@ -43,6 +45,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24.x
+          cache: 'pnpm'
+
       - run: pnpm install
       - run: pnpm run build
       - run: pnpm run test:attw #cspell:ignore attw
