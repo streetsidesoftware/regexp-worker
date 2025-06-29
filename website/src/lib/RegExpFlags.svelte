@@ -1,4 +1,7 @@
 <script lang="ts">
+    import { cubicIn } from 'svelte/easing';
+    import { fade } from 'svelte/transition';
+
     interface FlagInfo {
         flag: string;
         description: string;
@@ -74,7 +77,7 @@
     {/each}
     <div class="tool-tip-wrapper">
         {#if description}
-            <div class="tool-tip-container">{description}</div>
+            <div class="tool-tip-container" out:fade={{ easing: cubicIn }}>{description}</div>
         {/if}
     </div>
 </div>

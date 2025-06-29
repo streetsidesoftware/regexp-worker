@@ -2,7 +2,9 @@
     import type { MatchAllAsRangePairsResult } from 'regexp-worker';
     import { createRegExpWorker, TimeoutError, toRegExp } from 'regexp-worker';
 
+    import Editor from './Editor.svelte';
     import ErrorMsg from './ErrorMsg.svelte';
+    import RegExpEditor from './RegExpEditor.svelte';
     import RegExpFlags from './RegExpFlags.svelte';
     import { defaultRegexp, usageText } from './usage-text';
 
@@ -168,21 +170,25 @@
         </div>
     </div>
     <div class="box content nested-wrapper">
-        <div class="box grid-regexp">
+        <div class="v-box grid-regexp">
             <strong>RegExp:</strong>
-            <textarea name="regexp" class="fixed_width regexp-input" bind:value={regexpSource}></textarea>
+            <RegExpEditor bind:source={regexpSource} bind:flags={regexpFlags} --color-bg="#f5f5f5" --color-text="#333" --color-caret="#333"
+            ></RegExpEditor>
         </div>
-        <div class="box grid-flags">
-            <strong>Flags:</strong>
+        <div class="h-box grid-flags">
             <div>
+                <strong>Flags:</strong>
+            </div>
+            <div class="wide">
                 <RegExpFlags bind:value={regexpFlags} />
             </div>
         </div>
         <div class="box grid-editor">
-            <div class="edit_container">
-                <div class="beneath" contenteditable="plaintext-only">{@render snipFragments()}</div>
-                <div class="edit_box" bind:innerText contenteditable="plaintext-only"></div>
-            </div>
+            <Editor bind:content={innerText} --color-bg="#f5f5f5" --color-text="#333" --color-caret="#333">
+                {#snippet format()}
+                    {@render snipFragments()}
+                {/snippet}
+            </Editor>
         </div>
     </div>
     <div class="box footer"></div>
@@ -201,32 +207,7 @@
 
     mark {
         background-color: #cf4;
-        color: #0000;
-    }
-    .edit_container {
-        font-family: var(--font-mono);
-        box-sizing: border-box;
-        background-color: #f9f9f9;
-        color: white;
-        padding: 10px;
-        left: 0;
-        top: 0;
-        min-height: 500px;
-        width: 100%;
-        margin: 0;
-    }
-    .edit_box {
-        color: black;
-        font-family: var(--font-mono);
-        box-sizing: border-box;
-        position: relative;
-        text-align: left;
-        padding: 10px;
-        min-height: 300px;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: #f9f9f9;
+        color: #000;
     }
     .warning {
         color: yellow;
@@ -236,39 +217,16 @@
         font-family: var(--font-mono);
     }
 
-    [contenteditable] {
-        padding: 10px;
-        color: #090909;
-        caret-color: green;
-        background-color: #f0f0f044;
-        text-wrap: wrap;
-    }
-
-    .beneath {
-        box-sizing: border-box;
-        position: absolute;
-        padding: 10px;
-        top: 15px;
-        left: 15px;
-        right: 15px;
-        text-align: left;
-        /* width: 100%; */
-        text-wrap: wrap;
-        color: #00000040;
-        background-color: #f9f9f900;
-        box-sizing: border-box;
-        overflow-wrap: break-word;
-    }
-
     .nested-wrapper {
         width: 100%;
         display: grid;
         box-sizing: border-box;
         grid-gap: 0px;
-        grid-template-columns: 33% 33% auto;
+        grid-template-columns: auto;
         grid-template-areas:
-            'regexp  regexp  flags'
-            'editor  editor  editor';
+            'regexp'
+            'flags'
+            'editor';
         background-color: #fff;
         color: #444;
     }
@@ -280,21 +238,6 @@
         border-radius: 0px;
         padding: 5px;
         font-size: 100%;
-    }
-
-    .regexp-input {
-        /* display: inline-block; */
-        width: 98%;
-        /* box-sizing: border-box; */
-        min-height: 2em;
-        margin: 4px 0;
-        height: 6em;
-        field-sizing: content;
-        padding: 4px;
-        resize: vertical;
-        font-family: var(--font-mono);
-        background-color: #f9f9f9f9;
-        color: #000;
     }
 
     .grid-regexp {
@@ -334,12 +277,28 @@
         color: #444;
     }
 
-    .box {
+    .box,
+    .v-box,
+    .h-box {
         box-sizing: border-box;
         background-color: #444;
         color: #fff;
         padding: 5px;
         font-size: 100%;
+    }
+
+    .v-box {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .h-box {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .wide {
+        flex: 1;
     }
 
     .header {
@@ -370,28 +329,4 @@
         overflow-x: auto;
         color: white;
     }
-
-    /* .topleft {
-        position: absolute;
-        top: 0;
-        left: 0;
-    }
-
-    .topright {
-        position: absolute;
-        top: 0;
-        right: 0;
-    }
-
-    .bottomleft {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-    }
-
-    .bottomright {
-        position: absolute;
-        bottom: 0;
-        right: 0;
-    } */
 </style>
