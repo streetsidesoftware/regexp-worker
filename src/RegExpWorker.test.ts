@@ -130,6 +130,64 @@ describe('timeoutRejection', () => {
 });
 
 describe('large text', { timeout: 10_000 }, () => {
+    const testRegExp = [
+        /(\bc?spell(?:-?checker)?::?)\s*disable(?!-line|-next)\b(?!-)[\s\S]*?((?:\1\s*enable\b)|$)\/gi,\/^.*\bc?spell(?:-?checker)?::?\s*disable-line\b.*\/gim,\/\bc?spell(?:-?checker)?::?\s*disable-next\b.*\s\s?.*/gi,
+        /\bc?spell(?:-?checker)?::?\s*ignoreRegExp.*/gim,
+        /(?:https?|ftp):\/\/[^\s"]+/gi,
+        /<?\b[\w.\-+]{1,128}@\w{1,63}(\.\w{1,63}){1,4}\b>?/gi,
+        /-{5}BEGIN\s+(CERTIFICATE|(?:RSA\s+)?(?:PRIVATE|PUBLIC)\s+KEY)[\w=+\-/=\\\s]+?END\s+\1-{5}/g,
+        /ssh-rsa\s+[a-z0-9/+]{28,}={0,3}(?![a-z0-9/+=])/gi,
+        /(?<![A-Za-z0-9/+])["']?(?:[A-Za-z0-9/+]{40,})["']?(?:\s^\s*["']?[A-Za-z0-9/+]{40,}["']?)+(?:\s^\s*["']?[A-Za-z0-9/+]+={0,3}["']?)?(?![A-Za-z0-9/+=])/gm,
+        /(?<=[^A-Za-z0-9/+_]|^)(?=[A-Za-z]{0,80}[0-9+/])(?=[A-Za-z0-9/+]{0,80}?[A-Z][a-z][A-Z])(?=[A-Za-z0-9/+]{0,80}?(?:[A-Z][0-9][A-Z]|[a-z][0-9][a-z]|[A-Z][0-9][a-z]|[a-z][0-9][A-Z]|[0-9][A-Za-z][0-9]))(?=[A-Za-z0-9/+]{0,80}?(?:[a-z]{3}|[A-Z]{3}))(?:[A-Za-z0-9/+]{40,})=*/gm,
+        /\b(?![a-f]+\b)(?:0x)?[0-9a-f]{7,}\b/gi,
+        /\[[0-9a-f]{7,}\]/gi,
+        /\b0x[0-9a-f_]+\b/gi,
+        /#[0-9a-f]{3,8}\b/gi,
+        /\bsha\d+-[a-z0-9+/]{25,}={0,3}/gi,
+        /(?:\b(?:sha\d+|md5|base64|crypt|bcrypt|scrypt|security-token|assertion)[-,:$=]|#code[/])[-\w/+%.]{25,}={0,3}(?:(['"])\s*\+?\s*\1?[-\w/+%.]+={0,3})*(?![-\w/+=%.])/gi,
+        /\bU\+[0-9a-f]{4,5}(?:-[0-9a-f]{4,5})?/gi,
+        /\b[0-9a-fx]{8}-[0-9a-fx]{4}-[0-9a-fx]{4}-[0-9a-fx]{4}-[0-9a-fx]{12}\b/gi,
+        /(?:#[0-9a-f]{3,8})|(?:0x[0-9a-f]+)|(?:\\u[0-9a-f]{4})|(?:\\x\{[0-9a-f]{4}\})/gi,
+        /-{5}BEGIN\s+((?:RSA\s+)?PUBLIC\s+KEY)[\w=+\-/=\\\s]+?END\s+\1-{5}/g,
+        /\\(?:[anrvtbf]|[xu][a-f0-9]+)/gi,
+        /(?<![A-Za-z0-9/+])(?:[A-Za-z0-9/+]{40,})(?:\s^\s*[A-Za-z0-9/+]{40,})*(?:\s^\s*[A-Za-z0-9/+]+=*)?(?![A-Za-z0-9/+=])/gm,
+        /\bhref\s*=\s*".*?"/gi,
+        /(\bc?spell(?:-?checker)?::?)\s*disable(?!-line|-next)\b(?!-)[\s\S]*?((?:\1\s*enable\b)|$)/gi,
+        /^.*\bc?spell(?:-?checker)?::?\s*disable-line\b.*/gim,
+        /\bc?spell(?:-?checker)?::?\s*disable-next\b.*\s\s?.*/gi,
+        /<<<['"]?(\w+)['"]?[\s\S]+?^\1;/gm,
+        /(?:(['"]).*?(?<![^\\]\\(\\\\)*)\1)|(?:`[\s\S]*?(?<![^\\]\\(\\\\)*)`)/g,
+        /(?<!\w:)(?:\/\/.*)|(?:\/\*[\s\S]*?\*\/)/g,
+        /.*/gim,
+        /\bid="[^"]*"/gi,
+        /\bsrc="[^"]*"/gi,
+        /\bclass="[^"]*"/gi,
+        /\baria-activedescendant="[^"]*"/gi,
+        /\baria-controls="[^"]*"/gi,
+        /\baria-describedby="[^"]*"/gi,
+        /\baria-details="[^"]*"/gi,
+        /\baria-errormessage="[^"]*"/gi,
+        /\baria-flowto="[^"]*"/gi,
+        /\baria-labelledby="[^"]*"/gi,
+        /\baria-owns="[^"]*"/gi,
+        /\bfor="[^"]*"/gi,
+        /&[a-z]+;/gi,
+        /^\s*import\s+[\w.]+/gm,
+        /(\.\w+)+(?=\()/g,
+        /(?<=\])\[[-\w.`'"*&;#@ ]+\]/g,
+        /\[[-\w.`'"*&;#@ ]+\]:( [^\s]*)?/g,
+        /(?<=\]\()[^)\s]+/g,
+        /(?<=<a\s+id=")[^"\s]+/g,
+        /0x[a-f0-9]*/gi,
+        /\bN'/g,
+        /\b0[xX][a-fA-F0-9]+n?\b/g,
+        /\\x[a-f0-9]{2}/gi,
+        /\\u[a-f0-9]{4}/gi,
+        /\/[dgimsuy]{1,7}\b(?=(?:\.flags\b)|\s*$|[;),])/g,
+        /&[a-z]+;/g,
+        /'s\b/gi,
+    ];
+
     test('pnpm-lock.yaml', async () => {
         const url = new URL('../pnpm-lock.yaml', import.meta.url);
         const text = await fs.readFile(url, 'utf8');
@@ -138,7 +196,19 @@ describe('large text', { timeout: 10_000 }, () => {
         const r = await cr().matchAll(text, regexp);
         expect(r.matches).toEqual(expected);
     });
+
+    test('Array of regexp', async () => {
+        const url = new URL('../pnpm-lock.yaml', import.meta.url);
+        const text = await fs.readFile(url, 'utf8');
+        const expected = testRegExp.map(rd).map((regexp) => [...text.matchAll(regexp)]);
+        const r = await cr().matchAllArray(text, testRegExp);
+        expect(r.results.map((r) => r.matches)).toEqual(expected);
+    });
 });
+
+function rd(regexp: RegExp): RegExp {
+    return regexp.hasIndices ? regexp : new RegExp(regexp.source, `d${regexp.flags}`);
+}
 
 function run(fn: (w: RegExpWorkerBase) => Promise<unknown> | void, w = cr()): () => Promise<void> {
     return async () => {
