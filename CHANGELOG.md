@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.2.0](https://github.com/streetsidesoftware/regexp-worker/compare/v4.1.8...v4.2.0) (2025-07-20)
+
+
+### Features
+
+* Only send indices for MatchAll ([#1016](https://github.com/streetsidesoftware/regexp-worker/issues/1016)) ([97c652e](https://github.com/streetsidesoftware/regexp-worker/commit/97c652e6b466d9231279d8d6cc95f12287681e0f))
+
 ## [4.1.8](https://github.com/streetsidesoftware/regexp-worker/compare/v4.1.7...v4.1.8) (2025-06-29)
 
 
