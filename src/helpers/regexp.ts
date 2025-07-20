@@ -90,8 +90,14 @@ export function regExpIndicesToRegExpMatchArray(input: string, indices: RegExpIn
     result.input = input;
     result.index = index;
     result.indices = indices;
+    const uResult: (string | undefined)[] = result;
 
     for (let i = 0; i < indices.length; i++) {
+        if (!indices[i]) {
+            // If the indices are empty, we set the result to undefined
+            uResult[i] = undefined;
+            continue;
+        }
         const [start, end] = indices[i];
         result[i] = input.slice(start, end);
     }
