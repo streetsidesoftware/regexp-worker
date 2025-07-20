@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import fs from 'node:fs/promises';
+
 import { describe, expect, test } from 'vitest';
 
 import { catchErrors } from './helpers/errors.js';
@@ -124,6 +126,17 @@ describe('timeoutRejection', () => {
     test('timeoutRejection string', async () => {
         const error = 'Test timeout';
         await expect(timeoutRejection(error)).rejects.not.toBeInstanceOf(TimeoutError);
+    });
+});
+
+describe('large text', { timeout: 10_000 }, () => {
+    test('pnpm-lock.yaml', async () => {
+        const url = new URL('../pnpm-lock.yaml', import.meta.url);
+        const text = await fs.readFile(url, 'utf8');
+        const regexp = /\w+/dg;
+        const expected = [...text.matchAll(regexp)];
+        const r = await cr().matchAll(text, regexp);
+        expect(r.matches).toEqual(expected);
     });
 });
 
