@@ -183,7 +183,7 @@ describe('large text', { timeout: 10_000 }, () => {
         /\b0[xX][a-fA-F0-9]+n?\b/g,
         /\\x[a-f0-9]{2}/gi,
         /\\u[a-f0-9]{4}/gi,
-        /\/[dgimsuy]{1,7}\b(?=(?:\.flags\b)|\s*$|[;),])/g,
+        /\/(?<flags>[dgimsuy]{1,7})\b(?=(?:\.flags\b)|\s*$|[;),])/g,
         /&[a-z]+;/g,
         /'s\b/gi,
     ];
