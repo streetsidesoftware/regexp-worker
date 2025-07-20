@@ -83,3 +83,26 @@ export function stringToRegExpLike(str: string, defaultFlags?: string): RegExpLi
     }
     return { source: str, flags: '' };
 }
+
+export function regExpIndicesToRegExpMatchArray(input: string, indices: RegExpIndicesArray): RegExpMatchArray {
+    const index = indices[0][0];
+    const result: RegExpMatchArray = [''];
+    result.input = input;
+    result.index = index;
+    result.indices = indices;
+
+    for (let i = 0; i < indices.length; i++) {
+        const [start, end] = indices[i];
+        result[i] = input.slice(start, end);
+    }
+
+    const groups = indices.groups
+        ? Object.fromEntries(Object.entries(indices.groups).map(([key, [start, end]]) => [key, input.slice(start, end)]))
+        : undefined;
+
+    if (groups) {
+        result.groups = groups;
+    }
+
+    return result;
+}

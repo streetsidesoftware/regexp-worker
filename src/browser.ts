@@ -2,12 +2,14 @@ export type {
     ExecRegExpResult,
     MatchAllAsRangePairsResult,
     MatchAllRegExpArrayResult,
+    MatchAllRegExpIndicesResult,
     MatchAllRegExpResult,
     MatchRegExpResult,
     RegExpLike,
 } from './RegExpWorkerBrowser.js';
 export {
     createRegExpWorker,
+    regExpIndicesToRegExpMatchArray,
     RegExpWorker,
     toRegExp,
     workerExec,

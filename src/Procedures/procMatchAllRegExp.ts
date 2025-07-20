@@ -1,4 +1,4 @@
-import type { MatchAllRegExpResult } from '../helpers/evaluateRegExp.js';
+import type { MatchAllRegExpIndicesResult } from '../helpers/evaluateRegExp.js';
 import { matchAllRegExp, toRegExp } from '../helpers/evaluateRegExp.js';
 import type { RegExpLike } from '../helpers/regexp.js';
 import { format } from '../util/format.js';
@@ -15,7 +15,7 @@ export interface RequestMatchAllRegExpData {
 }
 
 export type RequestMatchAllRegExp = Request<MatchAllRegExpRequestType, RequestMatchAllRegExpData>;
-export type ResponseMatchAllRegExp = Response<MatchAllRegExpResponseType, MatchAllRegExpResult>;
+export type ResponseMatchAllRegExp = Response<MatchAllRegExpResponseType, MatchAllRegExpIndicesResult>;
 
 export function isMatchAllRegExpRequest(v: unknown): v is RequestMatchAllRegExp {
     return isRequestType(v, requestTypeMatchAllRegExp);

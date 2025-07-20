@@ -9,13 +9,13 @@ import { createId } from './uniqueId.js';
 describe('procMatchAllRegExp', () => {
     test('basic', () => {
         const text = 'two words';
-        const regexp = /w\w+/g;
+        const regexp = /w\w+/dg;
         const req = createRequestMatchAllRegExp({ text, regexp });
         const result = procMatchAllRegExp(req);
         expect(isMatchAllRegExpResponse(result)).toBe(true);
         const response = isMatchAllRegExpResponse(result) ? result : undefined;
         expect(response?.data.elapsedTimeMs).toBeGreaterThan(0);
-        expect(response?.data.matches).toEqual(Array.from(text.matchAll(regexp)));
+        expect(response?.data.matches).toEqual(Array.from(text.matchAll(regexp)).map((m) => m.indices));
     });
 
     test('non-RequestMatchAllRegExp', () => {

@@ -8,14 +8,14 @@ import { createId } from './uniqueId.js';
 describe('procMatchRegExpArray', () => {
     test('basic', () => {
         const text = 'two words';
-        const regex = /w\w+/g;
+        const regex = /w\w+/dg;
         const regexps = [regex];
         const req = createRequestMatchRegExpArray({ text, regexps });
         const result = procMatchAllRegExpArray(req);
         expect(isMatchRegExpArrayResponse(result)).toBe(true);
         const response = isMatchRegExpArrayResponse(result) ? result : undefined;
         expect(response?.data.elapsedTimeMs).toBeGreaterThan(0);
-        expect(response?.data.results[0].matches).toEqual(Array.from(text.matchAll(regex)));
+        expect(response?.data.results[0].matches).toEqual(Array.from(text.matchAll(regex)).map((m) => m.indices));
     });
 
     test('non-RequestMatchRegExpArray', () => {

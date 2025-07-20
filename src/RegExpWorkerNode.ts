@@ -11,16 +11,18 @@ import {
     crWorkerMatchAll,
     crWorkerMatchAllArray,
     crWorkerMatchAllAsRangePairs,
-    RegExpWorkerBase as RegExpWorkerBase,
+    RegExpWorkerBase,
 } from './RegExpWorker.js';
 import { createWorkerNode } from './worker/workerNode.js';
 
 export type { RegExpLike } from './helpers/regexp.js';
-export { toRegExp } from './helpers/regexp.js';
+export { regExpIndicesToRegExpMatchArray, toRegExp } from './helpers/regexp.js';
 export type {
     ExecRegExpResult,
     MatchAllAsRangePairsResult,
+    MatchAllRegExpArrayIndicesResult,
     MatchAllRegExpArrayResult,
+    MatchAllRegExpIndicesResult,
     MatchAllRegExpResult,
     MatchRegExpResult,
     RangePair,

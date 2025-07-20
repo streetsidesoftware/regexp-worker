@@ -16,11 +16,13 @@ import {
 import { createWorkerBrowser } from './worker/workerBrowser.js';
 
 export type { RegExpLike } from './helpers/regexp.js';
-export { toRegExp } from './helpers/regexp.js';
+export { regExpIndicesToRegExpMatchArray, toRegExp } from './helpers/regexp.js';
 export type {
     ExecRegExpResult,
     MatchAllAsRangePairsResult,
+    MatchAllRegExpArrayIndicesResult,
     MatchAllRegExpArrayResult,
+    MatchAllRegExpIndicesResult,
     MatchAllRegExpResult,
     MatchRegExpResult,
     RangePair,
