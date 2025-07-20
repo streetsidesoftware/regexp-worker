@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { describe, expect, test } from 'vitest';
 
-import type { FlatRanges, MatchAllRegExpResult } from './evaluateRegExp.js';
+import type { FlatRanges, MatchAllRegExpIndicesResult } from './evaluateRegExp.js';
 import {
     execRegExp,
     flatRangesToRanges,
@@ -24,10 +24,10 @@ Numbers: 1, 2, 3, 4, 1000, -55.0, 1.34e2
 const x2 = 'hello';
 `;
     // const code = fs.readFileSync(new URL(import.meta.url), 'utf8');
-    const w = (result: MatchAllRegExpResult): string[] => resultsToTexts(result.matches);
+    const w = (text: string, result: MatchAllRegExpIndicesResult): string[] => resultsToTexts(text, result.matches);
 
     test('matchAllRegExp', () => {
-        const words = w(matchAllRegExp(text, /\w+/g));
+        const words = w(text, matchAllRegExp(text, /\w+/g));
         expect(words).toEqual(
             text
                 .split(/\b/g)
@@ -35,11 +35,11 @@ const x2 = 'hello';
                 .filter(notEmpty),
         );
         const wordBreaks = matchAllRegExp(text, /\b/g).matches;
-        expect(wordBreaks.map((r) => r.index).slice(0, 5)).toEqual([1, 5, 6, 8, 9]);
+        expect(wordBreaks.map((r) => r[0][0]).slice(0, 5)).toEqual([1, 5, 6, 8, 9]);
         const startOfWords = matchAllRegExp(text, /\b(?=\w)/g).matches;
-        expect(startOfWords.map((r) => r.index).slice(0, 5)).toEqual([1, 6, 9, 11, 15]);
+        expect(startOfWords.map((r) => r[0][0]).slice(0, 5)).toEqual([1, 6, 9, 11, 15]);
         const singleWord = matchAllRegExp(text, /about/);
-        expect(w(singleWord)).toEqual(['about']);
+        expect(w(text, singleWord)).toEqual(['about']);
     });
 
     test.each`
@@ -70,7 +70,7 @@ const x2 = 'hello';
 
     test('matchAllRegExpArray', () => {
         const r = matchAllRegExpArray(text, [/\w+/g]);
-        expect(r.results.map((r) => r.matches).map(resultsToTexts)).toEqual([w(matchAllRegExp(text, /\w+/g))]);
+        expect(r.results.map((r) => r.matches).map((r) => resultsToTexts(text, r))).toEqual([w(text, matchAllRegExp(text, /\w+/g))]);
     });
 
     test('matchAllToRangesRegExp', () => {
@@ -92,7 +92,7 @@ const x2 = 'hello';
             const regexp = regExps[i];
             expect(result.elapsedTimeMs).toBeGreaterThan(0);
             expect(result.elapsedTimeMs).toBeLessThan(100);
-            const expectedWords = w(matchAllRegExp(text, regexp));
+            const expectedWords = w(text, matchAllRegExp(text, regexp));
             const words = [...flatRangesToTexts(result.ranges, text)];
             expect(words).toEqual(expectedWords);
         }
@@ -117,12 +117,12 @@ function regExpExecArrayToText(match: RegExpExecArray): string {
     return match[0];
 }
 
-function regExpMatchArrayToText(match: RegExpMatchArray): string {
-    return match[0];
+function regExpIndicesArrayToText(input: string, match: RegExpIndicesArray): string {
+    return input.slice(match[0][0], match[0][1]);
 }
 
-function resultsToTexts(matches: RegExpMatchArray[]): string[] {
-    return matches.map(regExpMatchArrayToText);
+function resultsToTexts(input: string, matches: RegExpIndicesArray[]): string[] {
+    return matches.map((m) => regExpIndicesArrayToText(input, m));
 }
 
 function* flatRangesToTexts(ranges: FlatRanges, text: string): IterableIterator<string> {

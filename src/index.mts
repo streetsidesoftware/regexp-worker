@@ -1,13 +1,16 @@
 export type {
     ExecRegExpResult,
     MatchAllAsRangePairsResult,
+    MatchAllRegExpArrayIndicesResult,
     MatchAllRegExpArrayResult,
+    MatchAllRegExpIndicesResult,
     MatchAllRegExpResult,
     MatchRegExpResult,
     RegExpLike,
 } from './RegExpWorkerNode.js';
 export {
     createRegExpWorker,
+    regExpIndicesToRegExpMatchArray,
     RegExpWorker,
     toRegExp,
     workerExec,

@@ -10,13 +10,21 @@ export interface MatchAllRegExpResult {
 }
 
 /**
+ * Represents the result of RegExpWorker.matchAll.indices
+ */
+export interface MatchAllRegExpIndicesResult {
+    elapsedTimeMs: number;
+    matches: RegExpIndicesArray[];
+}
+
+/**
  * Returns a timed version of String.prototype.matchAll
  * @param text
  * @param regExp
  * @returns
  */
-export function matchAllRegExp(text: string, regExp: RegExp): MatchAllRegExpResult {
-    const { elapsedTimeMs, r } = measureExecution(() => Array.from(doMatchAllRegExp(regExp, text)));
+export function matchAllRegExp(text: string, regExp: RegExp): MatchAllRegExpIndicesResult {
+    const { elapsedTimeMs, r } = measureExecution(() => Array.from(doMatchAllRegExp(regExp, text)).map((m) => m.indices || []));
     return { elapsedTimeMs, matches: r };
 }
 
@@ -69,12 +77,20 @@ export interface MatchAllRegExpArrayResult {
 }
 
 /**
+ * Represents the result of RegExpWorker.matchAllIndicesArray
+ */
+export interface MatchAllRegExpArrayIndicesResult {
+    elapsedTimeMs: number;
+    results: MatchAllRegExpIndicesResult[];
+}
+
+/**
  * Returns a timed version of matchAllRegExp for an array of regular expressions
  * @param text
  * @param regExpArray
  * @returns
  */
-export function matchAllRegExpArray(text: string, regExpArray: RegExp[]): MatchAllRegExpArrayResult {
+export function matchAllRegExpArray(text: string, regExpArray: RegExp[]): MatchAllRegExpArrayIndicesResult {
     const { elapsedTimeMs, r: results } = measureExecution(() => {
         return regExpArray.map((r) => matchAllRegExp(text, r));
     });
@@ -109,6 +125,7 @@ function doExecRegExp(regExp: RegExp, text: string): RegExpExecArray | null {
 }
 
 function doMatchAllRegExp(regExp: RegExp, text: string): RegExpStringIterator<RegExpMatchArray> {
+    regExp = regExp.hasIndices ? regExp : new RegExp(regExp.source, regExp.flags + 'd');
     return regExp[Symbol.matchAll](text);
 }
 
@@ -128,13 +145,13 @@ export interface MatchAllToRangesRegExpResult {
     ranges: FlatRanges;
 }
 
-function toRanges(r: MatchAllRegExpResult): MatchAllToRangesRegExpResult {
+function toRanges(r: MatchAllRegExpIndicesResult): MatchAllToRangesRegExpResult {
     const ranges = new Uint32Array(r.matches.length * 2);
     let i = 0;
     for (const m of r.matches) {
-        const index = m.index || 0;
-        ranges[i++] = index;
-        ranges[i++] = index + m[0].length;
+        const [start = 0, end = 0] = m[0];
+        ranges[i++] = start;
+        ranges[i++] = end;
     }
     return { elapsedTimeMs: r.elapsedTimeMs, ranges };
 }

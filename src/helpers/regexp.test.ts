@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
+import assert from 'node:assert';
+
 import { describe, expect, test } from 'vitest';
 
-import { isRegExp, isRegExpLike, toRegExp } from './regexp.js';
+import { isRegExp, isRegExpLike, regExpIndicesToRegExpMatchArray, toRegExp } from './regexp.js';
 
 describe('EvaluateRegExp', () => {
     test.each`
@@ -46,5 +48,24 @@ describe('EvaluateRegExp', () => {
         ${'(.'}                                              | ${SyntaxError('Invalid regular expression: /(./: Unterminated group')}
     `('toRegExp Error $regExp', ({ regExp, expected }) => {
         expect(() => toRegExp(regExp)).toThrowError(expected);
+    });
+
+    const sampleText = `\
+This is a bit of sample text.
+It contains some words, numbers 123, and punctuation!
+It also has some special characters: @#$%^&*()_+.
+It even has a URL: https://example.com.
+const x2 = 'hello';
+`;
+
+    test.each`
+        regExp                     | text
+        ${/\w/d}                   | ${sampleText}
+        ${/(\w+) (?<second>\w+)/d} | ${sampleText}
+    `('regExpIndicesToRegExpMatchArray $regExp', ({ regExp, text }: { regExp: RegExp; text: string }) => {
+        const expected = text.match(regExp);
+        assert(expected, 'Expected match to be defined');
+        const indices = expected.indices || [];
+        expect(regExpIndicesToRegExpMatchArray(text, indices)).toEqual(expected);
     });
 });
