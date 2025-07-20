@@ -130,6 +130,8 @@ describe('timeoutRejection', () => {
 });
 
 describe('large text', { timeout: 10_000 }, () => {
+    // cspell:ignore activedescendant anrvtbf describedby dgimsuy flowto labelledby
+
     const testRegExp = [
         /(\bc?spell(?:-?checker)?::?)\s*disable(?!-line|-next)\b(?!-)[\s\S]*?((?:\1\s*enable\b)|$)\/gi,\/^.*\bc?spell(?:-?checker)?::?\s*disable-line\b.*\/gim,\/\bc?spell(?:-?checker)?::?\s*disable-next\b.*\s\s?.*/gi,
         /\bc?spell(?:-?checker)?::?\s*ignoreRegExp.*/gim,
