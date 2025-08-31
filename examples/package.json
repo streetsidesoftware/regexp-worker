@@ -9,7 +9,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@streetsidesoftware/regexp-worker": "jsr:^4.1.6",
+    "@streetsidesoftware/regexp-worker": "jsr:^4.2.1",
     "regexp-worker": "workspace:*"
   }
 }
