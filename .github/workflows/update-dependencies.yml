@@ -35,8 +35,9 @@ jobs:
       - name: Update Root
         run: |
           pnpm i
-          pnpm up --recursive --workspace-root --dev
-          pnpm up --recursive --workspace-root
+          pnpm up
+          pnpm up -r
+          pnpm up -w
 
       - name: Install
         run: pnpm install
