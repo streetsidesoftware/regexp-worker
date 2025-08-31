@@ -1,7 +1,5 @@
 // @ts-check
 
-import { fileURLToPath } from 'node:url';
-
 import eslint from '@eslint/js';
 import tsEslint from 'typescript-eslint';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
@@ -48,8 +46,7 @@ export default tsEslint.config(
             globals: { ...globals.node },
             parserOptions: {
                 // Work around for: https://github.com/typescript-eslint/typescript-eslint/issues/11530
-                projectService: true,
-                tsconfigRootDir: fileURLToPath(new URL('./', import.meta.url)),
+                tsconfigRootDir: import.meta.dirname,
             },
         },
         rules: {
