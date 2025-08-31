@@ -73,6 +73,7 @@
     }
 
     function calcFragments(text: string, result: MatchAllAsRangePairsResult | undefined): Fragment[] {
+        // eslint-disable-next-line svelte/prefer-svelte-reactivity
         const textIds = new Map<string, number>();
         function getTextId(text: string): number {
             const id = textIds.get(text) || textIds.size + 1;
@@ -80,6 +81,7 @@
             return id;
         }
 
+        // eslint-disable-next-line svelte/prefer-svelte-reactivity
         const idMap = new Map<string, number>();
         const fragments: Fragment[] = [];
         const matches = result?.ranges || [];
