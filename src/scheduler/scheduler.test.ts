@@ -167,7 +167,7 @@ describe('Scheduler', () => {
                 expect(scheduler.scheduleRequest(createRequestEcho('Two'))).resolves.toEqual(expect.objectContaining({ data: 'Two' })),
                 expect(scheduler.scheduleRequest(junkRequest)).rejects.toEqual(expect.objectContaining({ message: 'Bad Request' })),
                 expect(scheduler.terminateRequest('Bad ID')).rejects.toEqual(expect.objectContaining({ message: 'Unknown Request' })),
-                expect(delay(1).then(() => scheduler.terminateRequest(spinRequest.id))),
+                expect(delay(1).then(() => scheduler.terminateRequest(spinRequest.id))).resolves.toBeUndefined(),
             ]);
         }),
     );
