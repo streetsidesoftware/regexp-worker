@@ -39,7 +39,7 @@ async function run() {
             await process(workerURL, outputURL);
             console.log('done.');
         } catch (error) {
-            console.error(`Error processing ${workerURL}:`, error);
+            console.error(`Error processing ${target}:`, error);
         }
     }
 }

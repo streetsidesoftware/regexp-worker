@@ -6,11 +6,22 @@
     "access": "public",
     "provenance": true
   },
+  "sideEffects": false,
   "type": "module",
   "main": "./dist/index.cjs",
   "types": "./dist/index.d.cts",
-  "module": "./dist/index.js",
-  "sideEffects": false,
+  "module": "./dist/index.mjs",
+  "exports": {
+    ".": {
+      "browser": "./dist/browser.js",
+      "deno": "./dist/browser.js",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "engines": {
+    "node": ">= 20.0.0"
+  },
   "scripts": {
     "clean": "shx rm -rf dist out lib coverage",
     "lint": "eslint \"src/**/*.ts\"",
@@ -33,17 +44,6 @@
     "test": "pnpm run build && pnpm run test:vitest",
     "test:attw": "attw --pack",
     "test:vitest": "vitest run"
-  },
-  "exports": {
-    ".": {
-      "browser": "./dist/browser.js",
-      "deno": "./dist/browser.js",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    }
-  },
-  "engines": {
-    "node": ">= 20.0.0"
   },
   "repository": {
     "type": "git",
