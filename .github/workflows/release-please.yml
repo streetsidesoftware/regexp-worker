@@ -35,6 +35,4 @@ jobs:
     uses: ./.github/workflows/publish.yml
     with:
       tag: ${{ needs.release-please.outputs.tag }}
-    secrets:
-      PUBLISH_NPM: ${{ secrets.PUBLISH_NPM }}
     if: ${{ needs.release-please.outputs.release_created }}

@@ -13,9 +13,6 @@ on:
         default: true
         type: boolean
   workflow_call:
-    secrets:
-      PUBLISH_NPM:
-        required: true
     inputs:
       tag:
         description: 'Tag to publish'
@@ -50,7 +47,6 @@ jobs:
 
       - name: Publish to NPM
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.PUBLISH_NPM }}
           NPM_CONFIG_PROVENANCE: true
         run: pnpm publish ${{ env.DRY_RUN }}
 

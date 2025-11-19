@@ -1,13 +1,14 @@
 // @ts-check
 
 import eslint from '@eslint/js';
+import { defineConfig } from 'eslint/config';
 import tsEslint from 'typescript-eslint';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import globals from 'globals';
 
 const __dirname = new URL('.', import.meta.url).href;
 
-export default tsEslint.config(
+export default defineConfig(
     eslint.configs.recommended,
     tsEslint.configs.recommendedTypeChecked,
     {
