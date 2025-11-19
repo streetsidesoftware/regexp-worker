@@ -1,11 +1,12 @@
 import js from '@eslint/js';
+import { defineConfig } from 'eslint/config';
 import globals from 'globals';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import svelte from 'eslint-plugin-svelte';
 import ts from 'typescript-eslint';
 import svelteConfig from './svelte.config.js';
 
-export default ts.config(
+export default defineConfig(
     js.configs.recommended,
     ...ts.configs.recommended,
     ...svelte.configs.recommended,
