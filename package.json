@@ -1,6 +1,6 @@
 {
   "name": "regexp-worker",
-  "version": "4.2.1",
+  "version": "4.2.2",
   "description": "Runs regular expressions on a background thread.",
   "publishConfig": {
     "access": "public",
@@ -73,7 +73,7 @@
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.2",
     "@eslint/js": "^9.39.1",
-    "@tsconfig/node20": "^20.1.8",
+    "@tsconfig/node20": "^20.1.7",
     "@types/node": "^20.19.25",
     "@vitest/coverage-istanbul": "^3.2.4",
     "cross-env": "^10.1.0",
@@ -86,7 +86,7 @@
     "shx": "^0.4.0",
     "tsdown": "^0.15.12",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.47.0",
+    "typescript-eslint": "^8.46.4",
     "vitest": "^3.2.4"
   },
   "homepage": "https://github.com/streetsidesoftware/regexp-worker#readme",
