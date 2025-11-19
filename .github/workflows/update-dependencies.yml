@@ -32,9 +32,12 @@ jobs:
           node-version: 20.x
           cache: 'pnpm'
 
+      - name: Corepack
+        run: corepack enable
+
       - name: Update Root
         run: |
-          pnpm i
+          pnpm i --no-frozen-lockfile
           pnpm up
           pnpm up -r
           pnpm up -w
