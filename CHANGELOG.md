@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.2.2](https://github.com/streetsidesoftware/regexp-worker/compare/v4.2.1...v4.2.2) (2025-11-19)
+
+
+### Bug Fixes
+
+* Use Trusted Publisher ([cc33e82](https://github.com/streetsidesoftware/regexp-worker/commit/cc33e82f6c9a3cbd81fde466cdeee5e75c5fa97d))
+
 ## [4.2.1](https://github.com/streetsidesoftware/regexp-worker/compare/v4.2.0...v4.2.1) (2025-07-20)
 
 
