@@ -75,7 +75,7 @@
     "@eslint/js": "^9.39.1",
     "@tsconfig/node20": "^20.1.8",
     "@types/node": "^20.19.25",
-    "@vitest/coverage-istanbul": "^4.0.10",
+    "@vitest/coverage-istanbul": "^4.0.13",
     "cross-env": "^10.1.0",
     "eslint": "^9.39.1",
     "eslint-plugin-simple-import-sort": "^12.1.1",
@@ -84,10 +84,10 @@
     "lorem-ipsum": "^2.0.8",
     "prettier": "^3.6.2",
     "shx": "^0.4.0",
-    "tsdown": "^0.16.5",
+    "tsdown": "^0.16.6",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.47.0",
-    "vitest": "^4.0.10"
+    "vitest": "^4.0.13"
   },
   "homepage": "https://github.com/streetsidesoftware/regexp-worker#readme",
   "packageManager": "pnpm@10.22.0+sha512.bf049efe995b28f527fd2b41ae0474ce29186f7edcb3bf545087bd61fbbebb2bf75362d1307fda09c2d288e1e499787ac12d4fcb617a974718a6051f2eee741c"
