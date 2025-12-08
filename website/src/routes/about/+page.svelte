@@ -15,7 +15,6 @@
     <p>
         Regular Expressions can suffer from <a href="https://www.regular-expressions.info/catastrophic.html">Catastrophic Backtracking</a> .
         A very simple expression like <code>/(x+x+)+y/</code> can cause your JavaScript application to freeze. This library allows you to run
-        these expressions on another thread. If they take to long to complete, they are terminated, protecting your application from locking
-        up.
+        these expressions on another thread. If they take to long to complete, they are terminated, protecting your application from locking up.
     </p>
 </div>
