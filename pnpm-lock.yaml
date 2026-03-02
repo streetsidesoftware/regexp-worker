@@ -13,7 +13,7 @@ importers:
         version: 0.18.2
       '@eslint/js':
         specifier: ^9.39.1
-        version: 9.39.1
+        version: 9.39.3
       '@tsconfig/node20':
         specifier: ^20.1.8
         version: 20.1.9
@@ -76,7 +76,7 @@ importers:
         version: 2.0.2(eslint@9.39.1(jiti@2.6.1))
       '@eslint/js':
         specifier: ^9.39.1
-        version: 9.39.1
+        version: 9.39.3
       '@fontsource/fira-mono':
         specifier: ^5.2.7
         version: 5.2.7
@@ -486,6 +486,10 @@ packages:
 
   '@eslint/js@9.39.1':
     resolution: {integrity: sha512-S26Stp4zCy88tH94QbBv3XCuzRQiZ9yXofEILmglYTh/Ug/a9/umqvgFtYBAo3Lp0nsI/5/qH1CCrbdK3AP1Tw==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@eslint/js@9.39.3':
+    resolution: {integrity: sha512-1B1VkCq6FuUNlQvlBYb+1jDu/gV297TIs/OeiaSR9l1H27SVW55ONE1e1Vp16NqP683+xEGzxYtv4XCiDPaQiw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   '@eslint/object-schema@2.1.7':
@@ -3152,6 +3156,8 @@ snapshots:
       - supports-color
 
   '@eslint/js@9.39.1': {}
+
+  '@eslint/js@9.39.3': {}
 
   '@eslint/object-schema@2.1.7': {}
 
