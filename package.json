@@ -20,7 +20,7 @@
     }
   },
   "engines": {
-    "node": ">= 20.0.0"
+    "node": ">= 22.18.0"
   },
   "scripts": {
     "clean": "shx rm -rf dist out lib coverage",
@@ -73,7 +73,7 @@
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.2",
     "@eslint/js": "^9.39.4",
-    "@tsconfig/node20": "^20.1.9",
+    "@tsconfig/node22": "^22.0.0",
     "@types/node": "^20.19.37",
     "@vitest/coverage-istanbul": "^4.0.18",
     "cross-env": "^10.1.0",
@@ -90,5 +90,5 @@
     "vitest": "^4.0.18"
   },
   "homepage": "https://github.com/streetsidesoftware/regexp-worker#readme",
-  "packageManager": "pnpm@10.22.0+sha512.bf049efe995b28f527fd2b41ae0474ce29186f7edcb3bf545087bd61fbbebb2bf75362d1307fda09c2d288e1e499787ac12d4fcb617a974718a6051f2eee741c"
+  "packageManager": "pnpm@11.22.0+sha512.1ff870c4c6133dfd88fb2afc46dd13d47f09c9794b438c6fdb47ca98caf3bc16381ee0be93a091b8e3824cf01f889f46d7d9e20910fb0be1ab0fb5baa80dd621"
 }
