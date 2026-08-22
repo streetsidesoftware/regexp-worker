@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.0.1](https://github.com/streetsidesoftware/regexp-worker/compare/v5.0.0...v5.0.1) (2026-08-22)
+
+
+### Bug Fixes
+
+* Improve robustness when handling regular expression results ([#1132](https://github.com/streetsidesoftware/regexp-worker/issues/1132)) ([7d37f96](https://github.com/streetsidesoftware/regexp-worker/commit/7d37f9682ec040845eac8c1f1817ca3a187a8090))
+
 ## [5.0.0](https://github.com/streetsidesoftware/regexp-worker/compare/v4.3.0...v5.0.0) (2026-08-22)
 
 
