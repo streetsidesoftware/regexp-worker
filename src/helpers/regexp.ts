@@ -85,7 +85,7 @@ export function stringToRegExpLike(str: string, defaultFlags?: string): RegExpLi
 }
 
 export function regExpIndicesToRegExpMatchArray(input: string, indices: RegExpIndicesArray): RegExpMatchArray {
-    const index = indices[0][0];
+    const index = indices[0]?.[0] || 0;
     const result: RegExpMatchArray = [''];
     result.input = input;
     result.index = index;
@@ -98,7 +98,7 @@ export function regExpIndicesToRegExpMatchArray(input: string, indices: RegExpIn
             uResult[i] = undefined;
             continue;
         }
-        const [start, end] = indices[i];
+        const [start, end] = indices[i] ?? [];
         result[i] = input.slice(start, end);
     }
 

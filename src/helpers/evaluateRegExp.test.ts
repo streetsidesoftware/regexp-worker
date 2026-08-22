@@ -35,9 +35,9 @@ const x2 = 'hello';
                 .filter(notEmpty),
         );
         const wordBreaks = matchAllRegExp(text, /\b/g).matches;
-        expect(wordBreaks.map((r) => r[0][0]).slice(0, 5)).toEqual([1, 5, 6, 8, 9]);
+        expect(wordBreaks.map((r) => r[0]?.[0]).slice(0, 5)).toEqual([1, 5, 6, 8, 9]);
         const startOfWords = matchAllRegExp(text, /\b(?=\w)/g).matches;
-        expect(startOfWords.map((r) => r[0][0]).slice(0, 5)).toEqual([1, 6, 9, 11, 15]);
+        expect(startOfWords.map((r) => r[0]?.[0]).slice(0, 5)).toEqual([1, 6, 9, 11, 15]);
         const singleWord = matchAllRegExp(text, /about/);
         expect(w(text, singleWord)).toEqual(['about']);
     });
@@ -118,7 +118,7 @@ function regExpExecArrayToText(match: RegExpExecArray): string {
 }
 
 function regExpIndicesArrayToText(input: string, match: RegExpIndicesArray): string {
-    return input.slice(match[0][0], match[0][1]);
+    return input.slice(match[0]?.[0], match[0]?.[1]);
 }
 
 function resultsToTexts(input: string, matches: RegExpIndicesArray[]): string[] {
