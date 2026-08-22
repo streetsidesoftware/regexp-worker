@@ -3,6 +3,24 @@ packages:
   - website
   - examples
 
+allowBuilds:
+  esbuild: true
+
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
   - esbuild
+
+minimumReleaseAge: 2880 # two days
+minimumReleaseAgeExclude:
+  - '@cspell/*'
+blockExoticSubdeps: true
+trustPolicy: no-downgrade
+trustPolicyExclude:
+  - semver@5.7.2
+  - semver@6.3.1
+  - undici-types@6.21.0
+  - prettier-plugin-tailwindcss@0.7.4
+  - chokidar@4.0.3
+
+# cspell:dictionaries npm
+# cspell:ignore Subdeps

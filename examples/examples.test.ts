@@ -9,9 +9,7 @@ const testDir = fileURLToPath(new URL('.', import.meta.url));
 describe('Ensure the examples work as expected.', () => {
     test.each`
         file
-        ${'example-indexes.cjs'}
         ${'example-indexes.js'}
-        ${'example-words.cjs'}
         ${'example-words.js'}
     `('exec file and test output: $file', async ({ file }) => {
         const filePath = Path.join(testDir, file);

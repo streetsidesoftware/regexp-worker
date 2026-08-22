@@ -33,7 +33,7 @@ export function procSpin(r: RequestSpin | Request): Promise<ResponseSpin | Error
     }
     return new Promise((resolve) => {
         const { durationMs } = r.data;
-        let elapsedTimeMs = 0;
+        let elapsedTimeMs;
         let count = 0;
         let n = 0.001;
         const startTime = performance.now();
