@@ -15,8 +15,7 @@
     ".": {
       "browser": "./dist/browser.js",
       "deno": "./dist/browser.js",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs"
+      "import": "./dist/index.mjs"
     }
   },
   "engines": {
