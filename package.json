@@ -8,8 +8,6 @@
   },
   "sideEffects": false,
   "type": "module",
-  "main": "./dist/index.cjs",
-  "types": "./dist/index.d.cts",
   "module": "./dist/index.mjs",
   "exports": {
     ".": {
@@ -41,7 +39,7 @@
     "tsc": "tsc -p .",
     "test:watch": "vitest",
     "test": "pnpm run build && pnpm run test:vitest",
-    "test:attw": "attw --pack",
+    "test:attw": "attw --pack . --profile esm-only",
     "test:vitest": "vitest run"
   },
   "repository": {
