@@ -149,7 +149,7 @@ function toRanges(r: MatchAllRegExpIndicesResult): MatchAllToRangesRegExpResult 
     const ranges = new Uint32Array(r.matches.length * 2);
     let i = 0;
     for (const m of r.matches) {
-        const [start = 0, end = 0] = m[0];
+        const [start = 0, end = 0] = m[0] ?? [];
         ranges[i++] = start;
         ranges[i++] = end;
     }

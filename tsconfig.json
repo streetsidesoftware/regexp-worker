@@ -9,6 +9,7 @@
         "noImplicitThis": true,
         "noUnusedLocals": false, // Caught by linter
         "outDir": "./out",
+        "rootDir": "src",
         "sourceMap": true,
         "strict": true,
         "strictFunctionTypes": true,
