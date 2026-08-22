@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.0.0](https://github.com/streetsidesoftware/regexp-worker/compare/v4.3.0...v5.0.0) (2026-08-22)
+
+
+### ⚠ BREAKING CHANGES
+
+* require Node >= 22.18 and remove CommonJS support
+
+### Features
+
+* require Node &gt;= 22.18 and remove CommonJS support ([cd84c6d](https://github.com/streetsidesoftware/regexp-worker/commit/cd84c6d807bc5cbab12f33606ee0e3330384b5f3))
+
 ## [4.3.0](https://github.com/streetsidesoftware/regexp-worker/compare/v4.2.3...v4.3.0) (2025-11-19)
 
 
