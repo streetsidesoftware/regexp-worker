@@ -35,7 +35,7 @@ jobs:
           ref: ${{ github.event.inputs.tag }}
 
       - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: 24.x
           registry-url: 'https://registry.npmjs.org'
