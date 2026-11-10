@@ -3,7 +3,7 @@
     import type { ParsedEntry } from './regexpParsing.js';
     import { parseRegExp } from './regexpParsing.js';
 
-    let { source = $bindable(), flags = $bindable() } = $props<{ source: string; flags: string }>();
+    let { source = $bindable(), flags = $bindable() }: { source: string; flags: string } = $props();
 
     function contentToEntries(source: string): ParsedEntry[] | undefined {
         try {
