@@ -1,7 +1,7 @@
 <script lang="ts">
     // import { page } from '$app/state';
-    // import github from '$lib/images/github.svg';
-    // import logo from '$lib/images/logo.png';
+    // import github from '#lib/images/github.svg';
+    // import logo from '#lib/images/logo.png';
 </script>
 
 <header>
