@@ -27,8 +27,8 @@ interface CustomMatchers<R = unknown> {
 }
 
 declare module 'vitest' {
-    // eslint-disable-next-line  @typescript-eslint/no-empty-object-type, @typescript-eslint/no-explicit-any
-    interface Matchers<T = any> extends CustomMatchers<T> {}
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type, @typescript-eslint/no-unused-vars
+    interface Matchers<R extends void | Promise<void> = void | Promise<void>, T = unknown> extends CustomMatchers<R> {}
 }
 
 expect.extend({
