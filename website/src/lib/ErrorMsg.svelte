@@ -1,5 +1,5 @@
 <script lang="ts">
-    let { error } = $props<{ error: Error }>();
+    let { error }: { error: Error } = $props();
     let messageLines = $derived(error.message.replaceAll(': ', ':\n ').split('\n'));
 </script>
 
