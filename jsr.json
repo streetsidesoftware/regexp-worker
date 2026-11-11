@@ -1,6 +1,6 @@
 {
     "name": "@streetsidesoftware/regexp-worker",
-    "version": "5.0.2",
+    "version": "5.0.3",
     "license": "MIT",
     "exports": {
         ".": "./src/browser.ts",
