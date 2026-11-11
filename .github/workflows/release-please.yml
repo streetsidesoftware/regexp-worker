@@ -18,6 +18,7 @@ permissions:
 
 jobs:
   release-please:
+    if: github.repository_owner == 'streetsidesoftware'
     runs-on: ubuntu-latest
     steps:
       # A token from the automation app, so the release PR and the version tags start other workflows.
