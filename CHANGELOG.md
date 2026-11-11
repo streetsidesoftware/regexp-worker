@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.0.3](https://github.com/streetsidesoftware/regexp-worker/compare/v5.0.2...v5.0.3) (2026-11-11)
+
+
+### Miscellaneous Chores
+
+* remove release-as ([cc4d683](https://github.com/streetsidesoftware/regexp-worker/commit/cc4d683adf2c2c5f3fb1a7c1680cf4efd78e73c6))
+
 ## [5.0.2](https://github.com/streetsidesoftware/regexp-worker/compare/v5.0.1...v5.0.2) (2026-11-11)
 
 
