@@ -12,19 +12,22 @@ on:
         required: false
         default: true
         type: boolean
-  workflow_call:
-    inputs:
-      tag:
-        description: 'Tag to publish'
-        required: true
-        type: string
+  push:
+    tags:
+      - 'v*' # publish when release-please pushes a version tag
 
 permissions:
   contents: write
   id-token: write
 
+# Queue runs instead of running two publishes at once.
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
 jobs:
   publish:
+    if: github.repository_owner == 'streetsidesoftware'
     runs-on: ubuntu-latest
     env:
       DRY_RUN: ${{ github.event.inputs.dry_run && github.event.inputs.dry_run != 'false' && '--dry-run' || '' }}
@@ -60,6 +63,6 @@ jobs:
         with:
           text: |
             ## Published to NPM
-            Tag: `${{ github.event.inputs.tag }}`
+            Tag: `${{ github.event.inputs.tag || github.ref_name }}`
             Dry Run: `${{ github.event.inputs.dry_run }}` ${{ env.DRY_RUN }}
             Releases: [regexp-worker/releases](https://github.com/streetsidesoftware/regexp-worker/releases)
