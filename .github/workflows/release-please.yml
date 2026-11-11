@@ -23,10 +23,19 @@ jobs:
       tag: ${{ steps.release.outputs.tag }}
       release_created: ${{ steps.release.outputs.release_created }}
     steps:
+      # A token from the automation app, so the release PR triggers the other workflows.
+      - name: Generate Token
+        id: generate-token
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          app-id: ${{ secrets.AUTOMATION_APP_ID }}
+          private-key: ${{ secrets.AUTOMATION_PRIVATE_KEY }}
+
       - name: Release Please
         id: release
         uses: googleapis/release-please-action@v5
         with:
+          token: ${{ steps.generate-token.outputs.token }}
           config-file: release-please-config.json
 
   publish:
