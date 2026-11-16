@@ -101,6 +101,7 @@ describe('RegExpWorker', () => {
         ${'y'}     | ${/(?<a>x)|(?<b>y)/g}
         ${'xy y'}  | ${/(?<a>x)?y/g}
         ${'ab ba'} | ${/(?<first>a)?b(?<second>a)?/g}
+        ${'x'}     | ${/(?<__proto__>x)/g}
     `('matchAll unmatched named groups $regexp', async ({ text, regexp }: { text: string; regexp: RegExp }) => {
         const expected = [...text.matchAll(rd(regexp))];
         const worker = cr();
@@ -118,6 +119,51 @@ describe('RegExpWorker', () => {
             [5, 12],
             [14, 22],
         ]);
+    });
+});
+
+describe('null-prototype groups, as in native matches', () => {
+    type GetMatches = (w: RegExpWorkerBase) => Promise<(RegExpMatchArray | null)[]>;
+
+    test.each<[string, GetMatches]>([
+        ['exec', async (w) => [(await w.exec(/(?<a>x)|(?<b>y)/d, 'y')).match]],
+        ['match', async (w) => [(await w.match('y', /(?<a>x)|(?<b>y)/d)).match]],
+        ['matchAll', async (w) => (await w.matchAll('y', /(?<a>x)|(?<b>y)/g)).matches],
+        ['matchAllArray', async (w) => (await w.matchAllArray('y', [/(?<a>x)|(?<b>y)/g])).results.flatMap((r) => r.matches)],
+    ])('%s', async (_, getMatches) => {
+        const matches = await getMatches(cr());
+        expect(matches).toHaveLength(1);
+        for (const match of matches) {
+            expect(match?.groups && Object.getPrototypeOf(match.groups)).toBe(null);
+            expect(match?.indices?.groups && Object.getPrototypeOf(match.indices.groups)).toBe(null);
+        }
+    });
+
+    test.each<[string, GetMatches]>([
+        ['matchAll', async (w) => (await w.matchAll('x', /x/g)).matches],
+        ['matchAllArray', async (w) => (await w.matchAllArray('x', [/x/g])).results.flatMap((r) => r.matches)],
+    ])('%s sets groups without named groups', async (_, getMatches) => {
+        const matches = await getMatches(cr());
+        expect(matches).toHaveLength(1);
+        for (const match of matches) {
+            expect(match && Object.hasOwn(match, 'groups')).toBe(true);
+            expect(match?.groups).toBeUndefined();
+        }
+    });
+
+    test('exec keeps a group named __proto__', async () => {
+        const { match } = await cr().exec(/(?<__proto__>x)/d, 'x');
+        expect(match?.groups && Object.keys(match.groups)).toEqual(['__proto__']);
+        expect(match?.indices?.groups && Object.keys(match.indices.groups)).toEqual(['__proto__']);
+    });
+
+    test('matchAllArrayIndices', async () => {
+        const r = await cr().matchAllArrayIndices('y', [/(?<a>x)|(?<b>y)/g]);
+        const indices = r.results.flatMap((r) => r.matches);
+        expect(indices).toHaveLength(1);
+        for (const match of indices) {
+            expect(match.groups && Object.getPrototypeOf(match.groups)).toBe(null);
+        }
     });
 });
 

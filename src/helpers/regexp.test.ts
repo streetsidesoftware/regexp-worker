@@ -65,6 +65,7 @@ const x2 = 'hello';
         ${/(?<a>x)|(?<b>y)/d}      | ${'y'}
         ${/(?<a>x)?y/d}            | ${'y'}
         ${/(?<a>x)?(y)(z)?/d}      | ${'y'}
+        ${/(?<__proto__>x)/d}      | ${'x'}
     `('regExpIndicesToRegExpMatchArray $regExp', ({ regExp, text }: { regExp: RegExp; text: string }) => {
         const expected = text.match(regExp);
         assert(expected, 'Expected match to be defined');
@@ -73,9 +74,15 @@ const x2 = 'hello';
         expect(result).toEqual(expected);
         // `toEqual` treats a missing key as equal to an `undefined` value.
         expect(groupKeys(result)).toEqual(groupKeys(expected));
+        expect(groupsPrototype(result)).toBe(groupsPrototype(expected));
+        expect(Object.keys(result)).toEqual(Object.keys(expected));
     });
 });
 
 function groupKeys(match: RegExpMatchArray): string[] | undefined {
     return match.groups && Object.keys(match.groups);
+}
+
+function groupsPrototype(match: RegExpMatchArray): unknown {
+    return match.groups && Object.getPrototypeOf(match.groups);
 }

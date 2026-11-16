@@ -87,11 +87,18 @@ export function stringToRegExpLike(str: string, defaultFlags?: string): RegExpLi
 export function regExpIndicesToRegExpMatchArray(input: string, indices: RegExpIndicesArray): RegExpMatchArray {
     const index = indices[0]?.[0] || 0;
     const result: RegExpMatchArray = [''];
-    result.input = input;
-    result.index = index;
-    result.indices = indices;
     // The TypeScript lib types leave out the `undefined` values that unmatched groups produce.
     const uResult: (string | undefined)[] & { groups?: Record<string, string | undefined> } = result;
+    // A named group that does not participate in the match has `undefined` indices,
+    // even though the TypeScript lib types it as `[number, number]`.
+    const groupIndices: Record<string, [number, number] | undefined> | undefined = indices.groups;
+
+    // Set the properties in the order native matches have them.
+    result.index = index;
+    result.input = input;
+    // Native matches have a `groups` key even without named groups.
+    uResult.groups = groupIndices && toGroups(input, groupIndices);
+    result.indices = indices;
 
     for (let i = 0; i < indices.length; i++) {
         if (!indices[i]) {
@@ -103,16 +110,34 @@ export function regExpIndicesToRegExpMatchArray(input: string, indices: RegExpIn
         result[i] = input.slice(start, end);
     }
 
-    // A named group that does not participate in the match has `undefined` indices,
-    // even though the TypeScript lib types it as `[number, number]`.
-    const groupIndices: Record<string, [number, number] | undefined> | undefined = indices.groups;
-    const groups = groupIndices
-        ? Object.fromEntries(Object.entries(groupIndices).map(([key, range]) => [key, range && input.slice(range[0], range[1])]))
-        : undefined;
-
-    if (groups) {
-        uResult.groups = groups;
-    }
-
     return result;
+}
+
+function toGroups(input: string, groupIndices: Record<string, [number, number] | undefined>): Record<string, string | undefined> {
+    // Native matches give `groups` a null prototype.
+    const groups = Object.create(null) as Record<string, string | undefined>;
+    for (const [key, range] of Object.entries(groupIndices)) {
+        groups[key] = range && input.slice(range[0], range[1]);
+    }
+    return groups;
+}
+
+/**
+ * Removes the prototype from a match's `groups` and `indices.groups`, as native matches have none.
+ */
+export function removeMatchPrototypes(match: RegExpMatchArray): void {
+    removeGroupsPrototype(match);
+    if (match.indices) {
+        removeGroupsPrototype(match.indices);
+    }
+}
+
+/**
+ * Replaces `groups` with a copy that has no prototype, as native matches have.
+ * Needed after a match comes back from the worker: the copy sent between threads has `Object.prototype`.
+ */
+export function removeGroupsPrototype(matchOrIndices: { groups?: object | undefined }): void {
+    if (matchOrIndices.groups) {
+        matchOrIndices.groups = Object.assign(Object.create(null) as object, matchOrIndices.groups);
+    }
 }
