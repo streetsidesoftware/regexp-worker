@@ -69,6 +69,13 @@ const x2 = 'hello';
         const expected = text.match(regExp);
         assert(expected, 'Expected match to be defined');
         const indices = expected.indices || [];
-        expect(regExpIndicesToRegExpMatchArray(text, indices)).toEqual(expected);
+        const result = regExpIndicesToRegExpMatchArray(text, indices);
+        expect(result).toEqual(expected);
+        // `toEqual` treats a missing key as equal to an `undefined` value.
+        expect(groupKeys(result)).toEqual(groupKeys(expected));
     });
 });
+
+function groupKeys(match: RegExpMatchArray): string[] | undefined {
+    return match.groups && Object.keys(match.groups);
+}

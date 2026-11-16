@@ -104,7 +104,10 @@ describe('RegExpWorker', () => {
     `('matchAll unmatched named groups $regexp', async ({ text, regexp }: { text: string; regexp: RegExp }) => {
         const expected = [...text.matchAll(rd(regexp))];
         const worker = cr();
-        expect((await worker.matchAll(text, regexp)).matches).toEqual(expected);
+        const { matches } = await worker.matchAll(text, regexp);
+        expect(matches).toEqual(expected);
+        // `toEqual` treats a missing key as equal to an `undefined` value.
+        expect(matches.map(groupKeys)).toEqual(expected.map(groupKeys));
         expect((await worker.matchAllArray(text, [regexp])).results.map((r) => r.matches)).toEqual([expected]);
     });
 
@@ -222,6 +225,10 @@ describe('large text', { timeout: 10_000 }, () => {
 
 function rd(regexp: RegExp): RegExp {
     return regexp.hasIndices ? regexp : new RegExp(regexp.source, `d${regexp.flags}`);
+}
+
+function groupKeys(match: RegExpMatchArray): string[] | undefined {
+    return match.groups && Object.keys(match.groups);
 }
 
 function run(fn: (w: RegExpWorkerBase) => Promise<unknown> | void, w = cr()): () => Promise<void> {
