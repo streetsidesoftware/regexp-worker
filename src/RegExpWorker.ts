@@ -8,7 +8,7 @@ import type {
     MatchRegExpResult,
 } from './helpers/evaluateRegExp.js';
 import type { RegExpLike } from './helpers/regexp.js';
-import { normalizeRegExp, regExpIndicesToRegExpMatchArray, restoreGroupsPrototype, restoreMatchPrototypes } from './helpers/regexp.js';
+import { normalizeRegExp, regExpIndicesToRegExpMatchArray, removeGroupsPrototype, removeMatchPrototypes } from './helpers/regexp.js';
 import type { RequestMatchRegExp } from './Procedures/index.js';
 import type {
     RequestExecRegExp,
@@ -72,7 +72,7 @@ export class RegExpWorkerBase {
     public exec(regExp: RegExpLike, text: string, timeLimitMs?: number): Promise<ExecRegExpResult> {
         regExp = normalizeRegExp(regExp);
         const req = createRequestExecRegExp({ regexp: regExp, text });
-        return this.makeRequest(req, timeLimitMs).then(restoreResultPrototypes);
+        return this.makeRequest(req, timeLimitMs).then(removeResultPrototypes);
     }
 
     /**
@@ -86,7 +86,7 @@ export class RegExpWorkerBase {
         const req = createRequestMatchAllRegExp({ regexp: regExp, text });
         const r = await this.makeRequest(req, timeLimitMs);
         for (const indices of r.matches) {
-            restoreGroupsPrototype(indices);
+            removeGroupsPrototype(indices);
         }
         return {
             elapsedTimeMs: r.elapsedTimeMs,
@@ -103,7 +103,7 @@ export class RegExpWorkerBase {
     public match(text: string, regExp: RegExpLike, timeLimitMs?: number): Promise<MatchRegExpResult> {
         regExp = normalizeRegExp(regExp);
         const req = createRequestMatchRegExp({ regexp: regExp, text });
-        return this.makeRequest(req, timeLimitMs).then(restoreResultPrototypes);
+        return this.makeRequest(req, timeLimitMs).then(removeResultPrototypes);
     }
 
     /**
@@ -132,7 +132,7 @@ export class RegExpWorkerBase {
     public matchAllArrayIndices(text: string, regExp: RegExpLike[], timeLimitMs?: number): Promise<MatchAllRegExpArrayIndicesResult> {
         regExp = regExp.map(normalizeRegExp);
         const req = createRequestMatchRegExpArray({ regexps: regExp, text });
-        return this.makeRequest(req, timeLimitMs).then(restoreArrayIndicesPrototypes);
+        return this.makeRequest(req, timeLimitMs).then(removeArrayIndicesPrototypes);
     }
 
     /**
@@ -198,17 +198,17 @@ function extractResult<T extends Response>(response: T): T['data'] {
     return response.data;
 }
 
-function restoreResultPrototypes<T extends { match: RegExpMatchArray | null }>(result: T): T {
+function removeResultPrototypes<T extends { match: RegExpMatchArray | null }>(result: T): T {
     if (result.match) {
-        restoreMatchPrototypes(result.match);
+        removeMatchPrototypes(result.match);
     }
     return result;
 }
 
-function restoreArrayIndicesPrototypes(result: MatchAllRegExpArrayIndicesResult): MatchAllRegExpArrayIndicesResult {
+function removeArrayIndicesPrototypes(result: MatchAllRegExpArrayIndicesResult): MatchAllRegExpArrayIndicesResult {
     for (const r of result.results) {
         for (const indices of r.matches) {
-            restoreGroupsPrototype(indices);
+            removeGroupsPrototype(indices);
         }
     }
     return result;

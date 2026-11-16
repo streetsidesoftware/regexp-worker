@@ -123,22 +123,21 @@ function toGroups(input: string, groupIndices: Record<string, [number, number] |
 }
 
 /**
- * Gives a match's `groups` and `indices.groups` back the null prototype that native matches have.
- * Sending a match from the worker copies these objects, and the copies have `Object.prototype`.
+ * Removes the prototype from a match's `groups` and `indices.groups`, as native matches have none.
  */
-export function restoreMatchPrototypes(match: RegExpMatchArray): void {
-    restoreGroupsPrototype(match);
+export function removeMatchPrototypes(match: RegExpMatchArray): void {
+    removeGroupsPrototype(match);
     if (match.indices) {
-        restoreGroupsPrototype(match.indices);
+        removeGroupsPrototype(match.indices);
     }
 }
 
 /**
- * Gives `groups` back the null prototype that native matches have.
- * Sending a match from the worker copies `groups`, and the copy has `Object.prototype`.
+ * Replaces `groups` with a copy that has no prototype, as native matches have.
+ * Needed after a match comes back from the worker: the copy sent between threads has `Object.prototype`.
  */
-export function restoreGroupsPrototype(match: { groups?: object | undefined }): void {
-    if (match.groups) {
-        match.groups = Object.assign(Object.create(null) as object, match.groups);
+export function removeGroupsPrototype(matchOrIndices: { groups?: object | undefined }): void {
+    if (matchOrIndices.groups) {
+        matchOrIndices.groups = Object.assign(Object.create(null) as object, matchOrIndices.groups);
     }
 }
