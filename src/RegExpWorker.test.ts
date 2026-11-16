@@ -121,6 +121,33 @@ describe('RegExpWorker', () => {
     });
 });
 
+describe('null-prototype groups, as in native matches', () => {
+    type GetMatches = (w: RegExpWorkerBase) => Promise<(RegExpMatchArray | null)[]>;
+
+    test.each<[string, GetMatches]>([
+        ['exec', async (w) => [(await w.exec(/(?<a>x)|(?<b>y)/d, 'y')).match]],
+        ['match', async (w) => [(await w.match('y', /(?<a>x)|(?<b>y)/d)).match]],
+        ['matchAll', async (w) => (await w.matchAll('y', /(?<a>x)|(?<b>y)/g)).matches],
+        ['matchAllArray', async (w) => (await w.matchAllArray('y', [/(?<a>x)|(?<b>y)/g])).results.flatMap((r) => r.matches)],
+    ])('%s', async (_, getMatches) => {
+        const matches = await getMatches(cr());
+        expect(matches).toHaveLength(1);
+        for (const match of matches) {
+            expect(match?.groups && Object.getPrototypeOf(match.groups)).toBe(null);
+            expect(match?.indices?.groups && Object.getPrototypeOf(match.indices.groups)).toBe(null);
+        }
+    });
+
+    test('matchAllArrayIndices', async () => {
+        const r = await cr().matchAllArrayIndices('y', [/(?<a>x)|(?<b>y)/g]);
+        const indices = r.results.flatMap((r) => r.matches);
+        expect(indices).toHaveLength(1);
+        for (const match of indices) {
+            expect(match.groups && Object.getPrototypeOf(match.groups)).toBe(null);
+        }
+    });
+});
+
 describe('timeoutRejection', () => {
     test('TimeoutError', async () => {
         const error = new TimeoutError('Test timeout', 100);

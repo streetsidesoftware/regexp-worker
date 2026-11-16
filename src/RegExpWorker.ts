@@ -7,7 +7,8 @@ import type {
     MatchAllToRangesRegExpResult,
     MatchRegExpResult,
 } from './helpers/evaluateRegExp.js';
-import { normalizeRegExp, regExpIndicesToRegExpMatchArray, type RegExpLike } from './helpers/regexp.js';
+import type { RegExpLike } from './helpers/regexp.js';
+import { normalizeRegExp, regExpIndicesToRegExpMatchArray, restoreGroupsPrototype, restoreMatchPrototypes } from './helpers/regexp.js';
 import type { RequestMatchRegExp } from './Procedures/index.js';
 import type {
     RequestExecRegExp,
@@ -68,10 +69,14 @@ export class RegExpWorkerBase {
      * @param text - The text to search within.
      * @param timeLimitMs - Optional time limit in milliseconds for the operation.
      */
-    public exec(regExp: RegExpLike, text: string, timeLimitMs?: number): Promise<ExecRegExpResult> {
+    public async exec(regExp: RegExpLike, text: string, timeLimitMs?: number): Promise<ExecRegExpResult> {
         regExp = normalizeRegExp(regExp);
         const req = createRequestExecRegExp({ regexp: regExp, text });
-        return this.makeRequest(req, timeLimitMs);
+        const r = await this.makeRequest(req, timeLimitMs);
+        if (r.match) {
+            restoreMatchPrototypes(r.match);
+        }
+        return r;
     }
 
     /**
@@ -84,6 +89,9 @@ export class RegExpWorkerBase {
         regExp = normalizeRegExp(regExp);
         const req = createRequestMatchAllRegExp({ regexp: regExp, text });
         const r = await this.makeRequest(req, timeLimitMs);
+        for (const indices of r.matches) {
+            restoreGroupsPrototype(indices);
+        }
         return {
             elapsedTimeMs: r.elapsedTimeMs,
             matches: r.matches.map((m) => regExpIndicesToRegExpMatchArray(text, m)),
@@ -96,10 +104,14 @@ export class RegExpWorkerBase {
      * @param regExp - The regular expression to match against the text.
      * @param timeLimitMs - Optional time limit in milliseconds for the operation.
      */
-    public match(text: string, regExp: RegExpLike, timeLimitMs?: number): Promise<MatchRegExpResult> {
+    public async match(text: string, regExp: RegExpLike, timeLimitMs?: number): Promise<MatchRegExpResult> {
         regExp = normalizeRegExp(regExp);
         const req = createRequestMatchRegExp({ regexp: regExp, text });
-        return this.makeRequest(req, timeLimitMs);
+        const r = await this.makeRequest(req, timeLimitMs);
+        if (r.match) {
+            restoreMatchPrototypes(r.match);
+        }
+        return r;
     }
 
     /**
@@ -125,10 +137,16 @@ export class RegExpWorkerBase {
      * @param regExps - An array of regular expressions to match against the text.
      * @param timeLimitMs - Optional time limit in milliseconds for the operation.
      */
-    public matchAllArrayIndices(text: string, regExp: RegExpLike[], timeLimitMs?: number): Promise<MatchAllRegExpArrayIndicesResult> {
+    public async matchAllArrayIndices(text: string, regExp: RegExpLike[], timeLimitMs?: number): Promise<MatchAllRegExpArrayIndicesResult> {
         regExp = regExp.map(normalizeRegExp);
         const req = createRequestMatchRegExpArray({ regexps: regExp, text });
-        return this.makeRequest(req, timeLimitMs);
+        const r = await this.makeRequest(req, timeLimitMs);
+        for (const result of r.results) {
+            for (const indices of result.matches) {
+                restoreGroupsPrototype(indices);
+            }
+        }
+        return r;
     }
 
     /**

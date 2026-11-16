@@ -73,9 +73,14 @@ const x2 = 'hello';
         expect(result).toEqual(expected);
         // `toEqual` treats a missing key as equal to an `undefined` value.
         expect(groupKeys(result)).toEqual(groupKeys(expected));
+        expect(groupsPrototype(result)).toBe(groupsPrototype(expected));
     });
 });
 
 function groupKeys(match: RegExpMatchArray): string[] | undefined {
     return match.groups && Object.keys(match.groups);
+}
+
+function groupsPrototype(match: RegExpMatchArray): unknown {
+    return match.groups && Object.getPrototypeOf(match.groups);
 }

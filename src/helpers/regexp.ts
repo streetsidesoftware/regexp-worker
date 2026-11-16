@@ -106,13 +106,39 @@ export function regExpIndicesToRegExpMatchArray(input: string, indices: RegExpIn
     // A named group that does not participate in the match has `undefined` indices,
     // even though the TypeScript lib types it as `[number, number]`.
     const groupIndices: Record<string, [number, number] | undefined> | undefined = indices.groups;
-    const groups = groupIndices
-        ? Object.fromEntries(Object.entries(groupIndices).map(([key, range]) => [key, range && input.slice(range[0], range[1])]))
-        : undefined;
-
-    if (groups) {
-        uResult.groups = groups;
+    if (groupIndices) {
+        uResult.groups = toGroups(input, groupIndices);
     }
 
     return result;
+}
+
+function toGroups(input: string, groupIndices: Record<string, [number, number] | undefined>): Record<string, string | undefined> {
+    // Native matches give `groups` a null prototype.
+    const groups = Object.create(null) as Record<string, string | undefined>;
+    for (const [key, range] of Object.entries(groupIndices)) {
+        groups[key] = range && input.slice(range[0], range[1]);
+    }
+    return groups;
+}
+
+/**
+ * Gives a match's `groups` and `indices.groups` back the null prototype that native matches have.
+ * Sending a match from the worker copies these objects, and the copies have `Object.prototype`.
+ */
+export function restoreMatchPrototypes(match: RegExpMatchArray): void {
+    restoreGroupsPrototype(match);
+    if (match.indices) {
+        restoreGroupsPrototype(match.indices);
+    }
+}
+
+/**
+ * Gives `groups` back the null prototype that native matches have.
+ * Sending a match from the worker copies `groups`, and the copy has `Object.prototype`.
+ */
+export function restoreGroupsPrototype(match: { groups?: object | undefined }): void {
+    if (match.groups) {
+        match.groups = Object.assign(Object.create(null) as object, match.groups);
+    }
 }
