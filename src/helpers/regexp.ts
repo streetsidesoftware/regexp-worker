@@ -87,11 +87,18 @@ export function stringToRegExpLike(str: string, defaultFlags?: string): RegExpLi
 export function regExpIndicesToRegExpMatchArray(input: string, indices: RegExpIndicesArray): RegExpMatchArray {
     const index = indices[0]?.[0] || 0;
     const result: RegExpMatchArray = [''];
-    result.input = input;
-    result.index = index;
-    result.indices = indices;
     // The TypeScript lib types leave out the `undefined` values that unmatched groups produce.
     const uResult: (string | undefined)[] & { groups?: Record<string, string | undefined> } = result;
+    // A named group that does not participate in the match has `undefined` indices,
+    // even though the TypeScript lib types it as `[number, number]`.
+    const groupIndices: Record<string, [number, number] | undefined> | undefined = indices.groups;
+
+    // Set the properties in the order native matches have them.
+    result.index = index;
+    result.input = input;
+    // Native matches have a `groups` key even without named groups.
+    uResult.groups = groupIndices && toGroups(input, groupIndices);
+    result.indices = indices;
 
     for (let i = 0; i < indices.length; i++) {
         if (!indices[i]) {
@@ -102,12 +109,6 @@ export function regExpIndicesToRegExpMatchArray(input: string, indices: RegExpIn
         const [start, end] = indices[i] ?? [];
         result[i] = input.slice(start, end);
     }
-
-    // A named group that does not participate in the match has `undefined` indices,
-    // even though the TypeScript lib types it as `[number, number]`.
-    const groupIndices: Record<string, [number, number] | undefined> | undefined = indices.groups;
-    // Native matches have a `groups` key even without named groups.
-    uResult.groups = groupIndices && toGroups(input, groupIndices);
 
     return result;
 }

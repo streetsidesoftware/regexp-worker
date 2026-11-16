@@ -101,6 +101,7 @@ describe('RegExpWorker', () => {
         ${'y'}     | ${/(?<a>x)|(?<b>y)/g}
         ${'xy y'}  | ${/(?<a>x)?y/g}
         ${'ab ba'} | ${/(?<first>a)?b(?<second>a)?/g}
+        ${'x'}     | ${/(?<__proto__>x)/g}
     `('matchAll unmatched named groups $regexp', async ({ text, regexp }: { text: string; regexp: RegExp }) => {
         const expected = [...text.matchAll(rd(regexp))];
         const worker = cr();
@@ -148,6 +149,12 @@ describe('null-prototype groups, as in native matches', () => {
             expect(match && Object.hasOwn(match, 'groups')).toBe(true);
             expect(match?.groups).toBeUndefined();
         }
+    });
+
+    test('exec keeps a group named __proto__', async () => {
+        const { match } = await cr().exec(/(?<__proto__>x)/d, 'x');
+        expect(match?.groups && Object.keys(match.groups)).toEqual(['__proto__']);
+        expect(match?.indices?.groups && Object.keys(match.indices.groups)).toEqual(['__proto__']);
     });
 
     test('matchAllArrayIndices', async () => {
