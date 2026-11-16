@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.0.4](https://github.com/streetsidesoftware/regexp-worker/compare/v5.0.3...v5.0.4) (2026-11-16)
+
+
+### Bug Fixes
+
+* Handle unmatched named groups in matchAll ([#1182](https://github.com/streetsidesoftware/regexp-worker/issues/1182)) ([c0c0c0a](https://github.com/streetsidesoftware/regexp-worker/commit/c0c0c0a2f0ab904a68c7751a268065bf28888880))
+* Match native groups in worker match results ([#1184](https://github.com/streetsidesoftware/regexp-worker/issues/1184)) ([194955d](https://github.com/streetsidesoftware/regexp-worker/commit/194955d29926e8f258f7bae46f4b057a3ff62e95))
+
 ## [5.0.3](https://github.com/streetsidesoftware/regexp-worker/compare/v5.0.2...v5.0.3) (2026-11-11)
 
 

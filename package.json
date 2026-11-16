@@ -1,6 +1,6 @@
 {
   "name": "regexp-worker",
-  "version": "5.0.3",
+  "version": "5.0.4",
   "description": "Runs regular expressions on a background thread.",
   "publishConfig": {
     "access": "public",
@@ -77,7 +77,7 @@
     "eslint": "^10.14.0",
     "eslint-plugin-simple-import-sort": "^14.0.0",
     "globals": "^17.14.0",
-    "inject-markdown": "^6.3.0",
+    "inject-markdown": "^4.0.0",
     "lorem-ipsum": "^3.0.0",
     "prettier": "^3.9.10",
     "shx": "^0.4.0",
