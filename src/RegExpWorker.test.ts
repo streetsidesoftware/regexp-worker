@@ -138,6 +138,18 @@ describe('null-prototype groups, as in native matches', () => {
         }
     });
 
+    test.each<[string, GetMatches]>([
+        ['matchAll', async (w) => (await w.matchAll('x', /x/g)).matches],
+        ['matchAllArray', async (w) => (await w.matchAllArray('x', [/x/g])).results.flatMap((r) => r.matches)],
+    ])('%s sets groups without named groups', async (_, getMatches) => {
+        const matches = await getMatches(cr());
+        expect(matches).toHaveLength(1);
+        for (const match of matches) {
+            expect(match && Object.hasOwn(match, 'groups')).toBe(true);
+            expect(match?.groups).toBeUndefined();
+        }
+    });
+
     test('matchAllArrayIndices', async () => {
         const r = await cr().matchAllArrayIndices('y', [/(?<a>x)|(?<b>y)/g]);
         const indices = r.results.flatMap((r) => r.matches);

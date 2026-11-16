@@ -106,9 +106,8 @@ export function regExpIndicesToRegExpMatchArray(input: string, indices: RegExpIn
     // A named group that does not participate in the match has `undefined` indices,
     // even though the TypeScript lib types it as `[number, number]`.
     const groupIndices: Record<string, [number, number] | undefined> | undefined = indices.groups;
-    if (groupIndices) {
-        uResult.groups = toGroups(input, groupIndices);
-    }
+    // Native matches have a `groups` key even without named groups.
+    uResult.groups = groupIndices && toGroups(input, groupIndices);
 
     return result;
 }
