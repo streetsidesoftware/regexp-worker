@@ -96,6 +96,18 @@ describe('RegExpWorker', () => {
         expect(response.results.flatMap((r) => r.matches.map((m) => m[0]))).toEqual(['Good', 'Morning']);
     });
 
+    test.each`
+        text       | regexp
+        ${'y'}     | ${/(?<a>x)|(?<b>y)/g}
+        ${'xy y'}  | ${/(?<a>x)?y/g}
+        ${'ab ba'} | ${/(?<first>a)?b(?<second>a)?/g}
+    `('matchAll unmatched named groups $regexp', async ({ text, regexp }: { text: string; regexp: RegExp }) => {
+        const expected = [...text.matchAll(rd(regexp))];
+        const worker = cr();
+        expect((await worker.matchAll(text, regexp)).matches).toEqual(expected);
+        expect((await worker.matchAllArray(text, [regexp])).results.map((r) => r.matches)).toEqual([expected]);
+    });
+
     test('workerMatchAllAsRangePairs', async () => {
         const response = await cr().matchAllAsRangePairs('Good Morning, sunshine.', /\b\w+/g);
         expect(response.ranges).toEqual([

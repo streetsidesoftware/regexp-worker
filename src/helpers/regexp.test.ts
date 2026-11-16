@@ -62,6 +62,9 @@ const x2 = 'hello';
         regExp                     | text
         ${/\w/d}                   | ${sampleText}
         ${/(\w+) (?<second>\w+)/d} | ${sampleText}
+        ${/(?<a>x)|(?<b>y)/d}      | ${'y'}
+        ${/(?<a>x)?y/d}            | ${'y'}
+        ${/(?<a>x)?(y)(z)?/d}      | ${'y'}
     `('regExpIndicesToRegExpMatchArray $regExp', ({ regExp, text }: { regExp: RegExp; text: string }) => {
         const expected = text.match(regExp);
         assert(expected, 'Expected match to be defined');
