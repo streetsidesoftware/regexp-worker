@@ -126,8 +126,9 @@
     }
 </script>
 
-{#snippet snipFragments()}{#each fragments as frag (frag.id)}{#if frag.type === 'mark'}<mark>{frag.content}</mark
-            >{:else}{frag.content}{/if}{/each}{/snippet}
+{#snippet snipFragments()}{#each fragments as frag (frag.id)}{#if frag.type === 'mark'}<mark>
+                {frag.content}
+            </mark>{:else}{frag.content}{/if}{/each}{/snippet}
 
 {#snippet fixedWidth(value: number, fixed: number = 2, width: number = 9)}
     {value.toFixed(fixed).padStart(width, ' ')}{/snippet}
